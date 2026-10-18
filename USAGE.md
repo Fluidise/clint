@@ -1,0 +1,70 @@
+# Fluidise Lint V1 — Local development and usage
+
+Standalone commit-message validation, designed for AI agents. JSON schema 1 is the default. The binary never installs hooks, changes a commit message, stages files or creates commits. Repository hosting (including Entire) does not change its local Git discovery behavior.
+
+## Local development
+
+A Rust toolchain is required to build from source, not to run the future precompiled binary. Dependencies are locked in `Cargo.lock`. Verified environments include macOS 26.6.2 ARM64 natively and x86_64 under Rosetta, plus Linux ARM64 and x86_64 (the latter under Docker emulation) with glibc and musl. Rust 1.85.0 was tested on Linux ARM64 glibc; Rust 1.94.1 was used for the six release artifacts. These results do not guarantee older OS versions or native Intel execution.
+
+```sh
+cargo test --locked
+cargo fmt --check
+cargo clippy --locked --all-targets -- -D warnings
+cargo build --locked
+```
+
+## CLI
+
+```sh
+./target/debug/fluidise-lint --file message.txt
+printf '%s\n' 'feat: add search' | ./target/debug/fluidise-lint --stdin
+./target/debug/fluidise-lint --file message.txt --config fluidise.toml
+./target/debug/fluidise-lint --file message.txt --human
+./target/debug/fluidise-lint --help
+```
+
+Exactly one source is required. `--file -` reads a file literally named `-`. Paths beginning with a hyphen use `--file=--name` or `--file ./--name`. Native path bytes are preserved, subject to filesystem support. Empty values, short aliases, repeated/unknown options and positional messages are rejected. Argument errors always use JSON, even with `--human`. Help and version each work only alone.
+
+Exit codes: `0` for `valid` or `ignored`, `1` for `invalid`, `2` for operational errors. Only `ignored` has a `reason`. Consumers must check the process outcome AND decode a complete JSON object; interruptions or failed output transport cannot guarantee JSON. Success is never reported for a detected output failure. Human output is opt-in English text: status on stdout, diagnostic codes/messages and optional byte spans on stderr; no colors, paths or complete input copies.
+
+## Configuration
+
+Optional `fluidise.toml` is discovered at the local Git root, including from subdirectories. An explicit `--config` path replaces discovery and is relative to the invocation's working directory. Outside Git, no parent/home configuration is searched. Only the `commit` section is semantically validated; all TOML must be syntactically valid. No imports, expressions or personal configuration overlays.
+
+```toml
+[commit]
+version = 1
+allowed-types = ["feat", "fix", "docs", "deps"]
+allowed-scopes = ["cli", "parser"]
+max-title-length = 72
+ignore-merges = true
+ignore-reverts = true
+```
+
+All fields except the configured section's version are optional. Types replace the default list rather than extending it; scopes are exact and optional; there is no default title-length limit. Length is measured in Unicode code points; diagnostic spans are original zero-based, half-open byte ranges. Default types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert. Only approved exact merge/revert templates are ignored, with no proof of provenance. `fixup!` and `squash!` messages are refused.
+
+Message and entire TOML: 1,048,576 bytes each. JSON including LF: 262,144 bytes. At most 20 diagnostics; collection stops at the cap and reports `diagnostics_complete: false`. Diagnostic text is capped at 512 code points. JSON is encoded in a bounded buffer before emission; oversize reports are replaced with `tool.output.limit_exceeded`. Files must be regular (symlinks to regular files allowed); explicit stdin is the stream interface. No general memory or wall-clock bound is promised. The TOML reader's native recursion guard covers arrays/inline tables, not arbitrary dotted/explicit table depths.
+
+## Rust library
+
+`prepare_policy(Option<&str>)` prepares immutable validated rules (or returns configuration diagnostics). `check_message(&str, &Policy)` returns a structured result without filesystem/Git access, process exits or JSON. The engine validates the supplied UTF-8 text without normalizing it. Public types belong to Fluidise, not its parsers.
+
+## Hook limitation
+
+A caller can explicitly pass the file received by `commit-msg`, but this tool does not remove Git comments, scissors or diffs. Git may clean up the message after the hook; checking the raw file is not a guarantee of checking the final committed text. Server-side Entire/GitHub operations are not intercepted by a local hook. Installing hooks or automatic server-side checks is out of scope.
+
+## Evidence boundaries
+
+This local implementation is not a published release. No remote, hook installation, CI, distribution matrix or performance benchmark is provided by these local commands. Detailed acceptance evidence is recorded in the approved implementation contract in the Fluidise core repository.
+
+## Local distribution rehearsal
+
+The local 0.1.0 archives are rehearsal artifacts, not a published or signed release. Choose the exact OS, architecture and (on Linux) libc variant. Current glibc artifacts reference GLIBC_2.34 and require the system loader, libc and libgcc_s. Musl artifacts were run on Alpine 3.23 and Debian bookworm; no universal Linux kernel compatibility is claimed. macOS deployment targets are not evidence of tests on older macOS releases. No signing or notarization has been performed; do not disable Gatekeeper to bypass a distribution problem.
+
+Verify the selected archive against SHA256SUMS before extracting it into a new empty directory. Check that its inventory contains only its named top-level directory and ordinary relative files, without links or parent traversal. SHA-256 detects corruption but does not authenticate an archive against a compromised download host. No download URL is available yet.
+
+Installation means explicitly copying the verified executable to a destination you choose. No installer, shell changes, global installation, hooks or automatic updates are provided. Refuse an existing destination rather than silently overwriting it. The rehearsal tests installation and removal only under a temporary prefix. Consumers need no Rust, Cargo or Node runtime. Git is needed only for Git-root configuration discovery, not for an explicit configuration path or stdin outside a repository.
+
+## License
+
+Fluidise Lint is licensed under MIT: Copyright (c) 2026 Acrazie. See LICENSE. Third-party components retain their own terms; archive notices include the locked Cargo packages and Rust library notices. Local packaging is not a legal certification of complete platform-runtime notice coverage; outstanding checks must be resolved before public distribution.

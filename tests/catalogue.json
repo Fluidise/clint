@@ -1,0 +1,192 @@
+[
+  {
+    "id": "V01",
+    "message": "feat: ajouter la recherche",
+    "valid": true
+  },
+  {
+    "id": "V02",
+    "message": "fix(parser): préserver les accents",
+    "valid": true
+  },
+  {
+    "id": "V03",
+    "message": "chore: actualiser les exemples",
+    "valid": true
+  },
+  {
+    "id": "V04",
+    "message": "feat: Ajouter la recherche",
+    "valid": true
+  },
+  {
+    "id": "V05",
+    "message": "feat(api)!: retirer un ancien paramètre",
+    "valid": true
+  },
+  {
+    "id": "V06",
+    "message": "fix: éviter un doublon\n\nUne explication libre.",
+    "valid": true
+  },
+  {
+    "id": "V07",
+    "message": "feat: changer le format\n\nBREAKING CHANGE: le champ id devient une chaîne",
+    "valid": true
+  },
+  {
+    "id": "V08",
+    "message": "feat: changer le format\n\nBREAKING-CHANGE: le champ id devient une chaîne",
+    "valid": true
+  },
+  {
+    "id": "V09",
+    "message": "fix: éviter un doublon\n\nExplication.\n\nReviewed-by: Camille\nRefs #42",
+    "valid": true
+  },
+  {
+    "id": "V10",
+    "message": "revert: annuler la recherche",
+    "valid": true
+  },
+  {
+    "id": "P01",
+    "message": "feat:  ajouter la recherche",
+    "valid": true
+  },
+  {
+    "id": "P02",
+    "message": "feat(): ajouter la recherche",
+    "valid": false
+  },
+  {
+    "id": "P03",
+    "message": "feat:   ",
+    "valid": false
+  },
+  {
+    "id": "P04",
+    "message": "fix(moteur recherche): corriger une erreur",
+    "valid": true
+  },
+  {
+    "id": "P05",
+    "message": "fix( parser): corriger une erreur",
+    "valid": false
+  },
+  {
+    "id": "P06",
+    "message": "fix: corriger\n\n\nExplication libre.",
+    "valid": true
+  },
+  {
+    "id": "P07",
+    "message": "fix: corriger\n \nExplication libre.",
+    "valid": false
+  },
+  {
+    "id": "P08",
+    "message": "fix: corriger\n\nExplication.\n\nReviewed-by: Camille\nRefs #42",
+    "valid": true
+  },
+  {
+    "id": "P09",
+    "message": "fix: corriger\n\nReviewed-by: Camille\nTexte de continuation.\n\nAutre paragraphe.",
+    "valid": true
+  },
+  {
+    "id": "P10",
+    "message": "feat: changer\n\nBREAKING CHANGE: \nLe champ id change.",
+    "valid": true
+  },
+  {
+    "id": "P11",
+    "message": "feat: changer\n\nBREAKING CHANGE: ",
+    "valid": false
+  },
+  {
+    "id": "P12",
+    "message": "feat: changer\n\nbreaking change: exemple cité",
+    "valid": true
+  },
+  {
+    "id": "P13",
+    "message": "fix: corriger\n\n  Refs #42",
+    "valid": true
+  },
+  {
+    "id": "P14",
+    "message": "fix: corriger\n\nMotif:une explication",
+    "valid": true
+  },
+  {
+    "id": "P15",
+    "message": "feat!: changer le format",
+    "valid": true
+  },
+  {
+    "id": "P16",
+    "message": "fix: corriger\n\nRefs #42\nReviewed-by: Camille",
+    "valid": true
+  },
+  {
+    "id": "I01",
+    "message": "",
+    "valid": false
+  },
+  {
+    "id": "I02",
+    "message": "ajouter la recherche",
+    "valid": false
+  },
+  {
+    "id": "I03",
+    "message": "feat:ajouter la recherche",
+    "valid": false
+  },
+  {
+    "id": "I04",
+    "message": "feat: ",
+    "valid": false
+  },
+  {
+    "id": "I05",
+    "message": "feat!: ",
+    "valid": false
+  },
+  {
+    "id": "I06",
+    "message": "fix: éviter un doublon\nExplication.",
+    "valid": false
+  },
+  {
+    "id": "I07",
+    "message": "fixup! feat: ajouter la recherche",
+    "valid": false
+  },
+  {
+    "id": "I08",
+    "message": "squash! fix: éviter un doublon",
+    "valid": false
+  },
+  {
+    "id": "I09",
+    "message": "Merge mes changements",
+    "valid": false
+  },
+  {
+    "id": "I10",
+    "message": "Revert mon changement",
+    "valid": false
+  },
+  {
+    "id": "I11",
+    "message": "maintenance: actualiser les exemples",
+    "valid": false
+  },
+  {
+    "id": "I12",
+    "message": "FEAT: Ajouter la recherche",
+    "valid": false
+  }
+]
