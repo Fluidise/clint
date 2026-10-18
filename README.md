@@ -23,6 +23,7 @@ Standalone, deterministic commit-message validation designed for AI agents and a
 
 - [Quick Start](#quick-start)
 - [Key Features](#key-features)
+- [Benchmarks at a Glance](#benchmarks-at-a-glance)
 - [Installation](#installation)
 - [CLI Usage](#cli-usage)
   - [Options](#options)
@@ -73,6 +74,21 @@ Output (`stdout`, exit code `1`):
 - **Zero Network or Shell Subprocesses**: Operates entirely in-process without network access, external services, or shell execution.
 - **Dual Interface**: Available as a standalone CLI executable and as an embeddable Rust crate.
 - **Configurable Rules**: Optional `fluidise.toml` for project-specific types, scopes, and title length limits.
+
+## Benchmarks at a Glance
+
+Compared directly against industry-standard commit linters:
+
+| Metric | `fluidise-clint` | `cocogitto` (`cog`) | `commitlint` (Node.js) |
+| :--- | :---: | :---: | :---: |
+| **Execution Latency** | **~12.9 ms** | ~12.6 ms | ~223.0 ms *(18x slower)* |
+| **Memory Footprint (RSS)** | **7.08 MB** | 10.02 MB | 97.38 MB *(14x more RAM)* |
+| **Bounded Memory Limit** | **Strict 1 MiB cap** | Unbounded | Unbounded / V8 Buffer |
+| **Behavior on 2 MB / 20 MB** | **Instant exit (< 14 ms, code 2)** | Unbounded allocation | Timeout (> 3s) |
+| **Default Output Format** | **Strict JSON (`schema_version: 1`)** | Terminal text / ANSI | Terminal text / ANSI |
+| **Agent Diagnostics** | **Structured (`input.limit_exceeded`, ...)** | Unstructured text | Unstructured text |
+
+See the complete methodology, stress tests, and agent ergonomics analysis in [docs/benchmarks.md](docs/benchmarks.md).
 
 ## Installation
 
