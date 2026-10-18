@@ -1,7 +1,7 @@
 //! Agent-first commit validation. No filesystem, Git, process exits or output.
 //!
 //! ```
-//! use fluidise_lint::{prepare_policy, check_message, Status};
+//! use fluidise_clint::{prepare_policy, check_message, Status};
 //! let rules = prepare_policy(None).expect("default rules are valid");
 //! let result = check_message("feat: add search", &rules);
 //! assert_eq!(result.status, Status::Valid);
@@ -9,7 +9,7 @@
 //!
 //! A caller cannot bypass policy validation by mutating internal rules:
 //! ```compile_fail
-//! let mut rules = fluidise_lint::prepare_policy(None).unwrap();
+//! let mut rules = fluidise_clint::prepare_policy(None).unwrap();
 //! rules.ignore_merges = false;
 //! ```
 mod configuration;

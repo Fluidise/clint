@@ -1,6 +1,6 @@
 # Git Workflow & Delivery Policy
 
-This document defines the authoritative Git and GitHub workflow for the `fluidise-lint` repository (`Fluidise/lint`).
+This document defines the authoritative Git and GitHub workflow for the `fluidise-clint` repository (`Fluidise/lint`).
 
 > **Note on Platform Migration**: All development, branching, and delivery are performed directly in **GitHub**. The legacy `entire.io` platform is no longer in use. All pushes and pull requests target `github.com/Fluidise/lint`.
 
@@ -54,14 +54,14 @@ Commit messages must strictly follow the [Conventional Commits](https://www.conv
 
 ### Local Dogfooding Validation
 
-We dogfood our own tool `fluidise-lint` via a native Git `commit-msg` hook:
+We dogfood our own tool `fluidise-clint` via a native Git `commit-msg` hook:
 
 ```bash
 # Install local hooks (one-time setup)
 ./scripts/install-hooks.sh
 ```
 
-Every commit is validated against `fluidise-lint` before Git records it.
+Every commit is validated against `fluidise-clint` before Git records it.
 
 ---
 

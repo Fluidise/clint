@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a reproducible bug or unexpected behavior in fluidise-lint
+description: Report a reproducible bug or unexpected behavior in fluidise-clint
 title: "fix: "
 labels: ["bug"]
 body:
@@ -19,7 +19,7 @@ body:
       label: Steps to Reproduce
       description: Include input commit message or CLI command used.
       placeholder: |
-        1. printf '...' | fluidise-lint --stdin
+        1. printf '...' | fluidise-clint --stdin
         2. Expected output: ...
         3. Actual output: ...
     validations:
@@ -28,7 +28,7 @@ body:
     id: version
     attributes:
       label: Version
-      description: What version or commit of fluidise-lint are you using?
+      description: What version or commit of fluidise-clint are you using?
       placeholder: e.g. 0.1.0 (commit abc1234)
     validations:
       required: true

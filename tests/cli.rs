@@ -14,7 +14,7 @@ struct Temp(PathBuf);
 impl Temp {
     fn new() -> Self {
         let p = std::env::temp_dir().join(format!(
-            "fluidise-lint-{}-{}-{}",
+            "fluidise-clint-{}-{}-{}",
             std::process::id(),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
@@ -49,7 +49,7 @@ impl Drop for Temp {
     }
 }
 fn command(cwd: &Path) -> Command {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_fluidise-lint"));
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_fluidise-clint"));
     cmd.current_dir(cwd)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
@@ -148,7 +148,7 @@ fn help_version_and_human_mode() {
         let out = invoke(&t.0, &[flag], None);
         assert!(out.status.success());
         assert!(out.stderr.is_empty());
-        assert!(out.stdout.starts_with(b"fluidise-lint"));
+        assert!(out.stdout.starts_with(b"fluidise-clint"));
     }
     let out = invoke(&t.0, &["--stdin", "--human"], Some(b"bad"));
     assert_eq!(out.status.code(), Some(1));
@@ -323,7 +323,7 @@ fn invalid_config_prevents_ignore_and_message_reads() {
 fn input_and_config_read_caps() {
     let t = Temp::new();
     let mut b = b"fix: ".to_vec();
-    b.resize(fluidise_lint::INPUT_LIMIT, b'a');
+    b.resize(fluidise_clint::INPUT_LIMIT, b'a');
     json(&invoke(&t.0, &["--stdin"], Some(&b)), 0);
     b.push(b'a');
     assert_eq!(
@@ -332,7 +332,7 @@ fn input_and_config_read_caps() {
     );
     fs::write(
         t.0.join("big.toml"),
-        " ".repeat(fluidise_lint::INPUT_LIMIT + 1),
+        " ".repeat(fluidise_clint::INPUT_LIMIT + 1),
     )
     .unwrap();
     let out = invoke(&t.0, &["--stdin", "--config", "big.toml"], None);

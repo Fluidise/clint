@@ -1,6 +1,6 @@
-# Contributing to fluidise-lint
+# Contributing to fluidise-clint
 
-Thank you for contributing to `fluidise-lint`!
+Thank you for contributing to `fluidise-clint`!
 
 ## Getting Started
 
@@ -20,7 +20,7 @@ Thank you for contributing to `fluidise-lint`!
    ```bash
    cargo build
    ```
-3. Install the commit-message hook (dogfooding `fluidise-lint`):
+3. Install the commit-message hook (dogfooding `fluidise-clint`):
    ```bash
    ./scripts/install-hooks.sh
    ```
@@ -47,7 +47,7 @@ We follow Trunk-Based Development directly on GitHub.
    ```
 
 3. **Commit your changes**:
-   Write commit messages following the Conventional Commits specification. The local hook will validate your message using `fluidise-lint`.
+   Write commit messages following the Conventional Commits specification. The local hook will validate your message using `fluidise-clint`.
    *(Note: Do not include co-author mentions such as `Co-authored-by: Claude`).*
 
 4. **Submit a Pull Request**:

@@ -1,4 +1,4 @@
-use fluidise_lint::*;
+use fluidise_clint::*;
 fn policy() -> Policy {
     prepare_policy(None).unwrap()
 }

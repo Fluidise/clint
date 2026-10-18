@@ -1,4 +1,4 @@
-# Fluidise Lint V1 — Local development and usage
+# Fluidise Clint V1 — Local development and usage
 
 Standalone commit-message validation, designed for AI agents. JSON schema 1 is the default. The binary never installs hooks, changes a commit message, stages files or creates commits. Repository hosting (including Entire) does not change its local Git discovery behavior.
 
@@ -16,11 +16,11 @@ cargo build --locked
 ## CLI
 
 ```sh
-./target/debug/fluidise-lint --file message.txt
-printf '%s\n' 'feat: add search' | ./target/debug/fluidise-lint --stdin
-./target/debug/fluidise-lint --file message.txt --config fluidise.toml
-./target/debug/fluidise-lint --file message.txt --human
-./target/debug/fluidise-lint --help
+./target/debug/fluidise-clint --file message.txt
+printf '%s\n' 'feat: add search' | ./target/debug/fluidise-clint --stdin
+./target/debug/fluidise-clint --file message.txt --config fluidise.toml
+./target/debug/fluidise-clint --file message.txt --human
+./target/debug/fluidise-clint --help
 ```
 
 Exactly one source is required. `--file -` reads a file literally named `-`. Paths beginning with a hyphen use `--file=--name` or `--file ./--name`. Native path bytes are preserved, subject to filesystem support. Empty values, short aliases, repeated/unknown options and positional messages are rejected. Argument errors always use JSON, even with `--human`. Help and version each work only alone.
@@ -67,4 +67,4 @@ Installation means explicitly copying the verified executable to a destination y
 
 ## License
 
-Fluidise Lint is licensed under MIT: Copyright (c) 2026 Acrazie. See LICENSE. Third-party components retain their own terms; archive notices include the locked Cargo packages and Rust library notices. Local packaging is not a legal certification of complete platform-runtime notice coverage; outstanding checks must be resolved before public distribution.
+Fluidise Clint is licensed under MIT: Copyright (c) 2026 Acrazie. See LICENSE. Third-party components retain their own terms; archive notices include the locked Cargo packages and Rust library notices. Local packaging is not a legal certification of complete platform-runtime notice coverage; outstanding checks must be resolved before public distribution.

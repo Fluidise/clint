@@ -1,4 +1,4 @@
-use fluidise_lint::{CheckResult, Diagnostic, INPUT_LIMIT, Source};
+use fluidise_clint::{CheckResult, Diagnostic, INPUT_LIMIT, Source};
 #[cfg(unix)]
 use std::os::unix::{ffi::OsStringExt, fs::OpenOptionsExt};
 use std::{

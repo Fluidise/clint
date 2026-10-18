@@ -1,4 +1,4 @@
-use fluidise_lint::{CheckResult, Diagnostic, Field, OUTPUT_LIMIT, Source, Status};
+use fluidise_clint::{CheckResult, Diagnostic, Field, OUTPUT_LIMIT, Source, Status};
 use serde_json::{Value, json};
 use std::io::{self, Write};
 fn wire(r: &CheckResult) -> Value {
@@ -119,7 +119,7 @@ mod tests {
     fn output_limit_replaces_report_before_emission() {
         let mut r =
             CheckResult::error(Diagnostic::new("tool.internal_error", "Test", Source::Tool));
-        r.configuration = Some(fluidise_lint::ConfigurationSummary {
+        r.configuration = Some(fluidise_clint::ConfigurationSummary {
             source: "file",
             used_sections: vec![],
             unrecognized_sections: vec!["\u{0001}".repeat(OUTPUT_LIMIT)],

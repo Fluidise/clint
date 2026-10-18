@@ -1,4 +1,4 @@
-use fluidise_lint::{CheckResult, Diagnostic, Source};
+use fluidise_clint::{CheckResult, Diagnostic, Source};
 use lexopt::Arg;
 use std::{collections::HashSet, ffi::OsString, path::PathBuf};
 

@@ -8,7 +8,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in `fluidise-lint`, please report it responsibly:
+If you discover a security vulnerability in `fluidise-clint`, please report it responsibly:
 
 - **Do NOT create a public issue** on GitHub.
 - Submit a report via GitHub Private Vulnerability Reporting on the repository if enabled, or email the maintainers directly at `security@fluidise.com` or `mayeul.desbazeille@gmail.com`.
