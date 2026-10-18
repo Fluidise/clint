@@ -1,3 +1,5 @@
+![Fluidise-Clint — forêt prune et lavande ouverte sur une clairière](docs/assets/banner.png)
+
 # fluidise-clint
 
 Standalone, deterministic commit-message validation designed for AI agents and automated workflows.
