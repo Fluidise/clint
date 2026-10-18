@@ -1,1 +1,17 @@
 /target/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors & IDEs
+.idea/
+.vscode/
+*.swp
+*~
+
+# Entire CLI legacy
+.entire/
+.agents/
+.codex/
