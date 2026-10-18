@@ -5,7 +5,7 @@
 `fluidise-clint` is an agent-first, deterministic commit-message linter written in Rust. It enforces Conventional Commits with bounded memory consumption, strict JSON output by default, and zero external side effects.
 
 - **Stack**: Rust 2024 edition (MSRV 1.85), Cargo.
-- **Remote & Delivery**: All work, branches, and pushes go directly to **GitHub** (`Fluidise/lint`). The repository has fully transitioned away from `entire.io`.
+- **Remote & Delivery**: All work, branches, and pushes go directly to **GitHub** (`Fluidise/clint`). The repository has fully transitioned away from `entire.io`.
 
 ## Authoritative Git Policy
 

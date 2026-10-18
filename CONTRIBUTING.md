@@ -13,8 +13,8 @@ Thank you for contributing to `fluidise-clint`!
 
 1. Clone the repository directly from GitHub:
    ```bash
-   git clone https://github.com/Fluidise/lint.git
-   cd lint
+   git clone https://github.com/Fluidise/clint.git
+   cd clint
    ```
 2. Build the project:
    ```bash

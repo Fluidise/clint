@@ -1,8 +1,8 @@
 # Git Workflow & Delivery Policy
 
-This document defines the authoritative Git and GitHub workflow for the `fluidise-clint` repository (`Fluidise/lint`).
+This document defines the authoritative Git and GitHub workflow for the `fluidise-clint` repository (`Fluidise/clint`).
 
-> **Note on Platform Migration**: All development, branching, and delivery are performed directly in **GitHub**. The legacy `entire.io` platform is no longer in use. All pushes and pull requests target `github.com/Fluidise/lint`.
+> **Note on Platform Migration**: All development, branching, and delivery are performed directly in **GitHub**. The legacy `entire.io` platform is no longer in use. All pushes and pull requests target `github.com/Fluidise/clint`.
 
 ---
 
