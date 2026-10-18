@@ -15,3 +15,6 @@
 .entire/
 .agents/
 .codex/
+
+# Worktrees
+.worktrees/

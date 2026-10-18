@@ -1,0 +1,34 @@
+name: Bug Report
+description: Report a reproducible bug or unexpected behavior in fluidise-lint
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for reporting an issue! Please provide detailed steps to reproduce.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Include input commit message or CLI command used.
+      placeholder: |
+        1. printf '...' | fluidise-lint --stdin
+        2. Expected output: ...
+        3. Actual output: ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version or commit of fluidise-lint are you using?
+      placeholder: e.g. 0.1.0 (commit abc1234)
+    validations:
+      required: true
