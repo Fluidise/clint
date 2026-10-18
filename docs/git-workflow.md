@@ -98,6 +98,15 @@ cargo test --all-targets
    - Ensure the CI pipeline passes on GitHub Actions (`.github/workflows/ci.yml`).
    - GitHub automatically deletes merged head branches (`delete_branch_on_merge: true`).
 
+4. **Automated PR Triage & Labels**:
+   - Pull Requests are automatically triaged by [`.github/workflows/pr-triage.yml`](../.github/workflows/pr-triage.yml).
+   - **Auto-assignment**: The PR author is automatically assigned to the PR upon opening.
+   - **Type labeling**: Labels (`feat`, `fix`, `chore`, `docs`, `ci`, `refactor`, `perf`, `test`, `build`) are applied based on the branch prefix or Conventional Commit title.
+   - **Review status**:
+     - Draft PRs receive the `work-in-progress` label.
+     - Ready PRs receive the `needs-review` label.
+   - **Breaking changes**: PRs indicating breaking changes (`!:` or `BREAKING CHANGE:`) receive `breaking-change`.
+
 ---
 
 ## 5. Parallel Work with Git Worktrees (Situational)
