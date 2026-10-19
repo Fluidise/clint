@@ -1,5 +1,18 @@
 ![Fluidise-Clint — forêt prune et lavande ouverte sur une clairière](docs/assets/banner.png)
 
+<p align="center">
+    <a href="https://github.com/Fluidise/clint/releases">
+        <img src="https://img.shields.io/github/v/release/Fluidise/clint?style=flat&labelColor=1C1B2A&color=8B5CF6&logo=GitHub&logoColor=white"></a>
+    <a href="https://www.rust-lang.org">
+        <img src="https://img.shields.io/badge/rustc-1.85%2B-informational?style=flat&labelColor=1C1B2A&color=8B5CF6&logo=Rust&logoColor=white"></a>
+    <br>
+    <a href="https://github.com/Fluidise/clint/actions/workflows/ci.yml">
+        <img src="https://img.shields.io/github/actions/workflow/status/Fluidise/clint/ci.yml?branch=main&style=flat&labelColor=1C1B2A&color=BEC5C9&logo=GitHub%20Actions&logoColor=BEC5C9"></a>
+    <a href="LICENSE">
+        <img src="https://img.shields.io/badge/license-MIT-informational?style=flat&labelColor=1C1B2A&color=BEC5C9"></a>
+    <br>
+</p>
+
 # fluidise-clint
 
 Standalone, deterministic commit-message validation designed for AI agents and automated workflows.
