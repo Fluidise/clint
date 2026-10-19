@@ -23,6 +23,7 @@ Standalone, deterministic commit-message validation designed for AI agents and a
 
 - [Quick Start](#quick-start)
 - [Key Features](#key-features)
+- [Benchmarks at a Glance](#benchmarks-at-a-glance)
 - [Installation](#installation)
 - [CLI Usage](#cli-usage)
   - [Options](#options)
@@ -73,6 +74,24 @@ Output (`stdout`, exit code `1`):
 - **Zero Network or Shell Subprocesses**: Operates entirely in-process without network access, external services, or shell execution.
 - **Dual Interface**: Available as a standalone CLI executable and as an embeddable Rust crate.
 - **Configurable Rules**: Optional `fluidise.toml` for project-specific types, scopes, and title length limits.
+
+## Benchmarks at a Glance
+
+Evaluated directly against the leading commit linters across Rust, Python, and Node.js:
+
+| Metric | `fluidise-clint` | `convco` (Rust) | `cocogitto` (Rust) | `commitizen` (Python) | `commitlint` (Node.js) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Startup & Lint Latency** | **13.2 ms** | 8.9 ms | 12.0 ms | 228.4 ms *(17x slower)* | 224.6 ms *(17x slower)* |
+| **Memory Footprint (RSS)** | **7.08 MB** | 10.38 MB | 10.02 MB | 50.44 MB *(7.1x RAM)* | 97.12 MB *(13.7x RAM)* |
+| **CPU Instructions (Standard)**| **18.5 M** | 36.8 M *(2.0x)* | 64.2 M *(3.5x)* | 1,582 M *(85x)* | 2,134 M *(115x)* |
+| **Agent Throughput (100 msgs)**| **76.9 /s** | 119.4 /s | 87.6 /s | 4.5 /s *(17x slower)* | 4.7 /s *(16x slower)* |
+| **ReDoS / 100k Chars Line** | **13.7 ms** | 9.8 ms | 16.4 ms | 230.6 ms | **Timeout (> 5s)** |
+| **Strict Bounded Memory Cap**| **1 MiB Guaranteed** | Unbounded | Unbounded | Unbounded | Unbounded / Crash |
+| **Extreme 20 MB Payload** | **17.2 ms (7.1 MB)** | 332.9 ms (72.4 MB) | 208.8 ms (70.0 MB) | 365.1 ms (109.8 MB) | **Timeout (> 5s)** |
+| **Machine Output by Default** | **Strict JSON** | Plain text | Plain text / ANSI | Plain text | Plain text / ANSI |
+| **Binary / Footprint on Disk** | **0.5 MB (0 dep)** | 7.6 MB | 5.9 MB | 45.2 MB (+ Python) | 148.0 MB (+ Node.js) |
+
+See the complete 6-workload suite, CPU cycle profiling, and agent ergonomics analysis in [docs/benchmarks.md](docs/benchmarks.md).
 
 ## Installation
 
