@@ -61,7 +61,13 @@ fn invoke(cwd: &Path, args: &[&str], input: Option<&[u8]>) -> Output {
     cmd.args(args);
     if let Some(bytes) = input {
         let mut child = cmd.stdin(Stdio::piped()).spawn().unwrap();
-        child.stdin.take().unwrap().write_all(bytes).unwrap();
+        if let Some(mut stdin) = child.stdin.take() {
+            match stdin.write_all(bytes) {
+                Ok(()) => {}
+                Err(e) if e.kind() == std::io::ErrorKind::BrokenPipe => {}
+                Err(e) => panic!("failed to write to child stdin: {e}"),
+            }
+        }
         child.wait_with_output().unwrap()
     } else {
         cmd.output().unwrap()
@@ -360,11 +366,6 @@ fn metadata_expansion_uses_small_json_fallback() {
 #[test]
 fn broken_stdout_is_failure_without_fallback_rewrite() {
     let t = Temp::new();
-    let mut child = command(&t.0).arg("--version").spawn().unwrap();
-    drop(child.stdout.take());
-    let out = child.wait_with_output().unwrap();
-    assert!(!out.status.success());
-    assert!(out.stderr.is_empty());
     // /dev/full provides a deterministic write failure on Linux, if available.
     if Path::new("/dev/full").exists() {
         let out = command(&t.0)
@@ -378,6 +379,13 @@ fn broken_stdout_is_failure_without_fallback_rewrite() {
             .output()
             .unwrap();
         assert!(!out.status.success());
+        assert!(out.stderr.is_empty());
+    } else {
+        let mut child = command(&t.0).arg("--version").spawn().unwrap();
+        drop(child.stdout.take());
+        let out = child.wait_with_output().unwrap();
+        assert!(!out.status.success());
+        assert!(out.stderr.is_empty());
     }
 }
 #[test]
