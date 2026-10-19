@@ -1,21 +1,25 @@
-![Fluidise-Clint — forêt prune et lavande ouverte sur une clairière](docs/assets/banner.png)
+<p align="center">
+  <img src="docs/assets/banner.png" alt="Fluidise-Clint — forêt prune et lavande ouverte sur une clairière" width="100%">
+</p>
+
+<h1 align="center">fluidise-clint</h1>
+
+<p align="center">
+  <strong>Standalone, deterministic commit-message validation designed for AI agents and automated workflows.</strong>
+</p>
 
 <p align="center">
     <a href="https://github.com/Fluidise/clint/releases">
-        <img src="https://img.shields.io/github/v/release/Fluidise/clint?style=flat&labelColor=1C1B2A&color=8B5CF6&logo=GitHub&logoColor=white"></a>
+        <img src="https://img.shields.io/github/v/release/Fluidise/clint?style=flat&labelColor=24141E&color=603840&logo=GitHub&logoColor=white"></a>
     <a href="https://www.rust-lang.org">
-        <img src="https://img.shields.io/badge/rustc-1.85%2B-informational?style=flat&labelColor=1C1B2A&color=8B5CF6&logo=Rust&logoColor=white"></a>
+        <img src="https://img.shields.io/badge/rustc-1.85%2B-informational?style=flat&labelColor=24141E&color=603840&logo=Rust&logoColor=white"></a>
     <br>
     <a href="https://github.com/Fluidise/clint/actions/workflows/ci.yml">
-        <img src="https://img.shields.io/github/actions/workflow/status/Fluidise/clint/ci.yml?branch=main&style=flat&labelColor=1C1B2A&color=BEC5C9&logo=GitHub%20Actions&logoColor=BEC5C9"></a>
+        <img src="https://img.shields.io/github/actions/workflow/status/Fluidise/clint/ci.yml?branch=main&style=flat&labelColor=24141E&color=603840&logo=GitHub%20Actions&logoColor=white"></a>
     <a href="LICENSE">
-        <img src="https://img.shields.io/badge/license-MIT-informational?style=flat&labelColor=1C1B2A&color=BEC5C9"></a>
+        <img src="https://img.shields.io/badge/license-MIT-informational?style=flat&labelColor=24141E&color=603840"></a>
     <br>
 </p>
-
-# fluidise-clint
-
-Standalone, deterministic commit-message validation designed for AI agents and automated workflows.
 
 `fluidise-clint` validates commit messages against conventional commit standards with strict operational guarantees: default structured JSON output, bounded resource consumption, deterministic exit codes, and zero side effects (no file modifications, no hook installations, no remote network calls).
 
