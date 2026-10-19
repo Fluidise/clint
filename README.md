@@ -306,4 +306,6 @@ fluidise-clint --file "$1"
 ## Documentation and License
 
 - Additional local development, test commands, and rehearsal packaging notes are documented in [USAGE.md](USAGE.md).
+- Comprehensive 5-competitor benchmarks in [docs/benchmarks.md](docs/benchmarks.md).
+- Architectural and design decisions in [docs/adr/](docs/adr/) (see [ADR 0001: Évaluation des Écarts Fonctionnels Face aux Concurrents et Pistes d'Évolution](docs/adr/0001-competitor-feature-gaps-and-evolution-tracks.md)).
 - Licensed under the [MIT License](LICENSE). Copyright (c) 2026 Acrazie.

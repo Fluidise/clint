@@ -202,3 +202,8 @@ Protection ReDoS                Native            Native          Partielle     
 1. **Face à `commitlint` (Node.js)** : `fluidise-clint` est **17x plus rapide**, utilise **13.7x moins de RAM**, pèse **296x moins lourd**, et ne souffre d'aucun gel sur les expressions régulières complexes ou les gros messages.
 2. **Face à `commitizen` (Python)** : `fluidise-clint` est **17x plus rapide**, consomme **7x moins de mémoire**, et ne nécessite aucun environnement virtuel Python.
 3. **Face à `convco` et `cocogitto` (Rust)** : Bien que les outils Rust partagent la rapidité d'exécution native, **`fluidise-clint` est le seul à offrir la sécurité d'une mémoire rigoureusement bornée (7.1 Mo constants)** et **une interface purement agentique en JSON strict par défaut**.
+
+---
+
+> [!TIP]
+> Pour une analyse détaillée des fonctionnalités présentes chez les concurrents (assistant interactif, bump de version, range git, etc.) et les choix d'architecture associés, consultez l'[ADR 0001: Évaluation des Écarts Fonctionnels Face aux Concurrents et Pistes d'Évolution](adr/0001-competitor-feature-gaps-and-evolution-tracks.md).
