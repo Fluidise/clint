@@ -95,10 +95,9 @@ pub fn parse(args: Vec<OsString>) -> Result<Action, CheckResult> {
     })
 }
 
-#[cfg(test)]
+#[cfg(all(test, unix))]
 mod tests {
     use super::*;
-    #[cfg(unix)]
     #[test]
     fn native_path_bytes_are_not_normalized() {
         use std::os::unix::ffi::{OsStrExt, OsStringExt};

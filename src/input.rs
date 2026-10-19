@@ -1,8 +1,10 @@
 use fluidise_clint::{CheckResult, Diagnostic, INPUT_LIMIT, Source};
 #[cfg(unix)]
-use std::os::unix::{ffi::OsStringExt, fs::OpenOptionsExt};
 use std::{
     ffi::OsString,
+    os::unix::{ffi::OsStringExt, fs::OpenOptionsExt},
+};
+use std::{
     fs::{self, OpenOptions},
     io::{self, Read},
     path::{Path, PathBuf},
