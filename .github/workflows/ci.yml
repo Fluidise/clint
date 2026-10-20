@@ -21,8 +21,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Rust stable toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust 1.99.1 toolchain
+        uses: dtolnay/rust-toolchain@1.99.1
         with:
           components: rustfmt, clippy
 
@@ -42,10 +42,8 @@ jobs:
         run: |
           cargo run --quiet --bin fluidise-clint -- --stdin --human <<< "$PR_TITLE"
 
-      - name: Verify MSRV (Rust 1.85.0)
-        run: |
-          rustup toolchain install 1.85.0 --profile minimal --no-self-update
-          cargo +1.85.0 check --all-targets
+      - name: Verify MSRV (Rust 1.99.1)
+        run: cargo +1.99.1 check --all-targets
 
       - name: Security audit
         uses: actions-rust-lang/audit@v1
@@ -64,8 +62,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Rust stable toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust 1.99.1 toolchain
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2

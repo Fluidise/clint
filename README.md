@@ -12,7 +12,7 @@
     <a href="https://github.com/Fluidise/clint/releases">
         <img src="https://img.shields.io/github/v/release/Fluidise/clint?style=flat&labelColor=24141E&color=603840&logo=GitHub&logoColor=white"></a>
     <a href="https://www.rust-lang.org">
-        <img src="https://img.shields.io/badge/rustc-1.85%2B-informational?style=flat&labelColor=24141E&color=603840&logo=Rust&logoColor=white"></a>
+        <img src="https://img.shields.io/badge/rustc-1.99.1%2B-informational?style=flat&labelColor=24141E&color=603840&logo=Rust&logoColor=white"></a>
     <br>
     <a href="https://github.com/Fluidise/clint/actions/workflows/ci.yml">
         <img src="https://img.shields.io/github/actions/workflow/status/Fluidise/clint/ci.yml?branch=main&style=flat&labelColor=24141E&color=603840&logo=GitHub%20Actions&logoColor=white"></a>
@@ -101,7 +101,7 @@ See the complete 6-workload suite, CPU cycle profiling, and agent ergonomics ana
 
 ### Prerequisites
 
-- [Rust](https://www.rust-lang.org/) toolchain (MSRV 1.85, edition 2024).
+- [Rust](https://www.rust-lang.org/) toolchain (MSRV 1.99.1, edition 2024).
 
 ### Building from Source
 
