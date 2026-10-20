@@ -1,0 +1,89 @@
+name: Candidate distribution (no publication)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate:
+    name: Candidate (${{ matrix.target }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-apple-darwin
+            runner: macos-15
+          - target: x86_64-apple-darwin
+            runner: macos-15-intel
+          - target: aarch64-unknown-linux-musl
+            runner: ubuntu-24.04-arm
+          - target: x86_64-unknown-linux-musl
+            runner: ubuntu-24.04
+          - target: x86_64-pc-windows-msvc
+            runner: windows-2022
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up packaging Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Install declared Rust toolchain, target and copyright inventory
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          rustup show active-toolchain || rustup toolchain install
+          rustup target add "$TARGET"
+          rustup component add rust-docs
+
+      - name: Install native musl linker
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes musl-tools
+
+      - name: Test packaging invariants
+        run: python -m unittest discover -s tests -p 'test_distribution.py' -v
+
+      - name: Build, package, verify inventory and execute extracted candidate
+        env:
+          TARGET: ${{ matrix.target }}
+        run: python scripts/distribution.py prepare --target "$TARGET" --output "$RUNNER_TEMP/clint-distribution"
+
+      - name: Read pinned existing Homebrew recipe
+        if: runner.os == 'macOS'
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: Fluidise/homebrew-tap
+          ref: a59bbe0129e05f8e211647427fb19fbe5357c322
+          path: .homebrew-reference
+          persist-credentials: false
+
+      - name: Rehearse existing Homebrew install and test in a temporary prefix
+        if: runner.os == 'macOS'
+        run: |
+          python scripts/distribution.py homebrew \
+            --distribution "$RUNNER_TEMP/clint-distribution" \
+            --reference .homebrew-reference/Formula/fluidise-clint.rb \
+            --output "$RUNNER_TEMP/clint-homebrew"
+
+      - name: Retain verified test archives only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: candidate-${{ matrix.target }}-${{ github.sha }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/clint-distribution/*
+          if-no-files-found: error
+          retention-days: 7
