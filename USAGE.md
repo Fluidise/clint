@@ -55,7 +55,9 @@ A caller can explicitly pass the file received by `commit-msg`, but this tool do
 
 ## Evidence boundaries
 
-This local implementation is not a published release. No remote, hook installation, CI, distribution matrix or performance benchmark is provided by these local commands. Detailed acceptance evidence is recorded in the approved implementation contract in the Fluidise core repository.
+This local implementation is not a published release. These local commands do not install hooks, run remote CI, prove a distribution matrix or provide performance benchmarks. Detailed original acceptance evidence is recorded in the approved implementation contract in the Fluidise core repository.
+
+A separate candidate distribution workflow, documented in the source repository at `docs/distribution.md`, prepares archives for five native targets and rehearses the existing macOS Homebrew recipe. It is manual-only and retains test artifacts, not GitHub Releases or registry packages. Its presence is not evidence that the remote matrix has run. Candidate license/runtime coverage and publisher signing policy remain public-distribution gates; no new public installation command is advertised.
 
 ## Local distribution rehearsal
 
