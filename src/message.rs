@@ -78,17 +78,17 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
                     .at(0, kind.len()),
                 );
             }
-            if let (Some(scope), Some(allowed)) = (scope, &policy.allowed_scopes) {
-                if !allowed.iter().any(|s| s == scope) {
-                    ds.push(
-                        Diagnostic::new(
-                            "commit.scope.not_allowed",
-                            "Commit scope is not allowed.",
-                            Source::Message,
-                        )
-                        .at(kind.len() + 1, kind.len() + 1 + scope.len()),
-                    );
-                }
+            if let (Some(scope), Some(allowed)) = (scope, &policy.allowed_scopes)
+                && !allowed.iter().any(|s| s == scope)
+            {
+                ds.push(
+                    Diagnostic::new(
+                        "commit.scope.not_allowed",
+                        "Commit scope is not allowed.",
+                        Source::Message,
+                    )
+                    .at(kind.len() + 1, kind.len() + 1 + scope.len()),
+                );
             }
         } else {
             ds.push(
@@ -133,19 +133,19 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
             }
             let eligible = in_footers || lines[index - 1].0.is_empty();
             if let Some(value) = eligible.then(|| footer(line)).flatten() {
-                if let Some((a, b, nonblank)) = current.take() {
-                    if !nonblank {
-                        ds.push(
-                            Diagnostic::new(
-                                "commit.footer.invalid",
-                                "Footer value must not be blank.",
-                                Source::Message,
-                            )
-                            .at(a, b),
-                        );
-                        if ds.full() {
-                            break;
-                        }
+                if let Some((a, b, nonblank)) = current.take()
+                    && !nonblank
+                {
+                    ds.push(
+                        Diagnostic::new(
+                            "commit.footer.invalid",
+                            "Footer value must not be blank.",
+                            Source::Message,
+                        )
+                        .at(a, b),
+                    );
+                    if ds.full() {
+                        break;
                     }
                 }
                 in_footers = true;
@@ -159,17 +159,17 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
                 *nonblank |= line.chars().any(|c| !c.is_whitespace());
             }
         }
-        if !ds.full() {
-            if let Some((a, b, false)) = current {
-                ds.push(
-                    Diagnostic::new(
-                        "commit.footer.invalid",
-                        "Footer value must not be blank.",
-                        Source::Message,
-                    )
-                    .at(a, b),
-                );
-            }
+        if !ds.full()
+            && let Some((a, b, false)) = current
+        {
+            ds.push(
+                Diagnostic::new(
+                    "commit.footer.invalid",
+                    "Footer value must not be blank.",
+                    Source::Message,
+                )
+                .at(a, b),
+            );
         }
     }
     ds.result(Status::Valid, Status::Invalid, summary())
@@ -226,25 +226,21 @@ fn ignored(lines: &[(&str, usize)], p: &Policy) -> Option<&'static str> {
     let title = lines[0].0;
     let word = |s: &str| !s.is_empty() && !s.chars().any(|c| c.is_whitespace() || c.is_control());
     if p.ignore_merges {
-        if let Some(rest) = title.strip_prefix("Merge pull request #") {
-            if let Some((number, source)) = rest.split_once(" from ") {
-                if !number.starts_with('0')
-                    && !number.is_empty()
-                    && number.bytes().all(|b| b.is_ascii_digit())
-                    && word(source)
-                {
-                    return Some("merge.github");
-                }
-            }
+        if let Some(rest) = title.strip_prefix("Merge pull request #")
+            && let Some((number, source)) = rest.split_once(" from ")
+            && !number.starts_with('0')
+            && !number.is_empty()
+            && number.bytes().all(|b| b.is_ascii_digit())
+            && word(source)
+        {
+            return Some("merge.github");
         }
-        if let Some(rest) = title.strip_prefix("Merge branch '") {
-            if let Some((source, tail)) = rest.split_once('\'') {
-                if word(source)
-                    && (tail.is_empty() || tail.strip_prefix(" into ").is_some_and(word))
-                {
-                    return Some("merge.git");
-                }
-            }
+        if let Some(rest) = title.strip_prefix("Merge branch '")
+            && let Some((source, tail)) = rest.split_once('\'')
+            && word(source)
+            && (tail.is_empty() || tail.strip_prefix(" into ").is_some_and(word))
+        {
+            return Some("merge.git");
         }
     }
     if p.ignore_reverts {

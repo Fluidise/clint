@@ -4,7 +4,7 @@ Standalone commit-message validation, designed for AI agents. JSON schema 1 is t
 
 ## Local development
 
-A Rust toolchain is required to build from source, not to run the future precompiled binary. Dependencies are locked in `Cargo.lock`. Verified environments include macOS 26.6.2 ARM64 natively and x86_64 under Rosetta, plus Linux ARM64 and x86_64 (the latter under Docker emulation) with glibc and musl. Rust 1.85.0 was tested on Linux ARM64 glibc; Rust 1.94.1 was used for the six release artifacts. These results do not guarantee older OS versions or native Intel execution.
+Rust 1.99.1 or newer is required to build from source, not to run the future precompiled binary. Development and CI use Rust 1.99.1, pinned in `rust-toolchain.toml`. Dependencies are locked in `Cargo.lock`. Historical verification before this toolchain update covered macOS 26.6.2 ARM64 natively and x86_64 under Rosetta, plus Linux ARM64 and x86_64 (the latter under Docker emulation) with glibc and musl. Rust 1.85.0 was tested on Linux ARM64 glibc; Rust 1.94.1 was used for the six release artifacts. Those historical results do not establish Rust 1.99.1 compatibility on those platforms, nor guarantee older OS versions or native Intel execution.
 
 ```sh
 cargo test --locked

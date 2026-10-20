@@ -6,7 +6,7 @@ Thank you for contributing to `fluidise-clint`!
 
 ### Prerequisites
 
-- [Rust](https://www.rust-lang.org/) toolchain (MSRV 1.85, edition 2024).
+- [Rust](https://www.rust-lang.org/) toolchain (MSRV 1.99.1, edition 2024).
 - [GitHub CLI (`gh`)](https://cli.github.com/) (recommended for managing PRs).
 
 ### Setup Local Environment
