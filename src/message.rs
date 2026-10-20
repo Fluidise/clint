@@ -26,18 +26,19 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
         r.configuration = summary();
         return r;
     }
-    let mut lines: Vec<(&str, usize)> = Vec::new();
-    let mut offset = 0;
-    for line in text.split('\n') {
-        let s = line.strip_suffix('\r').unwrap_or(line);
-        lines.push((s, offset));
-        offset += line.len() + 1;
-    }
-    while lines.len() > 1 && lines.last().is_some_and(|(s, _)| s.is_empty()) {
-        lines.pop();
-    }
-    let title = lines[0].0;
-    if let Some(reason) = ignored(&lines, policy) {
+    // Content validation above makes trimming CR/LF equivalent to dropping
+    // trailing empty lines. Keep offsets in the original text; do not allocate
+    // one entry per line for newline-heavy inputs.
+    let mut lines = text
+        .trim_end_matches(['\r', '\n'])
+        .split('\n')
+        .scan(0, |offset, line| {
+            let item = (line.strip_suffix('\r').unwrap_or(line), *offset);
+            *offset += line.len() + 1;
+            Some(item)
+        });
+    let title = lines.next().expect("split always yields a first line").0;
+    if let Some(reason) = ignored(title, lines.clone().map(|(line, _)| line), policy) {
         return CheckResult {
             status: Status::Ignored,
             reason: Some(reason),
@@ -114,8 +115,7 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
             .at(0, title.len()),
         );
     }
-    if lines.len() > 1 && !lines[1].0.is_empty() {
-        let (s, i) = lines[1];
+    if let Some((s, i)) = lines.next().filter(|(s, _)| !s.is_empty()) {
         ds.push(
             Diagnostic::new(
                 "commit.body.invalid",
@@ -127,11 +127,13 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
     } else {
         let mut in_footers = false;
         let mut current: Option<(usize, usize, bool)> = None;
-        for (index, (line, start)) in lines.iter().enumerate().skip(2) {
+        let mut previous_empty = true;
+        for (line, start) in lines {
             if ds.full() {
                 break;
             }
-            let eligible = in_footers || lines[index - 1].0.is_empty();
+            let eligible = in_footers || previous_empty;
+            previous_empty = line.is_empty();
             if let Some(value) = eligible.then(|| footer(line)).flatten() {
                 if let Some((a, b, nonblank)) = current.take()
                     && !nonblank
@@ -150,12 +152,12 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
                 }
                 in_footers = true;
                 current = Some((
-                    *start,
-                    *start + line.len(),
+                    start,
+                    start + line.len(),
                     value.chars().any(|c| !c.is_whitespace()),
                 ));
             } else if let Some((_, end, nonblank)) = current.as_mut() {
-                *end = *start + line.len();
+                *end = start + line.len();
                 *nonblank |= line.chars().any(|c| !c.is_whitespace());
             }
         }
@@ -222,8 +224,11 @@ fn footer(line: &str) -> Option<&str> {
         .all(|s| !s.is_empty() && s.bytes().all(|b| b.is_ascii_alphanumeric()))
         .then_some(value)
 }
-fn ignored(lines: &[(&str, usize)], p: &Policy) -> Option<&'static str> {
-    let title = lines[0].0;
+fn ignored<'a>(
+    title: &str,
+    mut lines: impl Iterator<Item = &'a str>,
+    p: &Policy,
+) -> Option<&'static str> {
     let word = |s: &str| !s.is_empty() && !s.chars().any(|c| c.is_whitespace() || c.is_control());
     if p.ignore_merges {
         if let Some(rest) = title.strip_prefix("Merge pull request #")
@@ -247,30 +252,26 @@ fn ignored(lines: &[(&str, usize)], p: &Policy) -> Option<&'static str> {
         let subject = title
             .strip_prefix("Revert \"")
             .or_else(|| title.strip_prefix("Reapply \""));
-        if subject.is_none_or(|s| s.strip_suffix('"').is_none_or(|s| s.is_empty()))
-            || lines.len() < 3
-            || !lines[1].0.is_empty()
-        {
+        if subject.is_none_or(|s| s.strip_suffix('"').is_none_or(|s| s.is_empty())) {
+            return None;
+        }
+        if !lines.next()?.is_empty() {
             return None;
         }
         let hash =
             |s: &str| (s.len() == 40 || s.len() == 64) && s.bytes().all(|c| c.is_ascii_hexdigit());
-        let reference = lines[2].0.strip_prefix("This reverts commit ")?;
-        let end = if reference.strip_suffix('.').is_some_and(hash) {
-            3
-        } else {
+        let reference = lines.next()?.strip_prefix("This reverts commit ")?;
+        if !reference.strip_suffix('.').is_some_and(hash) {
             let first = reference.strip_suffix(", reversing")?;
             let second = lines
-                .get(3)?
-                .0
+                .next()?
                 .strip_prefix("changes made to ")?
                 .strip_suffix('.')?;
             if !hash(first) || !hash(second) || first.len() != second.len() {
                 return None;
             }
-            4
-        };
-        if lines.len() == end || lines[end].0.is_empty() {
+        }
+        if lines.next().is_none_or(str::is_empty) {
             return Some("revert.git");
         }
     }

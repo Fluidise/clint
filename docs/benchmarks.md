@@ -1,5 +1,11 @@
 # Benchmark Approfondi : fluidise-clint face à l'État de l'Art
 
+> **Statut des preuves :** les chiffres et affirmations concurrentielles ci-dessous
+> sont historiques et n'ont pas été reproduits par la boucle d'amélioration locale.
+> Une limite d'entrée de 1 MiB n'est pas un plafond RSS ; un timeout ne démontre
+> ni ReDoS ni boucle infinie. Voir le [protocole et les résultats locaux](benchmark-loop.md)
+> pour une comparaison avant/après traçable de `fluidise-clint` uniquement.
+
 > Ce banc d'essai exhaustif s'inspire de la méthodologie de présentation des benchmarks de [Bun](https://bun.com/blog/bun-v1.4.3), en évaluant `fluidise-clint` face aux 4 outils de référence du marché à travers 3 écosystèmes majeurs (Rust, Python et JavaScript / Node.js).
 
 ---

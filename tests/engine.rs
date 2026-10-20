@@ -262,3 +262,75 @@ fn regression_footer_separator_is_before_its_value() {
         );
     }
 }
+
+#[test]
+fn trailing_empty_lines_preserve_complete_results() {
+    let p = policy();
+    let revert = format!(
+        "Revert \"feat: é\"\n\nThis reverts commit {}.",
+        "a".repeat(40)
+    );
+    let reversing = format!(
+        "Reapply \"feat: é\"\n\nThis reverts commit {}, reversing\nchanges made to {}.",
+        "a".repeat(40),
+        "b".repeat(40)
+    );
+    for base in [
+        "",
+        "feat: é",
+        "feat: é\nbody",
+        "feat: é\n\nbody",
+        "feat: é\n\nRefs #",
+        "feat: é\n\nRefs #\ncontinued",
+        "feat: é\n\nRefs #\nReviewed-by: ",
+        "Merge branch 'topic'",
+        &revert,
+        &reversing,
+    ] {
+        for newline in ["\n", "\r\n"] {
+            let text = base.replace('\n', newline);
+            let expected = format!("{:?}", check_message(&text, &p));
+            for count in [1, 2, 20] {
+                let actual = check_message(&(text.clone() + &newline.repeat(count)), &p);
+                assert_eq!(format!("{actual:?}"), expected, "{text:?}, {count}");
+            }
+        }
+    }
+}
+
+#[test]
+fn dense_lines_keep_limits_and_original_footer_spans() {
+    let p = policy();
+    for newline in ["\n", "\r\n"] {
+        let prefix = format!(
+            "feat: é{newline}{newline}{}",
+            format!("x{newline}").repeat(10_000)
+        );
+        let message = format!("{prefix}{newline}Refs #{newline}Reviewed-by: {newline}{newline}");
+        let result = check_message(&message, &p);
+        assert_eq!(result.diagnostics.len(), 2);
+        assert!(result.diagnostics_complete);
+        for diagnostic in &result.diagnostics {
+            assert_eq!(diagnostic.code, "commit.footer.invalid");
+            let span = diagnostic.span.as_ref().unwrap();
+            assert!(matches!(
+                &message[span.start..span.end],
+                "Refs #" | "Reviewed-by: "
+            ));
+        }
+    }
+    let mut text = "feat: a\n\n".to_string();
+    text.push_str(&"\n".repeat(INPUT_LIMIT - text.len()));
+    assert_eq!(check_message(&text, &p).status, Status::Valid);
+    text.push('\r');
+    // Size validation precedes content validation, including for newline floods.
+    let result = check_message(&text, &p);
+    assert_eq!(result.status, Status::Error);
+    assert_eq!(result.diagnostics[0].code, "input.limit_exceeded");
+    text.truncate(INPUT_LIMIT);
+    text.replace_range(INPUT_LIMIT - 1.., "\r");
+    assert_eq!(
+        check_message(&text, &p).diagnostics[0].code,
+        "input.content.unsupported"
+    );
+}
