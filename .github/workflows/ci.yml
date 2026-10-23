@@ -45,7 +45,7 @@ jobs:
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          cargo run --locked --quiet --bin fluidise-clint -- --stdin --human <<< "$PR_TITLE"
+          cargo run --locked --quiet --bin fluidise-clint -- --stdin --defaults --human <<< "$PR_TITLE"
 
       - name: Verify MSRV (Rust 1.99.1)
         run: cargo +1.99.1 check --locked --all-targets

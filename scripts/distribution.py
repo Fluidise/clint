@@ -60,7 +60,7 @@ def smoke(binary, version):
             raise ValueError("unexpected executable version")
         for message, code, status in [("feat: archive test\n", 0, "valid"), ("wrong\n", 1, "invalid")]:
             result = subprocess.run(
-                [str(binary), "--stdin"], input=message, cwd=work,
+                [str(binary), "--stdin", "--defaults"], input=message, cwd=work,
                 capture_output=True, text=True, timeout=30, check=False,
             )
             if result.returncode != code or result.stderr:
@@ -260,8 +260,9 @@ def homebrew(distribution, reference, destination):
     if (distribution / "SHA256SUMS").read_text() != expected:
         raise ValueError("outer archive checksum mismatch")
     recipe = regular(reference).decode()
-    # Reuse the maintained recipe verbatim except candidate version/URLs/checksums.
+    # Adapt only candidate identity and the approved explicit-defaults CLI migration.
     for pattern, replacement, count in [
+        (r'#\{bin\}/fluidise-clint --stdin"', '#{bin}/fluidise-clint --stdin --defaults"', 2),
         (r'^  version "[^"]+"$', f'  version "{provenance["version"]}"', 1),
         (r'^      url "[^"]+"$', f'      url "{archive.as_uri()}"', 2),
         (r'^      sha256 "[0-9a-f]{64}"$', f'      sha256 "{digest(regular(archive))}"', 2),

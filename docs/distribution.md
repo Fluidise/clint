@@ -73,7 +73,7 @@ the interpreter selected by `actions/setup-python`.
 Preparation builds `cargo build --locked --release --bin fluidise-clint --target
 <target>`, executes the build, assembles the archive, validates its inventory,
 extracts into a fresh temporary directory and executes the extracted binary. CLI
-tests run outside Git with no discovered repository configuration. Any failed
+tests run outside Git with explicit `--defaults`; no repository configuration is discovered. Any failed
 step fails the command; choose another output directory after inspecting a partial
 failure. Existing candidates are never replaced.
 
