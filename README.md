@@ -86,7 +86,8 @@ Evaluated directly against the leading commit linters across Rust, Python, and N
 | Metric | `fluidise-clint` | `convco` (Rust) | `cocogitto` (Rust) | `commitizen` (Python) | `commitlint` (Node.js) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Startup & Lint Latency** | **13.2 ms** | 8.9 ms | 12.0 ms | 228.4 ms *(17x slower)* | 224.6 ms *(17x slower)* |
-| **Memory Footprint (RSS)** | **7.08 MB** | 10.38 MB | 10.02 MB | 50.44 MB *(7.1x RAM)* | 97.12 MB *(13.7x RAM)* |
+| **Memory Footprint (RSS)** | **1.59 – 7.08 MB** | 10.38 MB | 10.02 MB | 50.44 MB *(7.1x RAM)* | 97.12 MB *(13.7x RAM)* |
+| **Dense Stream (1M lines)** | **6.0 ms (2.66 MB)** | 95.5 ms (unbounded) | 44.9 ms (unbounded) | 240+ ms (unbounded) | **Timeout (> 5s)** |
 | **CPU Instructions (Standard)**| **18.5 M** | 36.8 M *(2.0x)* | 64.2 M *(3.5x)* | 1,582 M *(85x)* | 2,134 M *(115x)* |
 | **Agent Throughput (100 msgs)**| **76.9 /s** | 119.4 /s | 87.6 /s | 4.5 /s *(17x slower)* | 4.7 /s *(16x slower)* |
 | **ReDoS / 100k Chars Line** | **13.7 ms** | 9.8 ms | 16.4 ms | 230.6 ms | **Timeout (> 5s)** |
@@ -95,7 +96,11 @@ Evaluated directly against the leading commit linters across Rust, Python, and N
 | **Machine Output by Default** | **Strict JSON** | Plain text | Plain text / ANSI | Plain text | Plain text / ANSI |
 | **Binary / Footprint on Disk** | **0.5 MB (0 dep)** | 7.6 MB | 5.9 MB | 45.2 MB (+ Python) | 148.0 MB (+ Node.js) |
 
-See the complete 6-workload suite, CPU cycle profiling, and agent ergonomics analysis in [docs/benchmarks.md](docs/benchmarks.md).
+> [!TIP]
+> **Zero-Allocation Lazy Stream Processing:**
+> Following the bounded line iteration optimizations, `fluidise-clint` avoids allocating intermediate line vectors. On newline-dense inputs and large message bodies (up to 1,000,000 lines), parsing memory dropped by **90.2%** (down to 2.66 MB) and engine evaluation speed increased by **89.6%** to **91.8%**.
+
+See the complete 6-workload suite, CPU cycle profiling, and agent ergonomics analysis in [docs/benchmarks.md](docs/benchmarks.md), as well as the engine optimization benchmarks in [docs/benchmark-loop.md](docs/benchmark-loop.md).
 
 ## Installation
 
@@ -316,5 +321,6 @@ fluidise-clint --file "$1" --defaults
 
 - Additional local development, test commands, and rehearsal packaging notes are documented in [USAGE.md](USAGE.md).
 - Comprehensive 5-competitor benchmarks in [docs/benchmarks.md](docs/benchmarks.md).
+- Engine optimization benchmarks and methodology in [docs/benchmark-loop.md](docs/benchmark-loop.md).
 - Architectural and design decisions in [docs/adr/](docs/adr/) (see [ADR 0001: Évaluation des Écarts Fonctionnels Face aux Concurrents et Pistes d'Évolution](docs/adr/0001-competitor-feature-gaps-and-evolution-tracks.md)).
 - Licensed under the [MIT License](LICENSE). Copyright (c) 2026 Acrazie.
