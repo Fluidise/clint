@@ -54,15 +54,19 @@ def main():
     parser.add_argument("candidate", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--samples", type=int, default=15)
+    parser.add_argument("--legacy-baseline", action="store_true", help="baseline uses implicit discovery")
+    parser.add_argument("--legacy-candidate", action="store_true", help="candidate uses implicit discovery")
     args = parser.parse_args()
     if args.samples < 3:
         parser.error("at least 3 samples required")
     builds = {key: getattr(args, key).resolve() for key in ["baseline", "candidate"]}
+    flags = {"baseline": [] if args.legacy_baseline else ["--defaults"], "candidate": [] if args.legacy_candidate else ["--defaults"]}
     results = {
         "complete": False,
         "environment": {"platform": platform.platform(), "python": platform.python_version()},
         "method": {
             "samples": args.samples, "warmups": 3, "engine_iterations": 100,
+            "policy_flags": flags,
             "cli_unit": "ms including Python subprocess overhead; file input outside Git",
             "engine_unit": "ns per check; input and policy preparation excluded",
             "rss_unit": "bytes on macOS, collected separately with /usr/bin/time -l",
@@ -88,7 +92,7 @@ def main():
                 for key in (["baseline", "candidate"] if sample % 2 else ["candidate", "baseline"]):
                     build = builds[key]
                     start = time.perf_counter_ns()
-                    out = subprocess.run([str(build / "fluidise-clint"), "--file", str(message)],
+                    out = subprocess.run([str(build / "fluidise-clint"), "--file", str(message), *flags[key]],
                                          cwd=cwd, capture_output=True, timeout=10)
                     elapsed = (time.perf_counter_ns() - start) / 1_000_000
                     assert out.returncode == expected, (name, key, out)
@@ -113,7 +117,7 @@ def main():
                 for sample in range(5):
                     for key in (["baseline", "candidate"] if sample % 2 else ["candidate", "baseline"]):
                         out = subprocess.run(["/usr/bin/time", "-l", str(builds[key] / "fluidise-clint"),
-                                              "--file", str(message)], cwd=cwd, capture_output=True, timeout=10)
+                                              "--file", str(message), *flags[key]], cwd=cwd, capture_output=True, timeout=10)
                         assert out.returncode == expected
                         for line in out.stderr.decode().splitlines():
                             if line.strip().endswith("maximum resident set size"):

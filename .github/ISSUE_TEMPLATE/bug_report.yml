@@ -19,7 +19,7 @@ body:
       label: Steps to Reproduce
       description: Include input commit message or CLI command used.
       placeholder: |
-        1. printf '...' | fluidise-clint --stdin
+        1. printf '...' | fluidise-clint --stdin --defaults
         2. Expected output: ...
         3. Actual output: ...
     validations:

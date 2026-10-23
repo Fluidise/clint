@@ -166,7 +166,7 @@ class ArchiveTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             distribution.regular(link)
 
-    def test_homebrew_adapts_reference_without_changing_install_test(self):
+    def test_homebrew_adapts_reference_and_migrates_explicit_defaults(self):
         folder = self.base / "distribution"
         folder.mkdir()
         files, binary = self.candidate()
@@ -177,7 +177,9 @@ class ArchiveTests(unittest.TestCase):
         reference = self.base / "reference.rb"
         recipe = '  version "old"\n' + (
             '      url "https://old.example/archive"\n      sha256 "' + '0' * 64 + '"\n'
-        ) * 2 + "# install and test methods remain unchanged\n"
+        ) * 2 + ('  pipe_output("#{bin}/fluidise-clint --stdin", "valid", 0)\n'
+                 '  pipe_output("#{bin}/fluidise-clint --stdin", "invalid", 1)\n'
+                 '# install method remains unchanged\n')
         reference.write_text(recipe, newline="\n")
         destination = self.base / "homebrew"
         with patch.object(distribution, "native_target"), patch.object(distribution, "run") as run, \
@@ -187,7 +189,8 @@ class ArchiveTests(unittest.TestCase):
         self.assertEqual(reference.read_text(), recipe)
         self.assertEqual(fixture.count(archive.resolve().as_uri()), 2)
         self.assertIn('  version "0.1.0"', fixture)
-        self.assertTrue(fixture.endswith("# install and test methods remain unchanged\n"))
+        self.assertTrue(fixture.endswith("# install method remains unchanged\n"))
+        self.assertEqual(fixture.count("--stdin --defaults"), 2)
         self.assertEqual(run.call_args.args[:2], ("brew", "ruby"))
         # A changed reference recipe must fail before any test output is written.
         reference.write_text(recipe.replace('  version "old"', '  version :unknown'), newline="\n")

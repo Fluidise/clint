@@ -140,8 +140,9 @@ Three Cargo-integrated tests were added to tests/cli.rs using the existing
 fixture machinery and the actual installer heredoc body. No installer is run.
 They cover:
 
-- Exact validation stdout/stderr and hook exit mapping for default, restrictive
-  and malformed configuration; valid/invalid messages, missing file, and a relative
+- Exact validation stdout/stderr and hook exit mapping under `--defaults`,
+  verifying that root configuration (default, restrictive or malformed) is
+  ignored as on main; valid/invalid messages, missing file, and a relative
   message path with quotes, Unicode and an internal newline; message/config files
   unchanged and no hook or index created.
 - A root with quotes, Unicode, internal and terminal LF, using the real test-built
@@ -161,8 +162,8 @@ Final checks on macOS ARM64:
 - `bash -n scripts/install-hooks.sh` and both final extracted scripts: passed.
 - `cargo fmt --all -- --check`: passed.
 - `cargo clippy --locked --offline --all-targets -- -D warnings`: passed.
-- `cargo test --locked --offline --all-targets`: **33 passed** (5 binary unit,
-  16 CLI integration including the 3 new hook tests, 12 engine integration).
+- `cargo test --locked --offline --all-targets`: **35 passed** (6 binary unit,
+  17 CLI integration including the 3 new hook tests, 12 engine integration).
   Initial sandbox run blocked two existing tests (Unix socket and native-byte
   filename); the same full suite passed when rerun outside that sandbox.
 - `git diff --check`: passed. Product src/, Cargo.toml and Cargo.lock unchanged.
@@ -173,23 +174,27 @@ The frozen original reference is compared with a fresh extraction from the final
 installer source. Its SHA-256 was verified against the measurement provenance.
 Both use the same frozen release clint executable; there was no Rust binary change.
 Four scenarios, two rounds of 60 samples after five warmups, shuffled interleaving
-and exact output/code checks use the same direct-wrapper protocol as above.
+and exact output/code checks use the same direct-wrapper protocol as above (updated
+after #15 to pass explicit `--defaults` as in the current wrapper on `main`).
 
 | Case | Round | Reference median ms | Final wrapper median ms | Reduction |
 | --- | ---: | ---: | ---: | ---: |
-| defaults/valid | 1 | 23.704 | 16.812 | 29.1% |
-| defaults/valid | 2 | 23.114 | 16.693 | 27.8% |
-| defaults/invalid | 1 | 22.857 | 16.077 | 29.7% |
-| defaults/invalid | 2 | 21.451 | 15.525 | 27.6% |
-| configured/valid | 1 | 21.362 | 15.064 | 29.5% |
-| configured/valid | 2 | 21.504 | 15.396 | 28.4% |
-| configured/invalid | 1 | 22.483 | 15.939 | 29.1% |
-| configured/invalid | 2 | 21.875 | 15.643 | 28.5% |
+| defaults/valid | 1 | 17.396 | 9.960 | 42.7% |
+| defaults/valid | 2 | 17.606 | 10.326 | 41.3% |
+| defaults/invalid | 1 | 17.188 | 10.341 | 39.8% |
+| defaults/invalid | 2 | 17.104 | 10.419 | 39.1% |
+| configured/valid | 1 | 18.126 | 10.520 | 42.0% |
+| configured/valid | 2 | 17.423 | 10.285 | 41.0% |
+| configured/invalid | 1 | 17.357 | 10.174 | 41.4% |
+| configured/invalid | 2 | 17.463 | 10.284 | 41.1% |
 
-All cases pass the at-least-20% and at-least-1-ms criteria in both rounds. Final
-observed improvement is 27.6–29.7%, approximately 5.9–6.9 ms per wrapper call.
-Measured fixture files are unchanged. These observations do not measure Git's
-pre-hook work, actual hook dispatch, a cold-cache workload or another platform.
+All cases pass the at-least-20% and at-least-1-ms criteria in both rounds. Following
+the merge of #15 (which made policy selection explicit with `--defaults` in the wrapper
+and eliminated Git discovery inside clint), both wrappers are faster overall, and the
+wrapper median latency improvement is 39.1–42.7%, approximately 6.7–7.6 ms per wrapper
+call (direct CLI control median ~4.0–4.2 ms). Measured fixture files are unchanged.
+These observations do not measure Git's pre-hook work, actual hook dispatch, a
+cold-cache workload or another platform.
 
 Final local artifacts, ignored and not versioned, are in
 `target/hook-latency-final/`: reference.sh, candidate.sh, measure.py, results.json

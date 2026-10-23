@@ -36,7 +36,7 @@
   - [Human-Readable Output](#human-readable-output)
 - [Rust Library](#rust-library)
 - [Configuration](#configuration)
-  - [Discovery](#discovery)
+  - [Policy selection](#policy-selection)
   - [Schema (`fluidise.toml`)](#schema-fluidisetoml)
   - [Default Types](#default-types)
 - [Operational Guarantees and Boundaries](#operational-guarantees-and-boundaries)
@@ -50,7 +50,7 @@
 Pass a commit message via standard input to receive structured JSON output on standard output:
 
 ```sh
-printf 'feat: add search\n' | fluidise-clint --stdin
+printf 'feat: add search\n' | fluidise-clint --stdin --defaults
 ```
 
 Output (`stdout`, exit code `0`):
@@ -62,7 +62,7 @@ Output (`stdout`, exit code `0`):
 When a commit message violates rules:
 
 ```sh
-printf 'invalid message\n' | fluidise-clint --stdin
+printf 'invalid message\n' | fluidise-clint --stdin --defaults
 ```
 
 Output (`stdout`, exit code `1`):
@@ -125,7 +125,7 @@ No external runtime dependencies (such as Node.js or Python) are required to exe
 ## CLI Usage
 
 ```text
-fluidise-clint (--file <path> | --stdin) [--config <path>] [--human]
+fluidise-clint (--file <path> | --stdin) (--config <path> | --defaults) [--human]
 ```
 
 ### Options
@@ -134,13 +134,14 @@ fluidise-clint (--file <path> | --stdin) [--config <path>] [--human]
 | :--- | :--- |
 | `--stdin` | Read the commit message from standard input until EOF. |
 | `--file <path>` | Read the commit message from a regular file. Path `-` is treated as a literal file named `-`. Paths beginning with `-` require `--file=--name` or `--file ./--name`. |
-| `--config <path>` | Use the specified configuration file instead of discovering `fluidise.toml` at the Git root. |
+| `--config <path>` | Read only the specified configuration file; no Git discovery. |
+| `--defaults` | Use built-in rules without a configuration file or Git discovery. |
 | `--human` | Opt-in plain English text output (status on `stdout`, diagnostics on `stderr`). Argument errors still return JSON. |
 | `--help` | Print help information and exit. Must be used alone. |
 | `--version` | Print version information and exit. Must be used alone. |
 
 > [!NOTE]
-> Exactly one input source (`--stdin` or `--file`) is required. Empty option values, short aliases (e.g., `-h`), repeated arguments, unknown options, and positional arguments are strictly rejected with an argument error.
+> Exactly one input source (`--stdin` or `--file`) and exactly one policy source (`--config <path>` or `--defaults`) are required. Empty option values, short aliases (e.g., `-h`), repeated arguments, unknown options, and positional arguments are strictly rejected with an argument error.
 
 ### Exit Codes
 
@@ -184,12 +185,12 @@ Each diagnostic entry contains:
 When `--human` is provided, output is delivered as plain text without ANSI color codes:
 
 ```sh
-printf 'feat: add search\n' | fluidise-clint --stdin --human
+printf 'feat: add search\n' | fluidise-clint --stdin --defaults --human
 # stdout: valid (exit code 0)
 ```
 
 ```sh
-printf 'invalid message\n' | fluidise-clint --stdin --human
+printf 'invalid message\n' | fluidise-clint --stdin --defaults --human
 # stdout: invalid (exit code 1)
 # stderr: commit.header.invalid [0..15): Expected type, optional scope/!, colon, space and a nonblank description.
 ```
@@ -235,14 +236,22 @@ fn main() {
 
 ## Configuration
 
-### Discovery
+### Policy selection
 
-When `--config` is omitted:
-1. `fluidise-clint` searches for `fluidise.toml` at the root of the current Git repository (navigating upward from the current working directory).
-2. If executed outside a Git repository, no parent or user home directories are searched; defaults are used.
+Every validation explicitly selects its rules:
 
-When `--config <path>` is specified:
-- The path is resolved relative to the invocation working directory and replaces discovery.
+- `--config <path>` reads that file, relative to the invocation working directory.
+  Missing, unreadable or invalid files are errors; no fallback occurs.
+- `--defaults` uses built-in rules without reading configuration files.
+
+There is no Git-root discovery or parent/home configuration search, and the linter
+never launches Git. Both or neither selection is an argument error (JSON, exit 2).
+Help and version remain standalone commands.
+
+**Breaking change:** previous calls without a policy selection must add
+`--defaults` or the intended `--config <path>`. A root `fluidise.toml` is no longer
+automatically loaded. See [ADR 0002](docs/adr/0002-explicit-policy-selection.md)
+and the [throughput report](docs/agent-throughput.md).
 
 ### Schema (`fluidise.toml`)
 
@@ -297,7 +306,7 @@ To ensure safe execution within autonomous agent runtimes, resource boundaries a
 `fluidise-clint` can be invoked inside a `commit-msg` hook by passing the path of the message file:
 
 ```sh
-fluidise-clint --file "$1"
+fluidise-clint --file "$1" --defaults
 ```
 
 > [!IMPORTANT]

@@ -2,12 +2,17 @@ use fluidise_clint::{CheckResult, Diagnostic, Source};
 use lexopt::Arg;
 use std::{collections::HashSet, ffi::OsString, path::PathBuf};
 
+pub enum Configuration {
+    Defaults,
+    File(PathBuf),
+}
+
 pub enum Action {
     Help,
     Version,
     Check {
         file: Option<PathBuf>,
-        config: Option<PathBuf>,
+        config: Configuration,
         human: bool,
     },
 }
@@ -33,6 +38,7 @@ pub fn parse(args: Vec<OsString>) -> Result<Action, CheckResult> {
     let mut seen = HashSet::new();
     let mut file = None;
     let mut config = None;
+    let mut defaults = false;
     let mut stdin = false;
     let mut human = false;
     while let Some(arg) = parser.next().map_err(|_| invalid())? {
@@ -61,14 +67,16 @@ pub fn parse(args: Vec<OsString>) -> Result<Action, CheckResult> {
                     config = Some(PathBuf::from(value));
                 }
             }
-            "stdin" | "human" => {
+            "stdin" | "human" | "defaults" => {
                 if parser.optional_value().is_some() {
                     return Err(invalid());
                 }
                 if name == "stdin" {
                     stdin = true;
-                } else {
+                } else if name == "human" {
                     human = true;
+                } else {
+                    defaults = true;
                 }
             }
             _ => return Err(invalid()),
@@ -88,6 +96,24 @@ pub fn parse(args: Vec<OsString>) -> Result<Action, CheckResult> {
             Source::Arguments,
         )));
     }
+    let config = match (config, defaults) {
+        (Some(path), false) => Configuration::File(path),
+        (None, true) => Configuration::Defaults,
+        (None, false) => {
+            return Err(CheckResult::error(Diagnostic::new(
+                "cli.configuration.required",
+                "Select --config or --defaults.",
+                Source::Arguments,
+            )));
+        }
+        (Some(_), true) => {
+            return Err(CheckResult::error(Diagnostic::new(
+                "cli.configuration.conflict",
+                "Select exactly one configuration source.",
+                Source::Arguments,
+            )));
+        }
+    };
     Ok(Action::Check {
         file,
         config,
@@ -103,13 +129,14 @@ mod tests {
         use std::os::unix::ffi::{OsStrExt, OsStringExt};
         let name = OsString::from_vec(b"name-\xff".to_vec());
         for attached in [false, true] {
-            let args = if attached {
+            let mut args = if attached {
                 let mut arg = OsString::from("--file=");
                 arg.push(&name);
                 vec![arg]
             } else {
                 vec!["--file".into(), name.clone()]
             };
+            args.push("--defaults".into());
             let Action::Check {
                 file: Some(path), ..
             } = parse(args).unwrap_or_else(|r| panic!("{r:?}"))
@@ -117,6 +144,49 @@ mod tests {
                 panic!("wrong action")
             };
             assert_eq!(path.as_os_str().as_bytes(), name.as_bytes());
+        }
+    }
+}
+
+#[cfg(test)]
+mod policy_tests {
+    use super::*;
+
+    fn arguments(args: &[&str]) -> Vec<OsString> {
+        args.iter().map(OsString::from).collect()
+    }
+
+    #[test]
+    fn policy_selection_is_explicit_on_every_platform() {
+        assert!(matches!(
+            parse(arguments(&["--stdin", "--defaults"])),
+            Ok(Action::Check {
+                config: Configuration::Defaults,
+                ..
+            })
+        ));
+        assert!(matches!(
+            parse(arguments(&["--stdin", "--config=rules.toml"])),
+            Ok(Action::Check { config: Configuration::File(path), .. }) if path == std::path::Path::new("rules.toml")
+        ));
+        for (args, code) in [
+            (vec!["--stdin"], "cli.configuration.required"),
+            (
+                vec!["--stdin", "--config=x", "--defaults"],
+                "cli.configuration.conflict",
+            ),
+            (
+                vec!["--stdin", "--defaults", "--defaults"],
+                "cli.arguments.invalid",
+            ),
+            (vec!["--stdin", "--defaults=true"], "cli.arguments.invalid"),
+            (vec!["--stdin", "--defaults="], "cli.arguments.invalid"),
+        ] {
+            let Err(result) = parse(arguments(&args)) else {
+                panic!("accepted invalid arguments: {args:?}");
+            };
+            assert_eq!(result.diagnostics[0].code, code);
+            assert_eq!(result.status.exit_code(), 2);
         }
     }
 }

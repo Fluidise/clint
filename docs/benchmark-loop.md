@@ -1,5 +1,11 @@
 # Boucle locale d'amélioration de fluidise-clint
 
+> Rapport historique antérieur à [ADR 0002](adr/0002-explicit-policy-selection.md).
+> Les anciens binaires utilisaient la découverte implicite. Pour les rejouer
+> avec le harnais actuel, ajouter `--legacy-baseline --legacy-candidate` à
+> `scripts/benchmark.py`. Pour comparer un ancien binaire au nouveau, ajouter
+> seulement `--legacy-baseline`.
+
 ## Contrat et décisions
 
 Objectif : améliorer les performances et la robustesse mesurées, sans nouvelle

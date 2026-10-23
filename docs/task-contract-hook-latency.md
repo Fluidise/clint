@@ -14,7 +14,7 @@ standalone Startup & Lint Latency benchmark or competitive ranking.
 - Preserve clint's public behavior, default JSON, diagnostics, exit codes,
   compatibility and bounded resource handling (Q2).
 - Keep CLI validation latency distinct from hook validation latency (Q3, Q9).
-- Retain automatic clint configuration discovery and test ordinary Git repositories
+- Retain clint's policy selection contract (explicit `--defaults` in the wrapper since #15, ignoring root configuration) and test ordinary Git repositories
   with and without configuration, for valid and invalid small messages (Q4).
 - Require at least 20% and at least 1 ms lower median latency in each primary
   scenario, confirmed in two interleaved measurement rounds (Q6, applied to the
@@ -73,12 +73,13 @@ this contract records scope and approval, not a durable architecture decision.
 The generated wrapper assignment and its invariant comment are changed; installer
 discovery is unchanged. USAGE.md documents the invocation boundary. Three new
 Cargo-integrated hook tests pass, and both regression tests were observed failing
-before the change. All 33 repository all-target tests pass; format, strict Clippy,
+before the change. All 35 repository all-target tests pass; format, strict Clippy,
 shell syntax and diff whitespace checks pass. The full test suite required a
 sandbox exception for two pre-existing native-path/socket tests.
 
 Final interleaved measurements meet both thresholds in all four cases and both
-rounds: 27.6–29.7% lower median latency, about 5.9–6.9 ms. Exact ordinary outputs
+rounds: 39.1–42.7% lower median latency, about 6.7–7.6 ms (with both reference and
+candidate using explicit `--defaults` as introduced in #15). Exact ordinary outputs
 and fixture non-mutation checks passed. See hook-latency-prototype.md for detailed
 measurements, provenance and limits. This is direct wrapper evidence, not actual
 Git dispatch, installed-hook behavior or standalone CLI acceleration.

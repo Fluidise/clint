@@ -87,12 +87,12 @@ fn default_json_and_codes() {
         ("wrong", "invalid", 1),
         ("Merge branch 'topic'", "ignored", 0),
     ] {
-        let out = invoke(&t.0, &["--stdin"], Some(message.as_bytes()));
+        let out = invoke(&t.0, &["--stdin", "--defaults"], Some(message.as_bytes()));
         let v = json(&out, code);
         assert_eq!(v["status"], status);
         assert_eq!(v["schema_version"], 1);
     }
-    let out = invoke(&t.0, &["--stdin"], Some(&[0xff]));
+    let out = invoke(&t.0, &["--stdin", "--defaults"], Some(&[0xff]));
     assert_eq!(
         json(&out, 2)["diagnostics"][0]["code"],
         "input.encoding.invalid"
@@ -104,6 +104,15 @@ fn arguments_never_read_or_wait_and_errors_always_json() {
     let cases: Vec<Vec<&str>> = vec![
         vec![],
         vec!["--human"],
+        vec!["--stdin"],
+        vec!["--stdin", "--human"],
+        vec!["--file", "missing"],
+        vec!["--stdin", "--defaults", "--defaults"],
+        vec!["--stdin", "--defaults=true"],
+        vec!["--stdin", "--defaults="],
+        vec!["--stdin", "--defaults", "value"],
+        vec!["--stdin", "--config", "missing", "--defaults", "--human"],
+        vec!["--stdin", "--defaults", "--config", "missing"],
         vec!["--human", "--unknown"],
         vec!["--unknown", "--human"],
         vec!["--stdin", "--stdin"],
@@ -156,12 +165,12 @@ fn help_version_and_human_mode() {
         assert!(out.stderr.is_empty());
         assert!(out.stdout.starts_with(b"fluidise-clint"));
     }
-    let out = invoke(&t.0, &["--stdin", "--human"], Some(b"bad"));
+    let out = invoke(&t.0, &["--stdin", "--defaults", "--human"], Some(b"bad"));
     assert_eq!(out.status.code(), Some(1));
     assert_eq!(out.stdout, b"invalid\n");
     assert!(out.stderr.starts_with(b"commit.header.invalid"));
     assert!(!out.stderr.contains(&0x1b));
-    let out = invoke(&t.0, &["--human", "--file", "missing"], None);
+    let out = invoke(&t.0, &["--human", "--file", "missing", "--defaults"], None);
     assert_eq!(out.status.code(), Some(2));
     assert_eq!(out.stdout, b"error\n");
     assert!(out.stderr.starts_with(b"input.read_failed"));
@@ -175,10 +184,10 @@ fn paths_equal_dash_symlink_and_non_utf8() {
     }
     symlink("message", t.0.join("link")).unwrap();
     for args in [
-        vec!["--file", "-"],
-        vec!["--file=--human"],
-        vec!["--file", "./--human"],
-        vec!["--file", "link"],
+        vec!["--file", "-", "--defaults"],
+        vec!["--file=--human", "--defaults"],
+        vec!["--file", "./--human", "--defaults"],
+        vec!["--file", "link", "--defaults"],
     ] {
         json(&invoke(&t.0, &args, None), 0);
     }
@@ -187,7 +196,12 @@ fn paths_equal_dash_symlink_and_non_utf8() {
         if cfg!(target_os = "macos") && error.raw_os_error() == Some(92) {
             // This filesystem refuses non-UTF-8 filenames; argument parsing must
             // still preserve the bytes and report a filesystem, not CLI, error.
-            let out = command(&t.0).arg("--file").arg(&name).output().unwrap();
+            let out = command(&t.0)
+                .arg("--defaults")
+                .arg("--file")
+                .arg(&name)
+                .output()
+                .unwrap();
             assert_eq!(json(&out, 2)["diagnostics"][0]["code"], "input.read_failed");
             eprintln!(
                 "Filesystem rejected non-UTF-8 names; end-to-end filesystem proof requires Linux."
@@ -196,11 +210,23 @@ fn paths_equal_dash_symlink_and_non_utf8() {
         }
         panic!("cannot prepare native filename: {error}");
     }
-    let out = command(&t.0).arg("--file").arg(&name).output().unwrap();
+    let out = command(&t.0)
+        .arg("--defaults")
+        .arg("--file")
+        .arg(&name)
+        .output()
+        .unwrap();
     json(&out, 0);
     let mut joined = OsString::from("--file=");
     joined.push(&name);
-    json(&command(&t.0).arg(joined).output().unwrap(), 0);
+    json(
+        &command(&t.0)
+            .arg("--defaults")
+            .arg(joined)
+            .output()
+            .unwrap(),
+        0,
+    );
     let config = OsString::from_vec(b"config-\xfe".to_vec());
     fs::write(t.0.join(&config), "[commit]\nversion=1").unwrap();
     json(
@@ -230,7 +256,10 @@ fn regular_files_only_and_no_fifo_open_hang() {
     );
     let _socket = std::os::unix::net::UnixListener::bind(t.0.join("socket")).unwrap();
     for path in ["dir", "pipe", "socket", "/dev/null"] {
-        let mut child = command(&t.0).args(["--file", path]).spawn().unwrap();
+        let mut child = command(&t.0)
+            .args(["--file", path, "--defaults"])
+            .spawn()
+            .unwrap();
         let start = std::time::Instant::now();
         loop {
             if child.try_wait().unwrap().is_some() {
@@ -254,7 +283,7 @@ fn regular_files_only_and_no_fifo_open_hang() {
     );
 }
 #[test]
-fn discovery_explicit_priority_no_mutation_and_foreign_sections() {
+fn explicit_configuration_relative_paths_no_mutation_and_foreign_sections() {
     let t = Temp::new();
     t.git();
     fs::create_dir(t.0.join("sub")).unwrap();
@@ -263,7 +292,11 @@ fn discovery_explicit_priority_no_mutation_and_foreign_sections() {
     fs::write(t.0.join("fluidise.toml"), config).unwrap();
     let message = "deps: a";
     fs::write(t.0.join("sub/deep/msg"), message).unwrap();
-    let out = invoke(&t.0.join("sub/deep"), &["--file", "msg"], None);
+    let out = invoke(
+        &t.0.join("sub/deep"),
+        &["--file", "msg", "--config", "../../fluidise.toml"],
+        None,
+    );
     let v = json(&out, 0);
     assert_eq!(
         v["configuration"]["used_sections"],
@@ -301,11 +334,18 @@ fn discovery_explicit_priority_no_mutation_and_foreign_sections() {
     assert!(!t.0.join(".git/index").exists());
 }
 #[test]
-fn outside_git_does_not_search_parent_configuration() {
+fn defaults_do_not_search_parent_configuration() {
     let t = Temp::new();
     fs::write(t.0.join("fluidise.toml"), "not toml").unwrap();
     fs::create_dir(t.0.join("sub")).unwrap();
-    let v = json(&invoke(&t.0.join("sub"), &["--stdin"], Some(b"fix: a")), 0);
+    let v = json(
+        &invoke(
+            &t.0.join("sub"),
+            &["--stdin", "--defaults"],
+            Some(b"fix: a"),
+        ),
+        0,
+    );
     assert_eq!(v["configuration"]["source"], "defaults");
 }
 #[test]
@@ -330,10 +370,10 @@ fn input_and_config_read_caps() {
     let t = Temp::new();
     let mut b = b"fix: ".to_vec();
     b.resize(fluidise_clint::INPUT_LIMIT, b'a');
-    json(&invoke(&t.0, &["--stdin"], Some(&b)), 0);
+    json(&invoke(&t.0, &["--stdin", "--defaults"], Some(&b)), 0);
     b.push(b'a');
     assert_eq!(
-        json(&invoke(&t.0, &["--stdin"], Some(&b)), 2)["diagnostics"][0]["code"],
+        json(&invoke(&t.0, &["--stdin", "--defaults"], Some(&b)), 2)["diagnostics"][0]["code"],
         "input.limit_exceeded"
     );
     fs::write(
@@ -402,7 +442,14 @@ fn repository_paths_preserve_native_bytes_and_newlines() {
         "[commit]\nversion=1\nallowed-types=['deps']",
     )
     .unwrap();
-    let v = json(&invoke(&path, &["--stdin"], Some(b"deps: a")), 0);
+    let v = json(
+        &invoke(
+            &path,
+            &["--stdin", "--config", "fluidise.toml"],
+            Some(b"deps: a"),
+        ),
+        0,
+    );
     assert_eq!(v["configuration"]["source"], "file");
 }
 
@@ -411,7 +458,7 @@ fn native_termination_does_not_claim_a_final_json() {
     use std::os::unix::process::ExitStatusExt;
     let t = Temp::new();
     let child = command(&t.0)
-        .arg("--stdin")
+        .args(["--stdin", "--defaults"])
         .stdin(Stdio::piped())
         .spawn()
         .unwrap();
@@ -425,6 +472,49 @@ fn native_termination_does_not_claim_a_final_json() {
     let output = child.wait_with_output().unwrap();
     assert_eq!(output.status.signal(), Some(15));
     assert!(output.stdout.is_empty());
+}
+
+#[test]
+fn policy_choice_is_required_exclusive_and_never_invokes_git() {
+    let t = Temp::new();
+    fs::write(t.0.join("fluidise.toml"), "not valid toml").unwrap();
+    fs::write(t.0.join(".git"), "broken git metadata").unwrap();
+    fs::write(
+        t.0.join("selected.toml"),
+        "[commit]\nversion=1\nallowed-types=['deps']",
+    )
+    .unwrap();
+    let defaults = command(&t.0)
+        .args(["--stdin", "--defaults"])
+        .env("PATH", "")
+        .env("GIT_DIR", "hostile")
+        .output()
+        .unwrap();
+    assert_eq!(json(&defaults, 1)["configuration"]["source"], "defaults");
+    let mut explicit = command(&t.0);
+    explicit
+        .args(["--file", "message", "--config", "selected.toml"])
+        .env("PATH", "")
+        .env("GIT_DIR", "hostile");
+    fs::write(t.0.join("message"), "deps: a").unwrap();
+    assert_eq!(
+        json(&explicit.output().unwrap(), 0)["configuration"]["source"],
+        "file"
+    );
+    for (args, code) in [
+        (vec!["--stdin"], "cli.configuration.required"),
+        (
+            vec!["--stdin", "--defaults", "--config", "missing"],
+            "cli.configuration.conflict",
+        ),
+        (
+            vec!["--stdin", "--config", "missing", "--defaults"],
+            "cli.configuration.conflict",
+        ),
+    ] {
+        let out = command(&t.0).args(args).output().unwrap();
+        assert_eq!(json(&out, 2)["diagnostics"][0]["code"], code);
+    }
 }
 
 fn generated_hook(cwd: &Path, message: &OsStr) -> Command {
@@ -470,7 +560,7 @@ fn hook_script(path: &Path, source: &str) {
 }
 
 #[test]
-fn generated_hook_preserves_validation_and_configuration() {
+fn generated_hook_preserves_defaults_and_ignores_root_configuration() {
     let t = Temp::new();
     t.git();
     hook_linter(&t.0, "release");
@@ -487,7 +577,12 @@ fn generated_hook_preserves_validation_and_configuration() {
         for text in ["feat: fixture\n", "deps: fixture\n", "not conventional\n"] {
             fs::write(t.0.join(message), text).unwrap();
             let direct = command(&t.0)
-                .args([OsStr::new("--file"), message, OsStr::new("--human")])
+                .args([
+                    OsStr::new("--file"),
+                    message,
+                    OsStr::new("--defaults"),
+                    OsStr::new("--human"),
+                ])
                 .output()
                 .unwrap();
             let out = generated_hook(&t.0, message).output().unwrap();
@@ -526,7 +621,7 @@ fn generated_hook_preserves_trailing_newline_root() {
     fs::create_dir(&root.0).unwrap();
     root.git();
     hook_linter(&root.0, "release");
-    fs::write(root.0.join("message"), "deps: fixture\n").unwrap();
+    fs::write(root.0.join("message"), "feat: fixture\n").unwrap();
     fs::write(
         root.0.join("fluidise.toml"),
         "[commit]\nversion=1\nallowed-types=['deps']\n",

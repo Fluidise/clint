@@ -5,6 +5,11 @@
 > Une limite d'entrée de 1 MiB n'est pas un plafond RSS ; un timeout ne démontre
 > ni ReDoS ni boucle infinie. Voir le [protocole et les résultats locaux](benchmark-loop.md)
 > pour une comparaison avant/après traçable de `fluidise-clint` uniquement.
+>
+> Pour les processus CLI indépendants dans Git, consulter la
+> [mesure locale du 23 octobre 2026](agent-throughput.md), avec versions figées,
+> résultats bruts et contrats de sortie distingués. Cette mesure ne démontre
+> pas un gain produit par rapport aux chiffres historiques ci-dessous.
 
 > Ce banc d'essai exhaustif s'inspire de la méthodologie de présentation des benchmarks de [Bun](https://bun.com/blog/bun-v1.4.3), en évaluant `fluidise-clint` face aux 4 outils de référence du marché à travers 3 écosystèmes majeurs (Rust, Python et JavaScript / Node.js).
 
