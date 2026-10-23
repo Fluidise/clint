@@ -85,22 +85,25 @@ Evaluated directly against the leading commit linters across Rust, Python, and N
 
 | Metric | `fluidise-clint` | `convco` (Rust) | `cocogitto` (Rust) | `commitizen` (Python) | `commitlint` (Node.js) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Startup & Lint Latency** | **13.2 ms** | 8.9 ms | 12.0 ms | 228.4 ms *(17x slower)* | 224.6 ms *(17x slower)* |
-| **Memory Footprint (RSS)** | **1.59 – 7.08 MB** | 10.38 MB | 10.02 MB | 50.44 MB *(7.1x RAM)* | 97.12 MB *(13.7x RAM)* |
-| **Dense Stream (1M lines)** | **6.0 ms (2.66 MB)** | 95.5 ms (unbounded) | 44.9 ms (unbounded) | 240+ ms (unbounded) | **Timeout (> 5s)** |
+| **Startup & Lint Latency** | **~3.4 – 3.9 ms** | 8.9 ms | 12.0 ms | 228.4 ms *(60x slower)* | 224.6 ms *(59x slower)* |
+| **Memory Footprint (RSS)** | **1.59 – 2.77 MB** | 10.38 MB | 10.02 MB | 50.44 MB *(18x RAM)* | 97.12 MB *(35x RAM)* |
+| **Dense Stream (1M lines)** | **5.4 ms (2.77 MB)** | 95.5 ms (unbounded) | 44.9 ms (unbounded) | 240+ ms (unbounded) | **Timeout (> 5s)** |
 | **CPU Instructions (Standard)**| **18.5 M** | 36.8 M *(2.0x)* | 64.2 M *(3.5x)* | 1,582 M *(85x)* | 2,134 M *(115x)* |
-| **Agent Throughput (100 msgs)**| **76.9 /s** | 119.4 /s | 87.6 /s | 4.5 /s *(17x slower)* | 4.7 /s *(16x slower)* |
-| **ReDoS / 100k Chars Line** | **13.7 ms** | 9.8 ms | 16.4 ms | 230.6 ms | **Timeout (> 5s)** |
+| **Agent Throughput (100 msgs)**| **238 – 301 /s** | 119.4 /s | 87.6 /s | 4.5 /s *(53x slower)* | 4.7 /s *(51x slower)* |
+| **ReDoS / 100k Chars Line** | **~3.8 ms** *(45.8 µs engine)* | 9.8 ms | 16.4 ms | 230.6 ms | **Timeout (> 5s)** |
 | **Strict Bounded Memory Cap**| **1 MiB Guaranteed** | Unbounded | Unbounded | Unbounded | Unbounded / Crash |
 | **Extreme 20 MB Payload** | **17.2 ms (7.1 MB)** | 332.9 ms (72.4 MB) | 208.8 ms (70.0 MB) | 365.1 ms (109.8 MB) | **Timeout (> 5s)** |
 | **Machine Output by Default** | **Strict JSON** | Plain text | Plain text / ANSI | Plain text | Plain text / ANSI |
 | **Binary / Footprint on Disk** | **0.5 MB (0 dep)** | 7.6 MB | 5.9 MB | 45.2 MB (+ Python) | 148.0 MB (+ Node.js) |
 
 > [!TIP]
-> **Zero-Allocation Lazy Stream Processing:**
-> Following the bounded line iteration optimizations, `fluidise-clint` avoids allocating intermediate line vectors. On newline-dense inputs and large message bodies (up to 1,000,000 lines), parsing memory dropped by **90.2%** (down to 2.66 MB) and engine evaluation speed increased by **89.6%** to **91.8%**.
+> **Performance Architecture & Zero-Allocation Invariants:**
+> - **Direct JSON Output Streaming**: Emits canonical structured JSON directly into a pre-allocated bounded buffer without intermediate DOM allocations (`serde_json::Value` / `BTreeMap`), saving 10 to 200 heap allocations per validation.
+> - **Vectorized SIMD Content Scanning**: Pre-filters input bytes for NUL and lone CR via `slice::contains` (using CPU SIMD extensions) and fast-fails header parsing when `: ` is missing, accelerating ReDoS resistance by **20%** and 1 MiB boundary processing by **36%**.
+> - **Explicit Policy Selection & Instant Startup**: Under [ADR 0002](docs/adr/0002-explicit-policy-selection.md), requiring `--defaults` or `--config` eliminated all Git discovery subprocesses, slashing cold startup latency from 13.2 ms to **~3.4 – 3.9 ms** and boosting agent throughput to **>238 commits/s**.
+> - **Zero-Allocation Lazy Stream Processing**: Newline-dense inputs and bodies up to 1,000,000 lines avoid allocating intermediate vectors, dropping RSS by **90.2%** (down to 2.77 MB) and increasing engine evaluation speed by **~90%**.
 
-See the complete 6-workload suite, CPU cycle profiling, and agent ergonomics analysis in [docs/benchmarks.md](docs/benchmarks.md), as well as the engine optimization benchmarks in [docs/benchmark-loop.md](docs/benchmark-loop.md).
+See the comprehensive 6-workload suite in [docs/benchmarks.md](docs/benchmarks.md), the agent throughput benchmarks in [docs/agent-throughput.md](docs/agent-throughput.md), and the reproducible local optimization loop in [docs/benchmark-loop.md](docs/benchmark-loop.md).
 
 ## Installation
 
@@ -321,6 +324,7 @@ fluidise-clint --file "$1" --defaults
 
 - Additional local development, test commands, and rehearsal packaging notes are documented in [USAGE.md](USAGE.md).
 - Comprehensive 5-competitor benchmarks in [docs/benchmarks.md](docs/benchmarks.md).
+- Agent loop and throughput benchmarks in [docs/agent-throughput.md](docs/agent-throughput.md).
 - Engine optimization benchmarks and methodology in [docs/benchmark-loop.md](docs/benchmark-loop.md).
-- Architectural and design decisions in [docs/adr/](docs/adr/) (see [ADR 0001: Évaluation des Écarts Fonctionnels Face aux Concurrents et Pistes d'Évolution](docs/adr/0001-competitor-feature-gaps-and-evolution-tracks.md)).
+- Architectural and design decisions in [docs/adr/](docs/adr/) (see [ADR 0001: Évaluation des Écarts Fonctionnels Face aux Concurrents et Pistes d'Évolution](docs/adr/0001-competitor-feature-gaps-and-evolution-tracks.md) and [ADR 0002: Sélection Explicite de la Politique CLI](docs/adr/0002-explicit-policy-selection.md)).
 - Licensed under the [MIT License](LICENSE). Copyright (c) 2026 Acrazie.
