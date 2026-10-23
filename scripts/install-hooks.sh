@@ -32,7 +32,7 @@ else
     LINTER="$REPO_ROOT/target/debug/fluidise-clint"
 fi
 
-if ! "$LINTER" --file "$COMMIT_MSG_FILE" --human; then
+if ! "$LINTER" --file "$COMMIT_MSG_FILE" --defaults --human; then
     echo "" >&2
     echo "❌ Commit rejected by fluidise-clint." >&2
     echo "Please update your commit message to adhere to Conventional Commits." >&2

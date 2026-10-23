@@ -1,6 +1,6 @@
 # Fluidise Clint V1 — Local development and usage
 
-Standalone commit-message validation, designed for AI agents. JSON schema 1 is the default. The binary never installs hooks, changes a commit message, stages files or creates commits. Repository hosting (including Entire) does not change its local Git discovery behavior.
+Standalone commit-message validation, designed for AI agents. JSON schema 1 is the default. The binary never installs hooks, changes a commit message, stages files or creates commits. Every validation requires an explicit policy selection; the linter does not execute Git or discover configuration files.
 
 ## Local development
 
@@ -16,20 +16,22 @@ cargo build --locked
 ## CLI
 
 ```sh
-./target/debug/fluidise-clint --file message.txt
-printf '%s\n' 'feat: add search' | ./target/debug/fluidise-clint --stdin
+./target/debug/fluidise-clint --file message.txt --defaults
+printf '%s\n' 'feat: add search' | ./target/debug/fluidise-clint --stdin --defaults
 ./target/debug/fluidise-clint --file message.txt --config fluidise.toml
-./target/debug/fluidise-clint --file message.txt --human
+./target/debug/fluidise-clint --file message.txt --defaults --human
 ./target/debug/fluidise-clint --help
 ```
 
-Exactly one source is required. `--file -` reads a file literally named `-`. Paths beginning with a hyphen use `--file=--name` or `--file ./--name`. Native path bytes are preserved, subject to filesystem support. Empty values, short aliases, repeated/unknown options and positional messages are rejected. Argument errors always use JSON, even with `--human`. Help and version each work only alone.
+Exactly one message source and exactly one policy source (`--config <path>` or `--defaults`) are required. `--file -` reads a file literally named `-`. Paths beginning with a hyphen use `--file=--name` or `--file ./--name`. Native path bytes are preserved, subject to filesystem support. Empty values, short aliases, repeated/unknown options and positional messages are rejected. Argument errors always use JSON, even with `--human`. Help and version each work only alone.
 
 Exit codes: `0` for `valid` or `ignored`, `1` for `invalid`, `2` for operational errors. Only `ignored` has a `reason`. Consumers must check the process outcome AND decode a complete JSON object; interruptions or failed output transport cannot guarantee JSON. Success is never reported for a detected output failure. Human output is opt-in English text: status on stdout, diagnostic codes/messages and optional byte spans on stderr; no colors, paths or complete input copies.
 
 ## Configuration
 
-Optional `fluidise.toml` is discovered at the local Git root, including from subdirectories. An explicit `--config` path replaces discovery and is relative to the invocation's working directory. Outside Git, no parent/home configuration is searched. Only the `commit` section is semantically validated; all TOML must be syntactically valid. No imports, expressions or personal configuration overlays.
+Use `--config <path>` to read only the intended file, relative to the invocation's working directory, or `--defaults` to use built-in rules without a file. No Git, parent or home discovery occurs. Missing, unreadable or invalid explicit files are errors. Only the `commit` section is semantically validated; all TOML must be syntactically valid. No imports, expressions or personal configuration overlays.
+
+**Breaking change:** invocations previously relying on discovery or implicit defaults must select one mode. `--defaults` deliberately ignores even a root `fluidise.toml`; select `--config` to use that policy. Both choices or neither produce argument errors before input is read. See [ADR 0002](docs/adr/0002-explicit-policy-selection.md).
 
 ```toml
 [commit]
@@ -44,6 +46,15 @@ ignore-reverts = true
 All fields except the configured section's version are optional. Types replace the default list rather than extending it; scopes are exact and optional; there is no default title-length limit. Length is measured in Unicode code points; diagnostic spans are original zero-based, half-open byte ranges. Default types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert. Only approved exact merge/revert templates are ignored, with no proof of provenance. `fixup!` and `squash!` messages are refused.
 
 Message and entire TOML: 1,048,576 bytes each. JSON including LF: 262,144 bytes. At most 20 diagnostics; collection stops at the cap and reports `diagnostics_complete: false`. Diagnostic text is capped at 512 code points. JSON is encoded in a bounded buffer before emission; oversize reports are replaced with `tool.output.limit_exceeded`. Files must be regular (symlinks to regular files allowed); explicit stdin is the stream interface. No general memory or wall-clock bound is promised. The TOML reader's native recursion guard covers arrays/inline tables, not arbitrary dotted/explicit table depths.
+
+## Repeated agent CLI calls
+
+Select the policy once in the calling workflow, then pass `--config` or
+`--defaults` on each invocation. Do not launch `git rev-parse` for every message
+merely to reconstruct a known configuration path, or create an empty file just
+to use the built-in rules. Both modes retain JSON output and bounded input.
+See the [local throughput report](docs/agent-throughput.md) for measurements and
+the deliberate compatibility change.
 
 ## Rust library
 
@@ -65,7 +76,7 @@ The local 0.1.0 archives are rehearsal artifacts, not a published or signed rele
 
 Verify the selected archive against SHA256SUMS before extracting it into a new empty directory. Check that its inventory contains only its named top-level directory and ordinary relative files, without links or parent traversal. SHA-256 detects corruption but does not authenticate an archive against a compromised download host. No download URL is available yet.
 
-Installation means explicitly copying the verified executable to a destination you choose. No installer, shell changes, global installation, hooks or automatic updates are provided. Refuse an existing destination rather than silently overwriting it. The rehearsal tests installation and removal only under a temporary prefix. Consumers need no Rust, Cargo or Node runtime. Git is needed only for Git-root configuration discovery, not for an explicit configuration path or stdin outside a repository.
+Installation means explicitly copying the verified executable to a destination you choose. No installer, shell changes, global installation, hooks or automatic updates are provided. Refuse an existing destination rather than silently overwriting it. The rehearsal tests installation and removal only under a temporary prefix. Consumers need no Rust, Cargo or Node runtime. The linter requires no Git executable at runtime; caller-owned Git hooks and development scripts have their own requirements.
 
 ## License
 

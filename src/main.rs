@@ -3,12 +3,15 @@ mod input;
 mod output;
 use fluidise_clint::{CheckResult, check_message, prepare_policy};
 use std::process::ExitCode;
-const HELP: &str = "fluidise-clint\n\nUsage: fluidise-clint (--file <path> | --stdin) [--config <path>] [--human]\n\nJSON is the default. Exactly one explicit source is required.\n--file <path>    Read a regular file; '-' is a filename, not stdin.\n--stdin          Read UTF-8 until EOF.\n--config <path>  Use this configuration instead of discovery.\n--human          Human output after valid argument parsing.\n--help           Print this text; must be used alone.\n--version        Print the version; must be used alone.\n\nExit codes: 0 valid/ignored, 1 invalid message, 2 operational error.\nMessage/config: 1 MiB each. No Git message cleanup or file mutation.\n";
+const HELP: &str = "fluidise-clint\n\nUsage: fluidise-clint (--file <path> | --stdin) (--config <path> | --defaults) [--human]\n\nJSON is the default. Exactly one message source and one configuration source are required.\n--file <path>    Read a regular file; '-' is a filename, not stdin.\n--stdin          Read UTF-8 until EOF.\n--config <path>  Use this configuration file; no discovery.\n--defaults       Use built-in rules without a configuration file.\n--human          Human output after valid argument parsing.\n--help           Print this text; must be used alone.\n--version        Print the version; must be used alone.\n\nExit codes: 0 valid/ignored, 1 invalid message, 2 operational error.\nMessage/config: 1 MiB each. No Git message cleanup or file mutation.\n";
 fn run(
     file: Option<std::path::PathBuf>,
-    config: Option<std::path::PathBuf>,
+    config: cli::Configuration,
 ) -> Result<CheckResult, CheckResult> {
-    let config = input::configuration(config)?;
+    let config = match config {
+        cli::Configuration::Defaults => None,
+        cli::Configuration::File(path) => Some(input::configuration(&path)?),
+    };
     let policy = prepare_policy(config.as_deref())?;
     let text = (match file {
         Some(path) => input::file(&path, false),

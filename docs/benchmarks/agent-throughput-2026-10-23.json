@@ -1,0 +1,1096 @@
+{
+  "complete": true,
+  "environment": {
+    "platform": "macOS-26.7.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.3",
+    "git": "git version 2.53.0",
+    "git_path": "/opt/homebrew/bin/git"
+  },
+  "method": {
+    "iterations": 100,
+    "samples": 7,
+    "warmups": 2,
+    "order_seed": 20261023,
+    "unit": "ms per 100 independent CLI processes",
+    "input": "identical stdin bytes; stdout/stderr captured, validation outside timing",
+    "scope": "local warm-cache serial processes, Python/OS spawn overhead included",
+    "config": "native default-equivalent files; discovery is tool-specific",
+    "comparison": "native outputs/configs differ; shared accept/reject subset only",
+    "json_cost": "clint JSON vs --human is an output-mode delta, not serialization-only CPU time"
+  },
+  "binaries": {
+    "baseline": {
+      "path": "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+      "sha256": "f23aea0682bd350468aa4190bbcc92839cf2497e3816fea12fda86b1a2f43d49",
+      "version": "fluidise-clint 0.1.0",
+      "sources": {
+        "head": "c742e55f7b2d935fd31ff0fb5efd4166d0f1a178",
+        "files": {
+          "Cargo.toml": "8dea344b81ff26bebbf0bc6a48598a1866b76e659a210e66533d427abb241951",
+          "Cargo.lock": "c96348fcb14e52ff5c6f6d9857d8d66d1edeea8aabe98a38ee615a775d5efcbc",
+          "src/message.rs": "9e0beca13af26cec67883de348c81c5ded475e30fa667bfd3842961974b5bc49",
+          "src/lib.rs": "b031229ab7c6d99f0064f6eda5d4b8c77853a2f496362da1e00cee3ea7d6b002",
+          "src/configuration.rs": "93a2281f89defccf14b50f47ba3573df893331af24ee8882ec660125de853a47",
+          "src/output.rs": "26b08bbd05e06ddac18d646d1241016bd37be5b3a881d4235f8257606a731b79",
+          "src/main.rs": "36cb101cc58bc2c8bdc74bddc66a22ef3d69c5912a01a096633b63cf9daf8058",
+          "src/input.rs": "7bb7484b2efb62da1408fff2c2b12ff0b288ae3717caffae97ed555d2db8601f",
+          "src/cli.rs": "928ee005b125e01820928df909c13825a8b1ba8d2d0af6cb0e67e8c54a1bf7eb"
+        }
+      }
+    },
+    "candidate": {
+      "path": "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+      "sha256": "f23aea0682bd350468aa4190bbcc92839cf2497e3816fea12fda86b1a2f43d49",
+      "version": "fluidise-clint 0.1.0",
+      "sources": {
+        "head": "c742e55f7b2d935fd31ff0fb5efd4166d0f1a178",
+        "files": {
+          "Cargo.toml": "8dea344b81ff26bebbf0bc6a48598a1866b76e659a210e66533d427abb241951",
+          "Cargo.lock": "c96348fcb14e52ff5c6f6d9857d8d66d1edeea8aabe98a38ee615a775d5efcbc",
+          "src/message.rs": "9e0beca13af26cec67883de348c81c5ded475e30fa667bfd3842961974b5bc49",
+          "src/lib.rs": "b031229ab7c6d99f0064f6eda5d4b8c77853a2f496362da1e00cee3ea7d6b002",
+          "src/configuration.rs": "93a2281f89defccf14b50f47ba3573df893331af24ee8882ec660125de853a47",
+          "src/output.rs": "26b08bbd05e06ddac18d646d1241016bd37be5b3a881d4235f8257606a731b79",
+          "src/main.rs": "36cb101cc58bc2c8bdc74bddc66a22ef3d69c5912a01a096633b63cf9daf8058",
+          "src/input.rs": "7bb7484b2efb62da1408fff2c2b12ff0b288ae3717caffae97ed555d2db8601f",
+          "src/cli.rs": "928ee005b125e01820928df909c13825a8b1ba8d2d0af6cb0e67e8c54a1bf7eb"
+        }
+      }
+    },
+    "cog": {
+      "path": "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+      "sha256": "406cb16a5f919b6114e0682d6de36b8b95204b811bab6cd50533d11ad59ec937",
+      "version": "cog 7.0.0"
+    },
+    "convco": {
+      "path": "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+      "sha256": "627f499a364caacb4dccd0b711c445197a22e0704d838fd1069c291836502653",
+      "version": "convco 0.7.2"
+    }
+  },
+  "harness_sha256": "c51eeccc00068329ef7f181c711243594c662c4a442b6a40a24277f1aacdf99c",
+  "cases": {
+    "auto_absent/valid_small": {
+      "bytes": 25,
+      "payload_hex": "666561743a20696d70726f76652076616c69646174696f6e0a",
+      "expected_exit": 0,
+      "commands": {
+        "baseline": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "candidate": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "cog": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "convco": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--from-stdin"
+        ]
+      },
+      "samples_ms": {
+        "baseline": [
+          1071.580542,
+          1072.550458,
+          1038.370292,
+          1133.516542,
+          1081.463709,
+          1078.133458,
+          1114.975
+        ],
+        "candidate": [
+          1056.936542,
+          1075.927708,
+          1133.072458,
+          1047.776625,
+          1064.312917,
+          1055.961167,
+          1113.045791
+        ],
+        "cog": [
+          1003.68175,
+          990.094791,
+          1011.663375,
+          1063.572292,
+          1005.585166,
+          972.153583,
+          980.897167
+        ],
+        "convco": [
+          666.18625,
+          677.185167,
+          690.026917,
+          655.9395,
+          708.017875,
+          666.905542,
+          705.70875
+        ]
+      },
+      "outputs": {
+        "baseline": {
+          "exit": 0,
+          "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        "candidate": {
+          "exit": 0,
+          "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        "cog": {
+          "exit": 0,
+          "stdout": "\n",
+          "stderr": "improve validation (not committed) - now\n\tAuthor: Benchmark\n\tType: feat\n\tScope: none\n\n"
+        },
+        "convco": {
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      "summary_ms": {
+        "baseline": {
+          "median": 1078.133458,
+          "mad": 6.552916000000096
+        },
+        "candidate": {
+          "median": 1064.312917,
+          "mad": 11.614790999999968
+        },
+        "cog": {
+          "median": 1003.68175,
+          "mad": 13.586958999999979
+        },
+        "convco": {
+          "median": 677.185167,
+          "mad": 12.841750000000047
+        }
+      }
+    },
+    "auto_absent/invalid_small": {
+      "bytes": 37,
+      "payload_hex": "66697820736f6d657468696e6720776974686f7574207479706520736570617261746f720a",
+      "expected_exit": 1,
+      "commands": {
+        "baseline": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "candidate": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "cog": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "convco": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--from-stdin"
+        ]
+      },
+      "samples_ms": {
+        "baseline": [
+          1135.6985,
+          2165.301708,
+          1306.304667,
+          1153.224583,
+          1145.536417,
+          1107.972,
+          1273.579708
+        ],
+        "candidate": [
+          1125.655084,
+          2296.65725,
+          1260.637583,
+          1194.002834,
+          1135.499084,
+          1122.010917,
+          1198.508333
+        ],
+        "cog": [
+          1037.11625,
+          2791.7555,
+          1143.110458,
+          1139.44925,
+          1074.724708,
+          1042.808417,
+          1143.690333
+        ],
+        "convco": [
+          727.756417,
+          1042.08875,
+          981.608542,
+          801.031291,
+          734.776042,
+          709.565959,
+          826.2635
+        ]
+      },
+      "outputs": {
+        "baseline": {
+          "exit": 1,
+          "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":36,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+          "stderr": ""
+        },
+        "candidate": {
+          "exit": 1,
+          "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":36,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+          "stderr": ""
+        },
+        "cog": {
+          "exit": 1,
+          "stdout": "",
+          "stderr": "Error: Missing commit type separator `:`\n\nCaused by:\n     --> 1:4\n      |\n    1 | fix something without type separator\n      |    ^---\n      |\n      = expected scope or type_separator\n\n"
+        },
+        "convco": {
+          "exit": 1,
+          "stdout": "FAIL  -  first line doesn't match `<type>[optional scope]: <description>`  fix something without type separator\n",
+          "stderr": ""
+        }
+      },
+      "summary_ms": {
+        "baseline": {
+          "median": 1153.224583,
+          "mad": 45.25258299999996
+        },
+        "candidate": {
+          "median": 1194.002834,
+          "mad": 66.63474900000006
+        },
+        "cog": {
+          "median": 1139.44925,
+          "mad": 64.72454199999993
+        },
+        "convco": {
+          "median": 801.031291,
+          "mad": 73.27487399999995
+        }
+      }
+    },
+    "auto_present/valid_small": {
+      "bytes": 25,
+      "payload_hex": "666561743a20696d70726f76652076616c69646174696f6e0a",
+      "expected_exit": 0,
+      "commands": {
+        "baseline": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "candidate": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "cog": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "convco": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--from-stdin"
+        ]
+      },
+      "samples_ms": {
+        "baseline": [
+          1067.795916,
+          1136.506542,
+          1149.750875,
+          1105.329834,
+          1099.923125,
+          1109.082,
+          1080.955333
+        ],
+        "candidate": [
+          1106.905625,
+          1173.786666,
+          1134.9395,
+          1153.877833,
+          1102.145292,
+          1135.883041,
+          1102.346125
+        ],
+        "cog": [
+          1033.683042,
+          1010.615541,
+          1169.39675,
+          1017.931667,
+          1015.189833,
+          1047.938125,
+          1016.093625
+        ],
+        "convco": [
+          749.11425,
+          746.857708,
+          753.916125,
+          762.7685,
+          715.77025,
+          707.332917,
+          712.082375
+        ]
+      },
+      "outputs": {
+        "baseline": {
+          "exit": 0,
+          "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        "candidate": {
+          "exit": 0,
+          "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        "cog": {
+          "exit": 0,
+          "stdout": "\n",
+          "stderr": "improve validation (not committed) - now\n\tAuthor: Benchmark\n\tType: feat\n\tScope: none\n\n"
+        },
+        "convco": {
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      "summary_ms": {
+        "baseline": {
+          "median": 1105.329834,
+          "mad": 24.374500999999782
+        },
+        "candidate": {
+          "median": 1134.9395,
+          "mad": 28.033874999999853
+        },
+        "cog": {
+          "median": 1017.931667,
+          "mad": 7.31612599999994
+        },
+        "convco": {
+          "median": 746.857708,
+          "mad": 15.910792000000015
+        }
+      }
+    },
+    "auto_present/invalid_small": {
+      "bytes": 37,
+      "payload_hex": "66697820736f6d657468696e6720776974686f7574207479706520736570617261746f720a",
+      "expected_exit": 1,
+      "commands": {
+        "baseline": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "candidate": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "cog": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "convco": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--from-stdin"
+        ]
+      },
+      "samples_ms": {
+        "baseline": [
+          1096.534959,
+          1216.216292,
+          1160.950083,
+          1109.124292,
+          1071.037791,
+          1184.553791,
+          1277.203042
+        ],
+        "candidate": [
+          1082.209667,
+          1095.651875,
+          1093.169583,
+          1078.952125,
+          1085.940709,
+          1137.436125,
+          1224.794375
+        ],
+        "cog": [
+          1020.401833,
+          1014.072375,
+          1016.964625,
+          1084.952291,
+          1024.767166,
+          1031.119542,
+          1085.795708
+        ],
+        "convco": [
+          701.187792,
+          722.515792,
+          734.854959,
+          685.638833,
+          691.018125,
+          743.502709,
+          831.430625
+        ]
+      },
+      "outputs": {
+        "baseline": {
+          "exit": 1,
+          "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":36,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+          "stderr": ""
+        },
+        "candidate": {
+          "exit": 1,
+          "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":36,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+          "stderr": ""
+        },
+        "cog": {
+          "exit": 1,
+          "stdout": "",
+          "stderr": "Error: Missing commit type separator `:`\n\nCaused by:\n     --> 1:4\n      |\n    1 | fix something without type separator\n      |    ^---\n      |\n      = expected scope or type_separator\n\n"
+        },
+        "convco": {
+          "exit": 1,
+          "stdout": "FAIL  -  first line doesn't match `<type>[optional scope]: <description>`  fix something without type separator\n",
+          "stderr": ""
+        }
+      },
+      "summary_ms": {
+        "baseline": {
+          "median": 1160.950083,
+          "mad": 55.26620900000012
+        },
+        "candidate": {
+          "median": 1093.169583,
+          "mad": 10.959916000000021
+        },
+        "cog": {
+          "median": 1024.767166,
+          "mad": 7.802541000000133
+        },
+        "convco": {
+          "median": 722.515792,
+          "mad": 21.328000000000088
+        }
+      }
+    },
+    "explicit/valid_small": {
+      "bytes": 25,
+      "payload_hex": "666561743a20696d70726f76652076616c69646174696f6e0a",
+      "expected_exit": 0,
+      "commands": {
+        "baseline": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-agent-81y8m2ei/explicit/fluidise.toml"
+        ],
+        "candidate": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-agent-81y8m2ei/explicit/fluidise.toml"
+        ],
+        "cog": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-agent-81y8m2ei/explicit/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "convco": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--from-stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-agent-81y8m2ei/explicit/.convco"
+        ]
+      },
+      "samples_ms": {
+        "baseline": [
+          390.1235,
+          407.44175,
+          407.14875,
+          369.625667,
+          359.887125,
+          365.289709,
+          359.417042
+        ],
+        "candidate": [
+          392.323125,
+          431.027,
+          367.9665,
+          402.767125,
+          384.013583,
+          413.694,
+          427.233
+        ],
+        "cog": [
+          1081.293333,
+          1046.742958,
+          953.724125,
+          991.03425,
+          964.30075,
+          961.444625,
+          984.376541
+        ],
+        "convco": [
+          772.150083,
+          764.287875,
+          703.944708,
+          750.267958,
+          677.210709,
+          676.455416,
+          690.072084
+        ]
+      },
+      "outputs": {
+        "baseline": {
+          "exit": 0,
+          "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        "candidate": {
+          "exit": 0,
+          "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        "cog": {
+          "exit": 0,
+          "stdout": "\n",
+          "stderr": "improve validation (not committed) - now\n\tAuthor: Benchmark\n\tType: feat\n\tScope: none\n\n"
+        },
+        "convco": {
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      "summary_ms": {
+        "baseline": {
+          "median": 369.625667,
+          "mad": 10.20862500000004
+        },
+        "candidate": {
+          "median": 402.767125,
+          "mad": 18.75354200000004
+        },
+        "cog": {
+          "median": 984.376541,
+          "mad": 22.931916
+        },
+        "convco": {
+          "median": 703.944708,
+          "mad": 27.489291999999978
+        }
+      }
+    },
+    "explicit/invalid_small": {
+      "bytes": 37,
+      "payload_hex": "66697820736f6d657468696e6720776974686f7574207479706520736570617261746f720a",
+      "expected_exit": 1,
+      "commands": {
+        "baseline": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-agent-81y8m2ei/explicit/fluidise.toml"
+        ],
+        "candidate": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-agent-81y8m2ei/explicit/fluidise.toml"
+        ],
+        "cog": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-agent-81y8m2ei/explicit/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "convco": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--from-stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-agent-81y8m2ei/explicit/.convco"
+        ]
+      },
+      "samples_ms": {
+        "baseline": [
+          359.117541,
+          353.810625,
+          382.767375,
+          348.152792,
+          354.514375,
+          371.066042,
+          349.367
+        ],
+        "candidate": [
+          362.881166,
+          337.09075,
+          436.802875,
+          374.132875,
+          372.499291,
+          413.907834,
+          344.714333
+        ],
+        "cog": [
+          935.297208,
+          984.992625,
+          1048.441375,
+          980.382916,
+          1038.629834,
+          990.001333,
+          941.761417
+        ],
+        "convco": [
+          681.53225,
+          651.99225,
+          790.638541,
+          649.503666,
+          635.974291,
+          664.693917,
+          633.475417
+        ]
+      },
+      "outputs": {
+        "baseline": {
+          "exit": 1,
+          "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":36,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+          "stderr": ""
+        },
+        "candidate": {
+          "exit": 1,
+          "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":36,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+          "stderr": ""
+        },
+        "cog": {
+          "exit": 1,
+          "stdout": "",
+          "stderr": "Error: Missing commit type separator `:`\n\nCaused by:\n     --> 1:4\n      |\n    1 | fix something without type separator\n      |    ^---\n      |\n      = expected scope or type_separator\n\n"
+        },
+        "convco": {
+          "exit": 1,
+          "stdout": "FAIL  -  first line doesn't match `<type>[optional scope]: <description>`  fix something without type separator\n",
+          "stderr": ""
+        }
+      },
+      "summary_ms": {
+        "baseline": {
+          "median": 354.514375,
+          "mad": 5.147374999999954
+        },
+        "candidate": {
+          "median": 372.499291,
+          "mad": 27.784958000000017
+        },
+        "cog": {
+          "median": 984.992625,
+          "mad": 43.231207999999924
+        },
+        "convco": {
+          "median": 651.99225,
+          "mad": 16.01795900000002
+        }
+      }
+    },
+    "outside/valid_small": {
+      "bytes": 25,
+      "payload_hex": "666561743a20696d70726f76652076616c69646174696f6e0a",
+      "expected_exit": 0,
+      "commands": {
+        "baseline": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "candidate": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ]
+      },
+      "samples_ms": {
+        "baseline": [
+          350.343542,
+          338.714292,
+          401.541125,
+          346.715167,
+          365.835458,
+          413.228167,
+          439.728334
+        ],
+        "candidate": [
+          369.419208,
+          361.03375,
+          383.395167,
+          379.860167,
+          358.232459,
+          401.181584,
+          378.337584
+        ]
+      },
+      "outputs": {
+        "baseline": {
+          "exit": 0,
+          "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        "candidate": {
+          "exit": 0,
+          "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        }
+      },
+      "summary_ms": {
+        "baseline": {
+          "median": 365.835458,
+          "mad": 27.121166000000017
+        },
+        "candidate": {
+          "median": 378.337584,
+          "mad": 8.918375999999967
+        }
+      }
+    },
+    "outside/invalid_small": {
+      "bytes": 37,
+      "payload_hex": "66697820736f6d657468696e6720776974686f7574207479706520736570617261746f720a",
+      "expected_exit": 1,
+      "commands": {
+        "baseline": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ],
+        "candidate": [
+          "/Users/acrazie/.codex/worktrees/3363/lint/target/agent-throughput/baseline/fluidise-clint",
+          "--stdin"
+        ]
+      },
+      "samples_ms": {
+        "baseline": [
+          500.965916,
+          402.272416,
+          366.3765,
+          364.8915,
+          412.310417,
+          377.247792,
+          365.804875
+        ],
+        "candidate": [
+          440.955458,
+          467.438666,
+          392.048167,
+          378.429541,
+          432.0225,
+          365.864667,
+          359.535667
+        ]
+      },
+      "outputs": {
+        "baseline": {
+          "exit": 1,
+          "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":36,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+          "stderr": ""
+        },
+        "candidate": {
+          "exit": 1,
+          "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":36,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+          "stderr": ""
+        }
+      },
+      "summary_ms": {
+        "baseline": {
+          "median": 377.247792,
+          "mad": 12.356291999999996
+        },
+        "candidate": {
+          "median": 392.048167,
+          "mad": 32.51249999999999
+        }
+      }
+    }
+  },
+  "behavior_cases": {
+    "auto_absent/valid_small": {
+      "exit": 0,
+      "bytes": 25
+    },
+    "auto_absent/invalid_small": {
+      "exit": 1,
+      "bytes": 37
+    },
+    "auto_absent/multiline_2k": {
+      "exit": 0,
+      "bytes": 1860
+    },
+    "auto_absent/invalid_utf8": {
+      "exit": 2,
+      "bytes": 7
+    },
+    "auto_absent/redos_100k": {
+      "exit": 1,
+      "bytes": 100005
+    },
+    "auto_absent/many_lines": {
+      "exit": 0,
+      "bytes": 1000045
+    },
+    "auto_absent/trailing_blank_lines": {
+      "exit": 0,
+      "bytes": 1000045
+    },
+    "auto_absent/many_footers": {
+      "exit": 1,
+      "bytes": 980045
+    },
+    "auto_absent/merge_many_lines": {
+      "exit": 0,
+      "bytes": 1000021
+    },
+    "auto_absent/extreme_20mib": {
+      "exit": 2,
+      "bytes": 20971520
+    },
+    "auto_absent/boundary_1048575": {
+      "exit": 0,
+      "bytes": 1048575
+    },
+    "auto_absent/boundary_1048576": {
+      "exit": 0,
+      "bytes": 1048576
+    },
+    "auto_absent/boundary_1048577": {
+      "exit": 2,
+      "bytes": 1048577
+    },
+    "auto_present/valid_small": {
+      "exit": 0,
+      "bytes": 25
+    },
+    "auto_present/invalid_small": {
+      "exit": 1,
+      "bytes": 37
+    },
+    "auto_present/multiline_2k": {
+      "exit": 0,
+      "bytes": 1860
+    },
+    "auto_present/invalid_utf8": {
+      "exit": 2,
+      "bytes": 7
+    },
+    "auto_present/redos_100k": {
+      "exit": 1,
+      "bytes": 100005
+    },
+    "auto_present/many_lines": {
+      "exit": 0,
+      "bytes": 1000045
+    },
+    "auto_present/trailing_blank_lines": {
+      "exit": 0,
+      "bytes": 1000045
+    },
+    "auto_present/many_footers": {
+      "exit": 1,
+      "bytes": 980045
+    },
+    "auto_present/merge_many_lines": {
+      "exit": 0,
+      "bytes": 1000021
+    },
+    "auto_present/extreme_20mib": {
+      "exit": 2,
+      "bytes": 20971520
+    },
+    "auto_present/boundary_1048575": {
+      "exit": 0,
+      "bytes": 1048575
+    },
+    "auto_present/boundary_1048576": {
+      "exit": 0,
+      "bytes": 1048576
+    },
+    "auto_present/boundary_1048577": {
+      "exit": 2,
+      "bytes": 1048577
+    },
+    "explicit/valid_small": {
+      "exit": 0,
+      "bytes": 25
+    },
+    "explicit/invalid_small": {
+      "exit": 1,
+      "bytes": 37
+    },
+    "explicit/multiline_2k": {
+      "exit": 0,
+      "bytes": 1860
+    },
+    "explicit/invalid_utf8": {
+      "exit": 2,
+      "bytes": 7
+    },
+    "explicit/redos_100k": {
+      "exit": 1,
+      "bytes": 100005
+    },
+    "explicit/many_lines": {
+      "exit": 0,
+      "bytes": 1000045
+    },
+    "explicit/trailing_blank_lines": {
+      "exit": 0,
+      "bytes": 1000045
+    },
+    "explicit/many_footers": {
+      "exit": 1,
+      "bytes": 980045
+    },
+    "explicit/merge_many_lines": {
+      "exit": 0,
+      "bytes": 1000021
+    },
+    "explicit/extreme_20mib": {
+      "exit": 2,
+      "bytes": 20971520
+    },
+    "explicit/boundary_1048575": {
+      "exit": 0,
+      "bytes": 1048575
+    },
+    "explicit/boundary_1048576": {
+      "exit": 0,
+      "bytes": 1048576
+    },
+    "explicit/boundary_1048577": {
+      "exit": 2,
+      "bytes": 1048577
+    },
+    "outside/valid_small": {
+      "exit": 0,
+      "bytes": 25
+    },
+    "outside/invalid_small": {
+      "exit": 1,
+      "bytes": 37
+    },
+    "outside/multiline_2k": {
+      "exit": 0,
+      "bytes": 1860
+    },
+    "outside/invalid_utf8": {
+      "exit": 2,
+      "bytes": 7
+    },
+    "outside/redos_100k": {
+      "exit": 1,
+      "bytes": 100005
+    },
+    "outside/many_lines": {
+      "exit": 0,
+      "bytes": 1000045
+    },
+    "outside/trailing_blank_lines": {
+      "exit": 0,
+      "bytes": 1000045
+    },
+    "outside/many_footers": {
+      "exit": 1,
+      "bytes": 980045
+    },
+    "outside/merge_many_lines": {
+      "exit": 0,
+      "bytes": 1000021
+    },
+    "outside/extreme_20mib": {
+      "exit": 2,
+      "bytes": 20971520
+    },
+    "outside/boundary_1048575": {
+      "exit": 0,
+      "bytes": 1048575
+    },
+    "outside/boundary_1048576": {
+      "exit": 0,
+      "bytes": 1048576
+    },
+    "outside/boundary_1048577": {
+      "exit": 2,
+      "bytes": 1048577
+    }
+  },
+  "output_mode_ms": {
+    "baseline": {
+      "json": {
+        "samples": [
+          1021.261583,
+          987.30875,
+          1065.488958,
+          1014.899208,
+          1007.513166,
+          995.73975,
+          980.639583
+        ],
+        "median": 1007.513166,
+        "mad": 13.748417000000018
+      },
+      "human": {
+        "samples": [
+          1050.440041,
+          1098.120208,
+          984.741583,
+          985.226542,
+          983.394917,
+          1027.583417,
+          1017.610541
+        ],
+        "median": 1017.610541,
+        "mad": 32.82950000000005
+      }
+    },
+    "candidate": {
+      "json": {
+        "samples": [
+          1049.085125,
+          994.44525,
+          975.837625,
+          993.080292,
+          984.561083,
+          982.521083,
+          981.302042
+        ],
+        "median": 984.561083,
+        "mad": 8.519208999999933
+      },
+      "human": {
+        "samples": [
+          1067.64625,
+          959.082042,
+          979.294875,
+          969.478667,
+          959.49,
+          956.124583,
+          955.181
+        ],
+        "median": 959.49,
+        "mad": 4.308999999999969
+      }
+    }
+  }
+}
