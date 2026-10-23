@@ -15,3 +15,11 @@ _Éviter_ : débit moteur, vitesse des agents, commits créés par seconde.
 **Sélection de politique** :
 Choix explicite des règles applicables à une validation : règles intégrées ou configuration fournie par l'appelant.
 _Éviter_ : découverte implicite, deux versions de l'outil.
+
+**Latence de validation agentique CLI (CLI validation latency)** :
+Durée entre le lancement d'une invocation de validation agentique CLI et sa fin, incluant sélection de politique, lecture du message, validation et émission du résultat JSON.
+_Éviter_ : démarrage seul, latence du hook.
+
+**Latence de validation du hook (Hook validation latency)** :
+Durée entre le lancement du script commit-msg fourni par le dépôt et sa fin, incluant localisation de l'outil, validation et rapport. Le travail de Git avant l'invocation du script est exclu.
+_Éviter_ : latence CLI seule, durée totale du commit.

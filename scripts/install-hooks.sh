@@ -19,7 +19,8 @@ cat > "$COMMIT_MSG_HOOK" << 'EOF'
 set -euo pipefail
 
 COMMIT_MSG_FILE="$1"
-REPO_ROOT="$(git rev-parse --show-toplevel)"
+# Git invokes commit-msg from the non-bare worktree root; manual use requires the CLI.
+REPO_ROOT="$PWD"
 
 # Prefer compiled release binary for maximum speed, fall back to debug or cargo run
 if [ -x "$REPO_ROOT/target/release/fluidise-clint" ]; then
