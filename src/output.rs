@@ -1,37 +1,67 @@
 use fluidise_clint::{CheckResult, Diagnostic, Field, OUTPUT_LIMIT, Source, Status};
-use serde_json::{Value, json};
 use std::io::{self, Write};
-fn wire(r: &CheckResult) -> Value {
-    let ds: Vec<_> = r
-        .diagnostics
-        .iter()
-        .map(|d| {
-            let mut v = json!({"code":d.code,"message":d.message,"source":d.source.as_str()});
-            if let Some(s) = &d.span {
-                v["span"] = json!({"start":s.start,"end":s.end});
-            }
-            if let Some(f) = &d.field {
-                v["field"] = Value::Array(
-                    f.iter()
-                        .map(|c| match c {
-                            Field::Key(s) => json!(s),
-                            Field::Index(i) => json!(i),
-                        })
-                        .collect(),
-                );
-            }
-            v
-        })
-        .collect();
-    let mut v = json!({"schema_version":1,"status":r.status.as_str(),"diagnostics_complete":r.diagnostics_complete,"diagnostics":ds});
-    if let Some(reason) = r.reason {
-        v["reason"] = json!(reason);
-    }
+
+fn write_result(out: &mut impl Write, r: &CheckResult) -> io::Result<()> {
+    out.write_all(b"{")?;
     if let Some(c) = &r.configuration {
-        v["configuration"] = json!({"source":c.source,"used_sections":c.used_sections,"unrecognized_sections":c.unrecognized_sections});
+        out.write_all(b"\"configuration\":{\"source\":")?;
+        serde_json::to_writer(&mut *out, c.source)?;
+        out.write_all(b",\"unrecognized_sections\":")?;
+        serde_json::to_writer(&mut *out, &c.unrecognized_sections)?;
+        out.write_all(b",\"used_sections\":")?;
+        serde_json::to_writer(&mut *out, &c.used_sections)?;
+        out.write_all(b"},\"diagnostics\":[")?;
+    } else {
+        out.write_all(b"\"diagnostics\":[")?;
     }
-    v
+    for (i, d) in r.diagnostics.iter().enumerate() {
+        if i > 0 {
+            out.write_all(b",")?;
+        }
+        out.write_all(b"{\"code\":")?;
+        serde_json::to_writer(&mut *out, d.code)?;
+        if let Some(f) = &d.field {
+            out.write_all(b",\"field\":[")?;
+            for (j, item) in f.iter().enumerate() {
+                if j > 0 {
+                    out.write_all(b",")?;
+                }
+                match item {
+                    Field::Key(s) => serde_json::to_writer(&mut *out, s)?,
+                    Field::Index(idx) => write!(out, "{idx}")?,
+                }
+            }
+            out.write_all(b"]")?;
+        }
+        out.write_all(b",\"message\":")?;
+        serde_json::to_writer(&mut *out, &d.message)?;
+        out.write_all(b",\"source\":")?;
+        serde_json::to_writer(&mut *out, d.source.as_str())?;
+        if let Some(s) = &d.span {
+            out.write_all(b",\"span\":{\"end\":")?;
+            write!(out, "{}", s.end)?;
+            out.write_all(b",\"start\":")?;
+            write!(out, "{}", s.start)?;
+            out.write_all(b"}")?;
+        }
+        out.write_all(b"}")?;
+    }
+    out.write_all(b"],\"diagnostics_complete\":")?;
+    out.write_all(if r.diagnostics_complete {
+        b"true"
+    } else {
+        b"false"
+    })?;
+    if let Some(reason) = r.reason {
+        out.write_all(b",\"reason\":")?;
+        serde_json::to_writer(&mut *out, reason)?;
+    }
+    out.write_all(b",\"schema_version\":1,\"status\":")?;
+    serde_json::to_writer(&mut *out, r.status.as_str())?;
+    out.write_all(b"}")?;
+    Ok(())
 }
+
 struct Buffer {
     bytes: Vec<u8>,
 }
@@ -48,8 +78,10 @@ impl Write for Buffer {
     }
 }
 fn encode(r: &CheckResult) -> io::Result<Vec<u8>> {
-    let mut buffer = Buffer { bytes: Vec::new() };
-    serde_json::to_writer(&mut buffer, &wire(r)).map_err(io::Error::other)?;
+    let mut buffer = Buffer {
+        bytes: Vec::with_capacity(512),
+    };
+    write_result(&mut buffer, r)?;
     buffer.write_all(b"\n")?;
     Ok(buffer.bytes)
 }
@@ -115,6 +147,7 @@ pub fn text(text: &str) -> u8 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::Value;
     #[test]
     fn output_limit_replaces_report_before_emission() {
         let mut r =

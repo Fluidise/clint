@@ -1,16 +1,19 @@
 use fluidise_clint::{CheckResult, Diagnostic, INPUT_LIMIT, Source};
 #[cfg(unix)]
 use std::os::unix::fs::OpenOptionsExt;
-use std::{
-    fs::{self, OpenOptions},
-    io::Read,
-    path::Path,
-};
+use std::{fs::OpenOptions, io::Read, path::Path};
 
 fn error(code: &'static str, source: Source, message: &str) -> CheckResult {
     CheckResult::error(Diagnostic::new(code, message, source))
 }
-pub fn bounded(mut reader: impl Read, config: bool) -> Result<Vec<u8>, CheckResult> {
+pub fn bounded(reader: impl Read, config: bool) -> Result<Vec<u8>, CheckResult> {
+    bounded_with_capacity(reader, config, 0)
+}
+fn bounded_with_capacity(
+    mut reader: impl Read,
+    config: bool,
+    capacity: usize,
+) -> Result<Vec<u8>, CheckResult> {
     let (source, read, limit) = if config {
         (
             Source::Configuration,
@@ -20,7 +23,7 @@ pub fn bounded(mut reader: impl Read, config: bool) -> Result<Vec<u8>, CheckResu
     } else {
         (Source::Message, "input.read_failed", "input.limit_exceeded")
     };
-    let mut bytes = Vec::new();
+    let mut bytes = Vec::with_capacity(capacity);
     // Read no more than the limit plus one probe byte, even for growing streams.
     (&mut reader)
         .take((INPUT_LIMIT + 1) as u64)
@@ -38,9 +41,6 @@ pub fn file(path: &Path, config: bool) -> Result<Vec<u8>, CheckResult> {
         ("input.read_failed", Source::Message)
     };
     let fail = || error(code, source, "Expected a readable regular file.");
-    if !fs::metadata(path).map_err(|_| fail())?.is_file() {
-        return Err(fail());
-    }
     let mut options = OpenOptions::new();
     options.read(true);
     // Native flags prevent a raced replacement with a FIFO from blocking open.
@@ -50,10 +50,12 @@ pub fn file(path: &Path, config: bool) -> Result<Vec<u8>, CheckResult> {
     #[cfg(target_os = "linux")]
     options.custom_flags(0o4000);
     let file = options.open(path).map_err(|_| fail())?;
-    if !file.metadata().map_err(|_| fail())?.is_file() {
+    let meta = file.metadata().map_err(|_| fail())?;
+    if !meta.is_file() {
         return Err(fail());
     }
-    bounded(file, config)
+    let capacity = ((meta.len().saturating_add(1)) as usize).min(INPUT_LIMIT + 1);
+    bounded_with_capacity(file, config, capacity)
 }
 pub fn utf8(bytes: Vec<u8>, config: bool) -> Result<String, CheckResult> {
     String::from_utf8(bytes).map_err(|_| {

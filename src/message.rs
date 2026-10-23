@@ -12,9 +12,12 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
         r.configuration = summary();
         return r;
     }
-    if let Some(i) = text.bytes().enumerate().find_map(|(i, b)| {
-        (b == 0 || (b == b'\r' && text.as_bytes().get(i + 1) != Some(&b'\n'))).then_some(i)
-    }) {
+    let bytes = text.as_bytes();
+    if (bytes.contains(&0) || bytes.contains(&b'\r'))
+        && let Some(i) = bytes.iter().enumerate().find_map(|(i, &b)| {
+            (b == 0 || (b == b'\r' && bytes.get(i + 1) != Some(&b'\n'))).then_some(i)
+        })
+    {
         let mut r = CheckResult::error(
             Diagnostic::new(
                 "input.content.unsupported",
@@ -177,6 +180,9 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
     ds.result(Status::Valid, Status::Invalid, summary())
 }
 fn header(title: &str) -> Option<(&str, Option<&str>)> {
+    if !title.contains(": ") {
+        return None;
+    }
     let end = title.find(['(', '!', ':'])?;
     let (kind, mut rest) = title.split_at(end);
     if !kind.bytes().next()?.is_ascii_alphabetic()
