@@ -1,6 +1,6 @@
 use fluidise_clint::{CheckResult, Diagnostic, Source};
 use lexopt::Arg;
-use std::{collections::HashSet, ffi::OsString, path::PathBuf};
+use std::{ffi::OsString, path::PathBuf};
 
 pub enum Configuration {
     Defaults,
@@ -34,8 +34,14 @@ pub fn parse(args: Vec<OsString>) -> Result<Action, CheckResult> {
     if args.iter().any(|arg| arg == "--") {
         return Err(invalid());
     }
+    const FLAG_FILE: u8 = 1 << 0;
+    const FLAG_CONFIG: u8 = 1 << 1;
+    const FLAG_DEFAULTS: u8 = 1 << 2;
+    const FLAG_STDIN: u8 = 1 << 3;
+    const FLAG_HUMAN: u8 = 1 << 4;
+
     let mut parser = lexopt::Parser::from_args(args);
-    let mut seen = HashSet::new();
+    let mut seen: u8 = 0;
     let mut file = None;
     let mut config = None;
     let mut defaults = false;
@@ -45,41 +51,45 @@ pub fn parse(args: Vec<OsString>) -> Result<Action, CheckResult> {
         let Arg::Long(name) = arg else {
             return Err(invalid());
         };
-        let name = name.to_owned();
-        if !seen.insert(name.clone()) {
+        let (flag, is_file) = match name {
+            "file" => (FLAG_FILE, true),
+            "config" => (FLAG_CONFIG, false),
+            "defaults" => (FLAG_DEFAULTS, false),
+            "stdin" => (FLAG_STDIN, false),
+            "human" => (FLAG_HUMAN, false),
+            _ => return Err(invalid()),
+        };
+        if seen & flag != 0 {
             return Err(invalid());
         }
-        match name.as_str() {
-            "file" | "config" => {
-                let joined = parser.optional_value();
-                let attached = joined.is_some();
-                let value = match joined {
-                    Some(v) => v,
-                    None => parser.value().map_err(|_| invalid())?,
-                };
-                let bytes = value.as_encoded_bytes();
-                if bytes.is_empty() || (!attached && bytes.starts_with(b"-") && bytes != b"-") {
-                    return Err(invalid());
-                }
-                if name == "file" {
-                    file = Some(PathBuf::from(value));
-                } else {
-                    config = Some(PathBuf::from(value));
-                }
+        seen |= flag;
+        if flag & (FLAG_FILE | FLAG_CONFIG) != 0 {
+            let joined = parser.optional_value();
+            let attached = joined.is_some();
+            let value = match joined {
+                Some(v) => v,
+                None => parser.value().map_err(|_| invalid())?,
+            };
+            let bytes = value.as_encoded_bytes();
+            if bytes.is_empty() || (!attached && bytes.starts_with(b"-") && bytes != b"-") {
+                return Err(invalid());
             }
-            "stdin" | "human" | "defaults" => {
-                if parser.optional_value().is_some() {
-                    return Err(invalid());
-                }
-                if name == "stdin" {
-                    stdin = true;
-                } else if name == "human" {
-                    human = true;
-                } else {
-                    defaults = true;
-                }
+            if is_file {
+                file = Some(PathBuf::from(value));
+            } else {
+                config = Some(PathBuf::from(value));
             }
-            _ => return Err(invalid()),
+        } else {
+            if parser.optional_value().is_some() {
+                return Err(invalid());
+            }
+            if flag == FLAG_STDIN {
+                stdin = true;
+            } else if flag == FLAG_HUMAN {
+                human = true;
+            } else {
+                defaults = true;
+            }
         }
     }
     if stdin && file.is_some() {
