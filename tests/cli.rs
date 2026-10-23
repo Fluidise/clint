@@ -4,7 +4,7 @@ use std::{
     ffi::{OsStr, OsString},
     fs,
     io::Write,
-    os::unix::{ffi::OsStringExt, fs::symlink},
+    os::unix::{ffi::OsStringExt, fs::PermissionsExt, fs::symlink},
     path::{Path, PathBuf},
     process::{Command, Output, Stdio},
     sync::atomic::{AtomicU64, Ordering},
@@ -425,4 +425,187 @@ fn native_termination_does_not_claim_a_final_json() {
     let output = child.wait_with_output().unwrap();
     assert_eq!(output.status.signal(), Some(15));
     assert!(output.stdout.is_empty());
+}
+
+fn generated_hook(cwd: &Path, message: &OsStr) -> Command {
+    // Exercise the actual generated body without executing the installer.
+    let (_, body) = include_str!("../scripts/install-hooks.sh")
+        .split_once("<< 'EOF'\n")
+        .unwrap();
+    let (body, _) = body.split_once("\nEOF\n").unwrap();
+    let mut command = Command::new("bash");
+    command
+        .args([
+            OsStr::new("-c"),
+            OsStr::new(body),
+            OsStr::new("commit-msg"),
+            message,
+        ])
+        .current_dir(cwd)
+        .stdin(Stdio::null());
+    for (key, _) in std::env::vars_os() {
+        if key.as_encoded_bytes().starts_with(b"GIT_") {
+            command.env_remove(key);
+        }
+    }
+    command
+        .env("GIT_CONFIG_NOSYSTEM", "1")
+        .env("GIT_CONFIG_GLOBAL", "/dev/null");
+    command
+}
+
+fn hook_linter(root: &Path, profile: &str) {
+    let directory = root.join("target").join(profile);
+    fs::create_dir_all(&directory).unwrap();
+    symlink(
+        env!("CARGO_BIN_EXE_fluidise-clint"),
+        directory.join("fluidise-clint"),
+    )
+    .unwrap();
+}
+
+fn hook_script(path: &Path, source: &str) {
+    fs::write(path, source).unwrap();
+    fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
+}
+
+#[test]
+fn generated_hook_preserves_validation_and_configuration() {
+    let t = Temp::new();
+    t.git();
+    hook_linter(&t.0, "release");
+    let message = OsStr::new("./message 'é\n.txt");
+    let config = t.0.join("fluidise.toml");
+    for configuration in [
+        None,
+        Some("[commit]\nversion=1\nallowed-types=['deps']\n"),
+        Some("[commit\n"),
+    ] {
+        if let Some(text) = configuration {
+            fs::write(&config, text).unwrap();
+        }
+        for text in ["feat: fixture\n", "deps: fixture\n", "not conventional\n"] {
+            fs::write(t.0.join(message), text).unwrap();
+            let direct = command(&t.0)
+                .args([OsStr::new("--file"), message, OsStr::new("--human")])
+                .output()
+                .unwrap();
+            let out = generated_hook(&t.0, message).output().unwrap();
+            assert_eq!(
+                out.status.code(),
+                Some(if direct.status.success() { 0 } else { 1 })
+            );
+            assert_eq!(out.stdout, direct.stdout);
+            let mut stderr = direct.stderr;
+            if !direct.status.success() {
+                stderr.extend_from_slice("\n❌ Commit rejected by fluidise-clint.\nPlease update your commit message to adhere to Conventional Commits.\n".as_bytes());
+            }
+            assert_eq!(out.stderr, stderr);
+            assert_eq!(fs::read_to_string(t.0.join(message)).unwrap(), text);
+            if let Some(text) = configuration {
+                assert_eq!(fs::read_to_string(&config).unwrap(), text);
+            }
+        }
+    }
+    fs::remove_file(&config).unwrap();
+    let missing = generated_hook(&t.0, OsStr::new("absent")).output().unwrap();
+    assert_eq!(missing.status.code(), Some(1));
+    assert!(
+        String::from_utf8(missing.stderr)
+            .unwrap()
+            .contains("input.read_failed")
+    );
+    assert!(!t.0.join(".git/index").exists());
+    assert!(!t.0.join(".git/hooks/commit-msg").exists());
+}
+
+#[test]
+fn generated_hook_preserves_trailing_newline_root() {
+    let t = Temp::new();
+    let root = Temp(t.0.join("root 'é\nend\n"));
+    fs::create_dir(&root.0).unwrap();
+    root.git();
+    hook_linter(&root.0, "release");
+    fs::write(root.0.join("message"), "deps: fixture\n").unwrap();
+    fs::write(
+        root.0.join("fluidise.toml"),
+        "[commit]\nversion=1\nallowed-types=['deps']\n",
+    )
+    .unwrap();
+    let out = generated_hook(&root.0, OsStr::new("message"))
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(0), "{out:?}");
+    assert_eq!(out.stdout, b"valid\n");
+    assert!(out.stderr.is_empty());
+    assert!(!root.0.join(".git/hooks/commit-msg").exists());
+}
+
+#[test]
+fn generated_hook_selects_binary_without_git_and_preserves_build_fallback() {
+    let t = Temp::new();
+    t.git();
+    let release = t.0.join("target/release");
+    let debug = t.0.join("target/debug");
+    let bin = t.0.join("bin");
+    for path in [&release, &debug, &bin] {
+        fs::create_dir_all(path).unwrap();
+    }
+    hook_script(
+        &bin.join("git"),
+        "#!/bin/sh\necho unexpected-git >&2\nexit 99\n",
+    );
+    hook_script(
+        &release.join("fluidise-clint"),
+        "#!/bin/sh\nprintf 'release\\n'\n",
+    );
+    hook_script(
+        &debug.join("fluidise-clint"),
+        "#!/bin/sh\nprintf 'debug\\n'\n",
+    );
+    hook_script(
+        &bin.join("cargo"),
+        "#!/bin/sh\nprintf '%s\\n' \"$PWD\" \"$@\" > \"$HOOK_TEST_LOG\"\ncp \"$HOOK_TEST_LINTER\" target/debug/fluidise-clint\n",
+    );
+    let built = t.0.join("built-linter");
+    hook_script(&built, "#!/bin/sh\nprintf 'built\\n'\n");
+    let log = t.0.join("cargo.log");
+    let path = std::env::join_paths(
+        std::iter::once(bin).chain(std::env::split_paths(&std::env::var_os("PATH").unwrap())),
+    )
+    .unwrap();
+    let invoke = || {
+        generated_hook(&t.0, OsStr::new("message"))
+            .env("PATH", &path)
+            .env("HOOK_TEST_LOG", &log)
+            .env("HOOK_TEST_LINTER", &built)
+            .output()
+            .unwrap()
+    };
+    for (expected, remove) in [("release\n", &release), ("debug\n", &debug)] {
+        let out = invoke();
+        assert_eq!(out.status.code(), Some(0), "{out:?}");
+        assert_eq!(out.stdout, expected.as_bytes());
+        assert!(out.stderr.is_empty());
+        assert!(!log.exists());
+        fs::remove_file(remove.join("fluidise-clint")).unwrap();
+    }
+    let out = invoke();
+    assert_eq!(out.status.code(), Some(0), "{out:?}");
+    assert_eq!(out.stdout, b"built\n");
+    assert!(out.stderr.is_empty());
+    assert_eq!(
+        fs::read_to_string(&log).unwrap(),
+        format!(
+            "{}\nbuild\n--quiet\n--bin\nfluidise-clint\n",
+            fs::canonicalize(&t.0).unwrap().display()
+        )
+    );
+    fs::remove_file(debug.join("fluidise-clint")).unwrap();
+    hook_script(&t.0.join("bin/cargo"), "#!/bin/sh\nexit 91\n");
+    let out = invoke();
+    assert_eq!(out.status.code(), Some(91));
+    assert!(out.stdout.is_empty());
+    assert!(out.stderr.is_empty());
+    assert!(!t.0.join(".git/hooks/commit-msg").exists());
 }
