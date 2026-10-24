@@ -72,7 +72,7 @@ pub fn check_message(text: &str, policy: &Policy) -> CheckResult {
                     )
                     .at(0, kind.len()),
                 );
-            } else if !policy.allowed_types.iter().any(|t| t == kind) {
+            } else if !policy.is_allowed_type(kind) {
                 ds.push(
                     Diagnostic::new(
                         "commit.type.not_allowed",
