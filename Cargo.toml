@@ -3,8 +3,12 @@ name = "fluidise-clint"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.99.1"
-publish = false
+publish = ["crates-io"]
+description = "Deterministic, bounded Conventional Commits validation for agents and automation"
+repository = "https://github.com/Fluidise/clint"
+readme = "README.md"
 license = "MIT"
+include = ["/src/", "/tests/*.rs", "/tests/catalogue.json", "/scripts/install-hooks.sh", "/Cargo.lock", "/LICENSE", "/README.md", "/USAGE.md"]
 
 [dependencies]
 lexopt = "=0.3.2"
