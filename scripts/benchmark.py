@@ -48,6 +48,11 @@ def summary(values):
     return {"median": median, "mad": statistics.median(abs(x - median) for x in values)}
 
 
+def require(condition, context):
+    if not condition:
+        raise RuntimeError(context)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("baseline", type=Path)
@@ -61,6 +66,10 @@ def main():
         parser.error("at least 3 samples required")
     builds = {key: getattr(args, key).resolve() for key in ["baseline", "candidate"]}
     flags = {"baseline": [] if args.legacy_baseline else ["--defaults"], "candidate": [] if args.legacy_candidate else ["--defaults"]}
+    protected = {path / name for path in builds.values() for name in ("fluidise-clint", "engine")}
+    protected.add(Path(__file__).resolve())
+    if args.output.resolve() in protected:
+        parser.error("output must not overwrite frozen build or harness")
     results = {
         "complete": False,
         "environment": {"platform": platform.platform(), "python": platform.python_version()},
@@ -70,8 +79,9 @@ def main():
             "cli_unit": "ms including Python subprocess overhead; file input outside Git",
             "engine_unit": "ns per check; input and policy preparation excluded",
             "rss_unit": "bytes on macOS, collected separately with /usr/bin/time -l",
-            "acceptance": "target engine median improvement >= 20%; CLI regressions > 10% and > 3 pooled MAD require investigation",
+            "acceptance": "descriptive only; historical optimization targets are not statistical significance or general acceptance criteria",
         },
+        "harness_sha256": digest(Path(__file__)),
         "builds": {key: {name: digest(path / name) for name in ["fluidise-clint", "engine"]}
                    for key, path in builds.items()},
         "cases": {},
@@ -80,6 +90,8 @@ def main():
         manifest = path / "sources.json"
         if manifest.is_file():
             results["builds"][key]["sources"] = json.loads(manifest.read_text())
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(results, indent=2) + "\n")
     with tempfile.TemporaryDirectory(prefix="clint-benchmark-") as temporary:
         cwd = Path(temporary)
         for name, (payload, expected) in corpus().items():
@@ -95,13 +107,13 @@ def main():
                     out = subprocess.run([str(build / "fluidise-clint"), "--file", str(message), *flags[key]],
                                          cwd=cwd, capture_output=True, timeout=10)
                     elapsed = (time.perf_counter_ns() - start) / 1_000_000
-                    assert out.returncode == expected, (name, key, out)
-                    assert not out.stderr, (name, key, out.stderr)
-                    assert out.stdout.endswith(b"\n")
+                    require(out.returncode == expected, (name, key, out))
+                    require(not out.stderr, (name, key, out.stderr))
+                    require(out.stdout.endswith(b"\n"), (name, key, "missing newline"))
                     json.loads(out.stdout)
                     identity = (out.returncode, out.stdout, out.stderr)
                     comparable.setdefault("cli", identity)
-                    assert comparable["cli"] == identity, (name, key, "CLI behavior changed")
+                    require(comparable["cli"] == identity, (name, key, "CLI behavior changed"))
                     if sample >= 0:
                         observations[key]["cli_ms"].append(elapsed)
                     if name != "invalid_utf8":
@@ -109,20 +121,20 @@ def main():
                                              cwd=cwd, capture_output=True, timeout=20, check=True)
                         elapsed, identity = out.stdout.split(b"\n", 1)
                         comparable.setdefault("engine", identity)
-                        assert comparable["engine"] == identity, (name, key, "engine behavior changed")
+                        require(comparable["engine"] == identity, (name, key, "engine behavior changed"))
                         if sample >= 0:
                             observations[key]["engine_ns"].append(int(elapsed) / 100)
-            # RSS is a separate cold process observation, not a hard memory guarantee.
+            # RSS is a separate fresh-process observation, not cold caches or a memory cap.
             if platform.system() == "Darwin":
                 for sample in range(5):
                     for key in (["baseline", "candidate"] if sample % 2 else ["candidate", "baseline"]):
                         out = subprocess.run(["/usr/bin/time", "-l", str(builds[key] / "fluidise-clint"),
                                               "--file", str(message), *flags[key]], cwd=cwd, capture_output=True, timeout=10)
-                        assert out.returncode == expected
+                        require(out.returncode == expected, (name, key, "RSS invocation failed"))
                         for line in out.stderr.decode().splitlines():
                             if line.strip().endswith("maximum resident set size"):
                                 observations[key]["rss_bytes"].append(int(line.split()[0]))
-                        assert len(observations[key]["rss_bytes"]) == sample + 1
+                        require(len(observations[key]["rss_bytes"]) == sample + 1, (name, key, "missing RSS"))
             for key, samples in observations.items():
                 row[key] = {metric: {"samples": values, **summary(values)}
                             for metric, values in samples.items() if values}
@@ -133,6 +145,10 @@ def main():
             before = row["baseline"]["cli_ms"]["median"]
             after = row["candidate"]["cli_ms"]["median"]
             print(f"{name}: CLI {before:.3f} -> {after:.3f} ms", flush=True)
+    for key, path in builds.items():
+        for name in ("fluidise-clint", "engine"):
+            require(digest(path / name) == results["builds"][key][name],
+                    (key, name, "binary changed during measurement"))
     results["complete"] = True
     args.output.write_text(json.dumps(results, indent=2) + "\n")
 

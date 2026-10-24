@@ -1,220 +1,212 @@
-# Benchmark Approfondi : fluidise-clint face à l'État de l'Art
+# Benchmarks : justesse, contrats et performances CLI
 
-> **Statut des preuves :** les chiffres et affirmations concurrentielles ci-dessous
-> sont historiques et n'ont pas été reproduits par la boucle d'amélioration locale.
-> Une limite d'entrée de 1 MiB n'est pas un plafond RSS ; un timeout ne démontre
-> ni ReDoS ni boucle infinie. Voir le [protocole et les résultats locaux](benchmark-loop.md)
-> pour une comparaison avant/après traçable de `fluidise-clint` uniquement.
->
-> Pour les processus CLI indépendants dans Git, consulter la
-> [mesure locale du 23 octobre 2026](agent-throughput.md), avec versions figées,
-> résultats bruts et contrats de sortie distingués. Cette mesure ne démontre
-> pas un gain produit par rapport aux chiffres historiques ci-dessous.
+## Conclusion de l'audit du 23 octobre 2026
 
-> Ce banc d'essai exhaustif s'inspire de la méthodologie de présentation des benchmarks de [Bun](https://bun.com/blog/bun-v1.4.3), en évaluant `fluidise-clint` face aux 4 outils de référence du marché à travers 3 écosystèmes majeurs (Rust, Python et JavaScript / Node.js).
+Les anciens classements ne constituent pas une preuve suffisante pour choisir un
+outil ou une optimisation. Ils sont retirés de cette page : leurs données brutes
+et commandes complètes n'étaient pas disponibles dans les fichiers suivis.
+Les deux rapports JSON historiques conservés dans [benchmarks/](benchmarks/)
+concernent une autre mesure, plus étroite, de processus CLI.
 
----
+Constats reproductibles dans les anciens harnais :
 
-## Les Concurrents Évalués
+- `benchmark-agent.py` chronomètre seulement un petit message valide et un invalide.
+  Ses 52 contrôles étendus comparent clint à lui-même : une erreur commune peut
+  rester invisible. Ils ne démontrent pas l'équivalence fonctionnelle concurrentielle.
+- `benchmark.py` couvre 13 charges utiles pour caractériser clint avant/après,
+  mais ne possède pas d'oracle indépendant. Ses contrôles utilisaient `assert`,
+  désactivable par `python -O` ; ils sont désormais explicites. Les empreintes
+  des exécutables sont également revérifiées après mesure.
+- Les configurations, exemptions et sorties des outils diffèrent. Refuser une
+  entrée de plus de 1 MiB et valider intégralement cette entrée ne sont pas le
+  même travail. Un rejet de merge n'est pas nécessairement un faux positif.
+- Les tableaux du README combinaient des révisions et des protocoles différents.
+  Le nouveau protocole ne réutilise pas leurs ratios.
+- Une limite d'entrée ne constitue pas un plafond RSS. Un timeout ne prouve ni
+  ReDoS, ni boucle infinie, ni origine précise du ralentissement. Aucun classement
+  de sécurité, de CVE ou de supply chain ne découle de ces temps.
 
-| Outil | Version | Écosystème | Runtime requis | Dépendances | Poids sur disque |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **`fluidise-clint`** | **0.1.0** | **Rust (Natif)** | **Aucun (Binaire statique)** | **3** | **0.5 Mo** |
-| **`convco`** | 0.7.2 | Rust (Natif) | Aucun (Binaire statique) | 45 | 7.6 Mo *(15x plus gros)* |
-| **`cocogitto` (`cog`)** | 7.0.0 | Rust (Natif) | Aucun (Binaire statique) | 78 | 5.9 Mo *(12x plus gros)* |
-| **`commitizen` (`cz`)** | 4.19.2 | Python | Python 3.x | 17 | 45.2 Mo *(90x plus lourd)* |
-| **`commitlint`** | 21.2.4 | JavaScript | Node.js / V8 | 82 | 148.0 Mo *(296x plus lourd)* |
+## Question mesurée et oracle
 
----
+Le premier objectif est d'éviter des messages incorrectement acceptés ou refusés.
+La latence n'est interprétable qu'après vérification du contrat.
 
-## 1. Synthèse Exécutive (Style Bun)
+Le corpus [benchmark-corpus.json](../tests/benchmark-corpus.json) contient 37 cas :
 
-```
-TEMPS DE DÉMARRAGE ET VALIDATION (Commit Court 45 B - plus bas = meilleur)
-fluidise-clint   [13.2 ms]  ■
-convco           [ 8.9 ms]  ■
-cocogitto        [12.0 ms]  ■
-commitizen       [228.4 ms] ■■■■■■■■■■■■■■■■■ (17.3x plus lent)
-commitlint       [224.6 ms] ■■■■■■■■■■■■■■■■■ (17.0x plus lent)
+- 12 cas du socle Conventional Commits : en-tête, scope, rupture, corps, footers,
+  Unicode et erreurs structurelles ;
+- 8 cas de politique et transport propres à clint ;
+- 7 cas de configuration : remplacement des types, scope sensible à la casse,
+  longueur Unicode et erreurs opérationnelles ;
+- 3 messages publics : deux messages complets de clint et un sujet de commitlint ;
+- 7 charges de robustesse : limite exacte 1 MiB ±1 octet, scopes non fermés à
+  trois longueurs et UTF-8 invalide.
 
-CONSOMMATION MÉMOIRE RÉSIDENTE RSS (plus bas = meilleur)
-fluidise-clint   [ 7.08 Mo] ■
-convco           [10.38 Mo] ■■ (+46% RAM)
-cocogitto        [10.02 Mo] ■■ (+41% RAM)
-commitizen       [50.44 Mo] ■■■■■■■ (7.1x plus de RAM)
-commitlint       [97.12 Mo] ■■■■■■■■■■■■■■ (13.7x plus de RAM)
-```
+Chaque cas possède origine, justification, référence, résultat attendu et domaine.
+Les verdicts sont dérivés de la [spécification 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/#specification)
+ou du contrat documenté de clint, **pas d'un vote entre outils ni de la sortie
+actuelle de clint**. Ce corpus est un oracle explicite et révisable, pas une
+certification exhaustive de conformité. Sa rédaction n'a pas fait l'objet d'une
+revue indépendante.
 
-### Matrice Récapitulative des Performances
+Points de séparation importants :
 
-| Métrique clé | `fluidise-clint` | `convco` | `cocogitto` | `commitizen` | `commitlint` |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Latence commit standard** | **13.2 ms** | 8.9 ms | 12.0 ms | 228.4 ms *(17.3x)* | 224.6 ms *(17.0x)* |
-| **Empreinte RSS (standard)** | **7.08 Mo** | 10.38 Mo | 10.02 Mo | 50.44 Mo *(7.1x)* | 97.12 Mo *(13.7x)* |
-| **Instructions CPU retirées** | **18.5 M** | 36.8 M *(2.0x)* | 64.2 M *(3.5x)* | 1 582 M *(85x)* | 2 134 M *(115x)* |
-| **Débit en boucle (100 commits)** | **76.9 /s** | 119.4 /s | 87.6 /s | 4.5 /s *(17x plus lent)* | 4.7 /s *(16x plus lent)* |
-| **Attaque ReDoS (100k chars)** | **13.7 ms** | 9.8 ms | 16.4 ms | 230.6 ms | **TIMEOUT (> 5s)** |
-| **Frontière 1 MiB (rejet borné)** | **13.0 ms (code 2)** | 21.9 ms (non borné) | 21.6 ms (non borné) | 234.5 ms (non borné) | **TIMEOUT (> 5s)** |
-| **Stress test extrême (20 Mo)** | **17.2 ms (7.1 Mo)** | 332.9 ms (72.4 Mo) | 208.8 ms (70.0 Mo) | 365.1 ms (109.8 Mo) | **TIMEOUT (> 5s)** |
-| **Format par défaut** | **JSON strict** | Texte libre | Texte ANSI | Texte libre | Texte ANSI |
-| **Plafond mémoire garanti** | **Oui (1 MiB)** | Non | Non | Non | Non |
+- La spécification autorise d'autres types ; `maintenance:` rejeté par les défauts
+  de clint est une différence de politique, pas une violation universelle.
+- La casse du type, les exemptions Git, les temporaires, les tailles et les
+  configurations personnalisées sont isolés des comparaisons partagées.
+- Les messages réels sont sélectionnés intentionnellement, pas aléatoirement.
+  Ils ne représentent pas une fréquence d'erreurs observée en production.
+  Le sujet seul est identifié comme tel ; aucun historique privé n'est utilisé.
+- Aucun taux d'exactitude global ne mélange cas réels, synthétiques et politiques.
+  Les comptes par groupe distinguent acceptations erronées, rejets erronés,
+  erreurs opérationnelles, timeouts et exclusions.
 
----
+## Réévaluation des cinq outils
 
-## 2. Workload 1 : Latence Unitaire et Empreinte Mémoire
+Le [nouveau harnais](../scripts/benchmark_suite.py) utilise uniquement Python
+standard, Git et les exécutables locaux fournis explicitement. Il n'installe rien.
 
-Mesures sur 15 itérations consécutives (médiane) précédées de 3 runs de préchauffage (warmup).
+| Outil | Contrat du pilote | État local de cette évaluation |
+| --- | --- | --- |
+| clint | `--stdin --defaults`, ou configuration du cas ; JSON et codes 0/1/2 | Exécuté, 37/37 contrôles réussis |
+| cocogitto | `--config … verify --file -`, TOML vide | 7.0.0 exécuté ; divergence sur corps sans ligne vide |
+| convco | `check --config … --from-stdin`, `{}` | 0.7.2 exécuté ; même divergence |
+| commitlint | stdin, configuration CJS explicite, `--strict` ; 3 signifie rejet | Adaptateur documenté/testé avec sorties simulées, pas d'exécutable local fourni |
+| commitizen | stdin, `--config … check`, `cz_conventional_commits` ; 14/32 signifient rejet | Adaptateur documenté/testé avec sorties simulées, pas d'exécutable local fourni |
 
-### A. Commit Court Valide (`valid_small` — 44 octets)
-> `feat(core): implement bounded memory stream\n`
+La politique commitlint du pilote est volontairement limitée : type/sujet requis,
+énumération des types et ligne vide avant le corps. Des options de parsing
+explicites prennent en charge scope et `!` sans ajouter de paquet de preset. Elle n'est pas présentée comme
+le preset `config-conventional` complet. Les sorties natives ne sont pas tenues
+pour du JSON ni pour équivalentes aux diagnostics structurés de clint. Les codes
+opérationnels connus et timeouts sont séparés des rejets. Un code natif ambigu
+(comme 1 pour cog/convco) ne suffit pas à distinguer toutes les erreurs internes
+d'un rejet syntaxique ; les sorties restent conservées pour examen. Les contrôles
+positifs réduisent ce risque sans constituer une preuve exhaustive.
 
-| Outil | Latence | Faster | RSS Max | Less RAM | Instructions CPU | Cycles CPU |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`fluidise-clint`** | **13.21 ms** | **17.0x** vs commitlint | **7.08 Mo** | **13.7x** vs commitlint | **18 543 315** | **9 565 922** |
-| `convco` | 8.94 ms | 25.1x vs commitlint | 10.38 Mo | 9.4x vs commitlint | 36 757 408 | 15 277 025 |
-| `cocogitto` | 12.04 ms | 18.6x vs commitlint | 10.02 Mo | 9.7x vs commitlint | 64 236 936 | 23 094 562 |
-| `commitizen` | 228.38 ms | Baseline Py | 50.44 Mo | 1.9x vs commitlint | 1 582 267 838 | 659 869 500 |
-| `commitlint` | 224.62 ms | Baseline Node | 97.12 Mo | Baseline Node | 2 134 505 543 | 843 121 079 |
+Les deux adaptateurs non exécutés restent **non validés en intégration** ; leurs
+versions et résultats ne sont pas inventés. Les cinq outils sont réévalués dans
+le périmètre, mais seulement trois disposent ici de preuves runtime.
 
-### B. Commit Invalide avec Détection d'Erreur (`invalid_small` — 37 octets)
-> `fix something without type separator\n`
+Sources d'interface consultées via Context7 le 23 octobre 2026 :
+[commitlint CLI](https://commitlint.js.org/reference/cli.html),
+[Commitizen check](https://commitizen-tools.github.io/commitizen/commands/check/),
+[Commitizen exit codes](https://commitizen-tools.github.io/commitizen/exit_codes/),
+[cog verify](https://github.com/cocogitto/cocogitto/blob/main/website/guide/verify.md),
+[convco](https://github.com/convco/convco).
+Les versions installées de cog et convco ont aussi été interrogées avec `--help`.
 
-| Outil | Latence | Code de Sortie | Format Diagnostic | Instructions CPU |
-| :--- | :---: | :---: | :--- | :---: |
-| **`fluidise-clint`** | **12.50 ms** | **1** | **JSON structuré (`commit.header.invalid`, span)** | **18 531 950** |
-| `convco` | 9.35 ms | 1 | Texte brut terminal (`FAIL - first line doesn't match`) | 36 694 078 |
-| `cocogitto` | 12.23 ms | 1 | Texte compilateur Rustc (`--> 1:4 | Expected...`) | 64 286 279 |
-| `commitizen` | 236.48 ms | 14 | Texte terminal (`commit validation: failed!`) | 1 579 413 343 |
-| `commitlint` | 240.11 ms | 1 | Texte terminal Unicode/ANSI (`✖ subject-empty`, etc.) | 2 108 973 470 |
+## Résultats locaux et conséquence
 
-### C. Commit Réaliste Multiligne (`multiline_2k` — 1 809 octets)
-> Sujet, saut de ligne, corps avec 25 puces d'explication d'invariants, et pied de page `Refs: #123`.
+Les [données brutes macOS](benchmarks/oracle-macos-2026-10-23.json) contiennent
+versions, empreintes, commandes, politiques, attentes, sorties et échantillons.
+Le binaire clint a été construit par `cargo build --release --locked` avec
+Rust 1.99.1 depuis le code produit de
+`84f77dea947839da8ca70c0d47dda68bbfcb9c80` ; ce lot ne modifie ni ce code,
+ni les dépendances ni le profil release.
 
-| Outil | Latence | Faster | RSS Max | Instructions CPU |
-| :--- | :---: | :---: | :---: | :---: |
-| **`fluidise-clint`** | **12.63 ms** | **18.1x** | **7.09 Mo** | **18 568 495** |
-| `convco` | 8.69 ms | 26.2x | 10.36 Mo | 37 053 396 |
-| `cocogitto` | 11.90 ms | 19.2x | 10.02 Mo | 64 856 263 |
-| `commitizen` | 237.13 ms | Baseline Py | 50.33 Mo | 1 584 372 395 |
-| `commitlint` | 228.07 ms | Baseline Node | 92.08 Mo | 2 183 384 955 |
+Sur les 15 cas partagés (12 synthétiques et 3 publics), cog 7.0.0 et convco 0.7.2
+acceptent `fix: prevent duplicate\nExplain cause.`. Le cas attend un rejet : la
+règle 6 exige une ligne vide avant le corps. Les 14 autres cas partagés passent.
+Cette divergence concerne ces versions et commandes, pas toutes les versions,
+ni toutes les possibilités de configuration de ces produits.
 
----
+**Conséquence : les deux concurrents sont exclus du chronométrage partagé de cette
+exécution.** Publier quand même un classement laisserait entendre qu'ils vérifient
+les mêmes obligations. Le résultat n'est donc pas « clint gagne en vitesse »,
+mais « équivalence du contrat partagé non démontrée ». Le pilote conserve leurs
+sorties et le motif d'exclusion. Les cas propres à clint ne leur sont pas imputés.
 
-## 3. Workload 2 : Débit en Boucle Agentique Intensive (100 Commits)
+Les mesures restantes de clint sont descriptives : aucun objectif de gain, aucun
+seuil bloquant de performance et aucune extrapolation à un agent complet.
+L'environnement effectivement mesuré est macOS ARM64. Linux reste reproductible
+par le même pilote, mais n'a pas été exécuté ici. Windows est hors premier lot.
 
-Dans une boucle de travail agentique où des sous-agents itèrent, modifient du code et valident fréquemment leurs messages de commits, le débit brut détermine directement la réactivité de la chaîne :
+## Reproduction
 
-```mermaid
-xychart-beta
-    title "Débit de Validation Agentique (Commits par Seconde - plus haut = meilleur)"
-    x-axis ["fluidise-clint", "convco", "cocogitto", "commitizen", "commitlint"]
-    y-axis "Commits / sec" 0 --> 130
-    bar [76.9, 119.4, 87.6, 4.5, 4.7]
-```
+Construire clint avec le lockfile, puis lancer la conformité seule :
 
-| Outil | Temps total (100 commits) | Débit (commits / sec) | Facteur d'Accélération |
-| :--- | :---: | :---: | :---: |
-| **`convco`** | **0.84 s** | **119.4 /s** | **25.4x plus rapide** |
-| **`cocogitto`** | **1.14 s** | **87.6 /s** | **18.6x plus rapide** |
-| **`fluidise-clint`** | **1.30 s** | **76.9 /s** | **16.4x plus rapide** *(avec émission JSON)* |
-| `commitlint` | 21.39 s | 4.7 /s | Baseline Node.js |
-| `commitizen` | 22.23 s | 4.5 /s | Baseline Python |
-
-> [!NOTE]
-> `fluidise-clint` valide 100 commits en **1.3 seconde** tout en sérialisant un flux JSON strict avec offsets d'octets. `commitlint` et `commitizen` mettent plus de 21 secondes pour accomplir la même tâche.
-
----
-
-## 4. Workload 3 : Validation d'un Historique Git Réel
-
-Validation des 9 derniers commits réels du dépôt `Fluidise/clint` :
-
-| Outil | Temps d'exécution | Commits Valides | Commits Invalides | Erreurs système |
-| :--- | :---: | :---: | :---: | :---: |
-| **`fluidise-clint`** | **0.11 s** | **9** | **0** | **0** |
-| `convco` | 0.10 s | 8 | 1 *(faux positif sur PR merge)* | 0 |
-| `cocogitto` | 0.10 s | 8 | 1 *(faux positif sur PR merge)* | 0 |
-| `commitizen` | 2.02 s | 9 | 0 | 0 |
-| `commitlint` | 1.94 s | 8 | 1 *(faux positif sur PR merge)* | 0 |
-
-> `fluidise-clint` gère nativement les messages de fusion GitHub/Git (`Merge pull request #...`) sans générer de faux positifs.
-
----
-
-## 5. Workload 4 : Résistance ReDoS, Cas Adversariaux et Plafond de Mémoire
-
-Ce workload évalue la robustesse des outils lorsqu'ils sont confrontés à des entrées malveillantes, accidentellement gigantesques ou conçues pour provoquer des dénis de service (ReDoS).
-
-```mermaid
-flowchart TD
-    subgraph "Gestion des Payloads Volumineux"
-        Input["Payload de 20 Mo transmis via Git Hook"]
-        Input --> Clint["fluidise-clint\n(Arrêt au probe byte 1 MiB + 1)"]
-        Input --> Cog["cocogitto / convco\n(Allocation complète)"]
-        Input --> Lint["commitlint\n(V8 String + Regex Backtracking)"]
-        
-        Clint --> ResClint["✅ Sortie en 17.2 ms\nRSS plafonné à 7.1 Mo\nCode POSIX 2 (input.limit_exceeded)"]
-        Cog --> ResCog["⚠️ Sortie en 208 ms\nRSS explose à 70 Mo (+700% RAM)\nRisque d'OOM sur VM restreinte"]
-        Lint --> ResLint["❌ TIMEOUT (> 5s)\nBlocage total du processus\nCPU spinning"]
-    end
+```sh
+cargo build --release --locked
+python3 scripts/benchmark_suite.py \
+  --clint target/release/fluidise-clint \
+  --output target/benchmark-correctness.json
+python3 -m unittest discover -s tests -p 'test_benchmark*.py' -v
 ```
 
-### Résultats Détaillés des Cas Adversariaux
+Ajouter les chemins vers les concurrents **déjà installés** et le chronométrage :
 
-| Test Case | `fluidise-clint` | `convco` | `cocogitto` | `commitizen` | `commitlint` |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **`redos_100k`**<br>(100k chars sans fermeture) | **13.7 ms**<br>exit 1 (7.0 Mo) | 9.8 ms<br>exit 1 (10.7 Mo) | 16.4 ms<br>exit 1 (27.3 Mo) | 230.6 ms<br>exit 14 (50.2 Mo) | **TIMEOUT (> 5s)**<br>❌ Gel du moteur regex |
-| **`boundary_under_1mb`**<br>(1 048 500 octets — valide) | **14.9 ms**<br>exit 0 (7.0 Mo) | 23.5 ms<br>exit 0 (13.4 Mo) | 22.5 ms<br>exit 0 (13.0 Mo) | 247.1 ms<br>exit 0 (56.1 Mo) | **TIMEOUT (> 5s)**<br>❌ Échec de buffer |
-| **`boundary_over_1mb`**<br>(1 048 578 octets — **+2 octets**) | **13.0 ms**<br>🛡️ **exit 2** (7.1 Mo)<br>`input.limit_exceeded` | 21.9 ms<br>exit 0 (13.0 Mo)<br>*(Aucune limite)* | 21.6 ms<br>exit 0 (12.9 Mo)<br>*(Aucune limite)* | 234.5 ms<br>exit 0 (52.8 Mo)<br>*(Aucune limite)* | **TIMEOUT (> 5s)**<br>❌ Échec de buffer |
-| **`heavy_2mb`**<br>(2 097 159 octets) | **18.7 ms**<br>🛡️ **exit 2** (7.1 Mo) | 39.8 ms<br>exit 0 (18.0 Mo) | 36.5 ms<br>exit 0 (16.1 Mo) | 297.1 ms<br>exit 0 (56.5 Mo) | **TIMEOUT (> 5s)**<br>❌ Échec de buffer |
-| **`extreme_20mb`**<br>(20 971 527 octets) | **17.2 ms**<br>🛡️ **exit 2** (7.1 Mo) | 332.9 ms<br>exit 0 (**72.4 Mo**) | 208.8 ms<br>exit 0 (**70.0 Mo**) | 365.1 ms<br>exit 0 (**109.8 Mo**) | **TIMEOUT (> 5s)**<br>❌ Échec de buffer |
-
-> [!IMPORTANT]
-> **La garantie d'invariant `fluidise-clint` :**
-> - `fluidise-clint` est le **seul linter au monde** à appliquer une borne mémoire dure (1 MiB). Dès que l'entrée dépasse cette limite, la lecture s'interrompt immédiatement après un seul octet témoin (`probe byte`). L'empreinte mémoire reste rigoureusement plane à **7.1 Mo**, avec un temps de réaction instantané (< 18 ms) et un code d'erreur `2`.
-> - Tous les autres outils lisent l'intégralité du fichier en mémoire vive (la consommation de RAM de `convco` et `cog` est multipliée par 7, celle de `commitizen` dépasse 100 Mo).
-> - `commitlint` ne parvient même pas à traiter 1 Mo et part en boucle infinie / timeout.
-
----
-
-## 6. Workload 5 : Poids sur Disque et Sécurité Supply-Chain
-
-Dans les conteneurs Docker CI/CD légers (images scratch ou alpine) et les environnements d'agents IA isolés, le poids des dépendances et la surface de vulnérabilité sont critiques :
-
-| Outil | Poids sur disque | Dépendances transitives | Vulnérabilités CVE | Runtime externe |
-| :--- | :---: | :---: | :---: | :---: |
-| **`fluidise-clint`** | **0.5 Mo** | **3** (`lexopt`, `toml`, `serde_json`) | **0** | **Aucun** (statique) |
-| `convco` | 7.6 Mo | 45 | 0 | Aucun (statique) |
-| `cocogitto` | 5.9 Mo | 78 | 0 | Aucun (statique) |
-| `commitizen` | 45.2 Mo | 17 | 0 | Python 3.x requis |
-| `commitlint` | 148.0 Mo | 82 | Risque npm régulier | Node.js / V8 requis |
-
----
-
-## 7. Comparaison de l'Ergonomie Agentique
-
-```
-=================================================================================================
-Fonctionnalité                  fluidise-clint    convco          cocogitto       commitlint
-=================================================================================================
-JSON natif par défaut           OUI (stdout)      NON (texte)     NON (texte)     NON (texte ANSI)
-Codes d'erreur machine          OUI (typés)       NON             NON             Partiel
-Offsets d'octets précis (span)  OUI               NON             NON             NON
-Codes de sortie distincts       3 (0, 1, 2)       2 (0, 1)        2 (0, 1)        2 (0, 1)
-Limite d'entrée garantie        1 MiB (stricte)   Illimitée       Illimitée       Illimitée
-Protection ReDoS                Native            Native          Partielle       Vulnérable
-=================================================================================================
+```sh
+python3 scripts/benchmark_suite.py \
+  --clint target/release/fluidise-clint \
+  --cog /absolute/path/to/cog --convco /absolute/path/to/convco \
+  --timing --samples 7 --iterations 10 \
+  --output target/benchmark-comparison.json
 ```
 
----
+Les options `--commitlint /absolute/path/to/commitlint` et
+`--commitizen /absolute/path/to/cz` activent les deux autres adaptateurs.
+Ne pas fournir un lanceur de téléchargement tel que `npx` ou `uvx`.
+L'absence d'un outil est enregistrée, jamais assimilée à un échec de validation.
 
-## Conclusion
+Les versions, configurations et empreintes doivent accompagner toute publication.
+Pour les outils interprétés, l'empreinte du lanceur ne couvre **pas** tous les
+modules ou le runtime : figer aussi leur environnement avant une comparaison
+publiable. Les chemins de fixtures temporaires dans les commandes servent à
+l'audit ; le pilote les recrée, ils ne sont pas destinés à être rejoués tels quels.
 
-1. **Face à `commitlint` (Node.js)** : `fluidise-clint` est **17x plus rapide**, utilise **13.7x moins de RAM**, pèse **296x moins lourd**, et ne souffre d'aucun gel sur les expressions régulières complexes ou les gros messages.
-2. **Face à `commitizen` (Python)** : `fluidise-clint` est **17x plus rapide**, consomme **7x moins de mémoire**, et ne nécessite aucun environnement virtuel Python.
-3. **Face à `convco` et `cocogitto` (Rust)** : Bien que les outils Rust partagent la rapidité d'exécution native, **`fluidise-clint` est le seul à offrir la sécurité d'une mémoire rigoureusement bornée (7.1 Mo constants)** et **une interface purement agentique en JSON strict par défaut**.
+### Protocole de temps
 
----
+- HOME, configuration Git et dépôt isolés ; pas de dépendance au dépôt appelant.
+- Entrée stdin identique, sorties natives capturées. Le lancement du processus,
+  la lecture, la configuration et la sortie sont inclus ; le jugement est hors temps.
+- Admission d'un outil seulement si **tous** les cas partagés passent. Les cas de
+  politique et erreurs propres à clint restent exclus de ce contrat partagé.
+- Deux lots de préchauffage, puis sept lots par défaut ; dix processus séquentiels
+  par lot, ordre des outils mélangé avec graine fixe. Échantillons en ms/processus,
+  médiane et MAD conservés séparément pour chaque cas ; aucun score total pondéré.
+- Première observation de chaque cas conservée séparément. Les caches OS ne sont
+  pas contrôlés : ce n'est **pas** une mesure de démarrage à froid.
+- Toute sortie devenue incorrecte pendant la mesure l'interrompt. Un timeout de
+  10 s n'est jamais une validation rapide. `complete: false` signale un rapport
+  interrompu ; `complete: true` signifie exécution terminée, pas réussite de tous
+  les outils. Le code final dépend de la conformité clint ; consulter aussi les
+  exclusions et résultats des concurrents.
+- Aucune affirmation de significativité statistique depuis la seule MAD. Mesures
+  sensibles au scheduler, au cache, au coût Python et au lancement des processus.
 
-> [!TIP]
-> Pour une analyse détaillée des fonctionnalités présentes chez les concurrents (assistant interactif, bump de version, range git, etc.) et les choix d'architecture associés, consultez l'[ADR 0001: Évaluation des Écarts Fonctionnels Face aux Concurrents et Pistes d'Évolution](adr/0001-competitor-feature-gaps-and-evolution-tracks.md).
+La CI macOS/Linux exécute le protocole et l'oracle clint sans chronométrage.
+Elle ne télécharge pas de concurrents et ne bloque pas sur un seuil de vitesse.
+L'ajout de ces étapes n'est pas une preuve de leur exécution sur GitHub Actions.
+
+## Sort des benchmarks et pistes d'amélioration
+
+| Élément | Décision et problème servi |
+| --- | --- |
+| Deux petits messages concurrentiels | Gardés dans le corpus élargi ; insuffisants seuls pour établir équivalence |
+| Comparaison clint avant/après | Conservée pour non-régression exacte ; ne remplace pas l'oracle |
+| Corps, ruptures, footers, Unicode, configuration | Ajoutés à l'oracle pour détecter verdicts incorrects et écarts de politique |
+| Messages publics | Ajoutés avec provenance ; représentativité encore limitée |
+| Limites et entrées denses des anciens harnais | Conservées comme robustesse clint, pas compétition de vitesse à travail différent |
+| Scope non fermé | Tailles croissantes ajoutées comme contrôles de robustesse ; aucune conclusion ReDoS |
+| RSS macOS de `benchmark.py` | Observation séparée conservée ; aucune garantie de plafond, pas de RSS Linux inventée |
+| Classements historiques, CPU, CVE, « seul au monde » | Retirés faute de preuve suffisante et comparable |
+| Boucle réelle d'agent / corrections | Différée : nécessite modèle, prompt, budget et protocole propres |
+
+Pistes à explorer, **pas optimisations déjà justifiées** :
+
+1. Résoudre l'écart de structure avec les configurations natives concurrentes,
+   si possible, avant de réintroduire une comparaison de temps équivalente.
+2. Enrichir le corpus avec incidents publics et erreurs de rédaction documentées,
+   plutôt que multiplier des variations synthétiques sans problème explicite.
+3. Séparer coût du lancement CLI et coût moteur avec les harnais existants avant
+   de choisir le responsable d'une éventuelle optimisation.
+4. Mesurer croissance en fonction de la taille sur une machine stabilisée avant
+   toute conclusion de complexité ; RSS et temps restent des observations.
+5. Évaluer plus tard l'utilité des diagnostics pour les corrections d'agents.
+   Aucun incident utilisateur chiffré ni gain métier n'a été fourni dans cet audit.
+
+Les [mesures CLI historiques](agent-throughput.md) et la
+[boucle d'optimisation historique](benchmark-loop.md) restent consultables avec
+leurs révisions et limites propres. Ne pas fusionner leurs chiffres avec ceux-ci.
