@@ -22,3 +22,4 @@ Follow the rules in [docs/git-workflow.md](docs/git-workflow.md):
 
 - Local Git hook setup: `./scripts/install-hooks.sh`
 - Situational worktrees: `./scripts/worktree.sh {add|remove|list}`
+- Local code coverage: `./scripts/coverage.sh [options]`
