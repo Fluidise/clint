@@ -1,0 +1,631 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "feature",
+      "group": "spec",
+      "message": "feat: add search",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Required type, colon-space and description (rules 1, 2, 5).",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "fix_scope",
+      "group": "spec",
+      "message": "fix(parser): preserve accents",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Optional scope and required description (rules 1, 4, 5).",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "breaking_bang",
+      "group": "spec",
+      "message": "feat(api)!: remove legacy option",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Breaking prefix permits omission of footer (rules 11, 13).",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "breaking_footer",
+      "group": "spec",
+      "message": "feat: change format\n\nBREAKING CHANGE: identifiers are strings",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Uppercase breaking footer with value (rules 8, 11, 12).",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "body",
+      "group": "spec",
+      "message": "fix: prevent duplicate\n\nExplain the cause.\n\nExplain the remedy.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Body separated by blank line; free paragraphs (rules 6, 7).",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "footer",
+      "group": "spec",
+      "message": "fix: prevent duplicate\n\nReviewed-by: Camille\nRefs #42",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Footer token, separator and value (rules 8, 9).",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "unicode",
+      "group": "spec",
+      "message": "fix: préserver les accents",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Specification does not require English descriptions (rule 5).",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "capital_subject",
+      "group": "spec",
+      "message": "feat: Add search",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Specification does not require lowercase descriptions (rule 5).",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "no_type",
+      "group": "spec",
+      "message": "add search",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Missing type and colon-space (rule 1).",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "shared": true
+    },
+    {
+      "id": "no_space",
+      "group": "spec",
+      "message": "feat:add search",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Required colon-space separator missing (rule 1).",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "shared": true
+    },
+    {
+      "id": "no_description",
+      "group": "spec",
+      "message": "feat: ",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Description required (rule 5).",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "shared": true
+    },
+    {
+      "id": "unseparated_body",
+      "group": "spec",
+      "message": "fix: prevent duplicate\nExplain cause.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Body must begin after a blank line (rule 6).",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.body.invalid"
+        ]
+      },
+      "shared": true
+    },
+    {
+      "id": "custom_type_default",
+      "group": "policy",
+      "message": "maintenance: refresh examples",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Specification permits additional types; clint defaults restrict the type list.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.not_allowed"
+        ]
+      },
+      "shared": false
+    },
+    {
+      "id": "uppercase_type",
+      "group": "policy",
+      "message": "FEAT: add search",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Clint policy requires lowercase ASCII types, not a universal specification verdict.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.case"
+        ]
+      },
+      "shared": false
+    },
+    {
+      "id": "fixup",
+      "group": "policy",
+      "message": "fixup! feat: add search",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Temporary commits are forbidden by clint policy.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.temporary.not_allowed"
+        ]
+      },
+      "shared": false
+    },
+    {
+      "id": "merge",
+      "group": "policy",
+      "message": "Merge branch 'topic'",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Clint merge exemption; rejection elsewhere is a policy difference.",
+      "expected": {
+        "status": "ignored",
+        "diagnostic_codes": []
+      },
+      "shared": false
+    },
+    {
+      "id": "empty_footer",
+      "group": "policy",
+      "message": "fix: prevent duplicate\n\nRefs #",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Clint rejects blank footer values.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.footer.invalid"
+        ]
+      },
+      "shared": false
+    },
+    {
+      "id": "nul_before_exemption",
+      "group": "policy",
+      "message": "Merge branch 'topic'\u0000",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Unsupported content is rejected before merge exemptions.",
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.content.unsupported"
+        ]
+      },
+      "shared": false
+    },
+    {
+      "id": "bare_cr",
+      "group": "policy",
+      "message": "feat: add\rsearch",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Bare CR is operationally unsupported.",
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.content.unsupported"
+        ]
+      },
+      "shared": false
+    },
+    {
+      "id": "crlf",
+      "group": "policy",
+      "message": "fix: preserve lines\r\n\r\nBody.\r\n",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "CRLF is accepted without modifying original byte offsets.",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": false
+    },
+    {
+      "id": "custom_type_config",
+      "group": "configuration",
+      "message": "maintenance: refresh examples",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Explicit types replace defaults.",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": false,
+      "config": "[commit]\nversion=1\nallowed-types=['maintenance']\n"
+    },
+    {
+      "id": "replacement_rejects_default",
+      "group": "configuration",
+      "message": "feat: add search",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Replacement list excludes feat.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.not_allowed"
+        ]
+      },
+      "shared": false,
+      "config": "[commit]\nversion=1\nallowed-types=['maintenance']\n"
+    },
+    {
+      "id": "scope_case",
+      "group": "configuration",
+      "message": "fix(CLI): correct output",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Scope matching is case-sensitive.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.scope.not_allowed"
+        ]
+      },
+      "shared": false,
+      "config": "[commit]\nversion=1\nallowed-scopes=['cli']\n"
+    },
+    {
+      "id": "length_unicode_at",
+      "group": "configuration",
+      "message": "fix: é",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Title limit counts Unicode scalar values, not UTF-8 bytes.",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": false,
+      "config": "[commit]\nversion=1\nmax-title-length=6\n"
+    },
+    {
+      "id": "length_unicode_over",
+      "group": "configuration",
+      "message": "fix: éé",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Seven scalar values exceed configured six.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.title.too_long"
+        ]
+      },
+      "shared": false,
+      "config": "[commit]\nversion=1\nmax-title-length=6\n"
+    },
+    {
+      "id": "merge_disabled",
+      "group": "configuration",
+      "message": "Merge branch 'topic'",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Merge exemption can be disabled.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "shared": false,
+      "config": "[commit]\nversion=1\nignore-merges=false\n"
+    },
+    {
+      "id": "bad_config",
+      "group": "configuration",
+      "message": "feat: add search",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#configuration",
+      "rationale": "Unsupported configuration version is an operational failure.",
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "config.version.unsupported"
+        ]
+      },
+      "shared": false,
+      "config": "[commit]\nversion=999\n"
+    },
+    {
+      "id": "real_84f77dea",
+      "group": "real",
+      "message": "docs: update README benchmarks with latest engine and throughput gains (#18)",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/Fluidise/clint/commit/84f77dea947839da8ca70c0d47dda68bbfcb9c80",
+        "projection": "full message, no terminal newline",
+        "verified": "2026-10-23"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public full message; conventional header and separated optional body. Not a random usage sample.",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "real_888b5a5b",
+      "group": "real",
+      "message": "perf: optimize ReDoS scanning, JSON output streaming and input buffering (#17)\n\n- Vectorize NUL and lone CR scanning in check_message via slice contains\n- Fast-fail header parsing when ': ' is absent\n- Stream JSON output directly into bounded buffer, avoiding DOM Value allocations\n- Pre-allocate bounded read capacity for input files and eliminate redundant stat\n- Parse CLI arguments using a bitmask without heap allocation",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/Fluidise/clint/commit/888b5a5b98d938b7eb5ddab889359eee9aa2339c",
+        "projection": "full message, no terminal newline",
+        "verified": "2026-10-23"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public full message; conventional header and separated optional body. Not a random usage sample.",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "real_commitlint",
+      "group": "real",
+      "message": "fix: update dependency jsonc to v3 (#5020)",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/conventional-changelog/commitlint/commit/5a9d6a43e813ea74cf62c04e188b9417909b0b9f",
+        "projection": "subject only",
+        "verified": "2026-10-23"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public subject only; bot trailer excluded explicitly. Not a full-message test.",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": true
+    },
+    {
+      "id": "bytes_1048575",
+      "group": "robustness",
+      "message": "feat: add search\n\n",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": false,
+      "pad_to_bytes": 1048575
+    },
+    {
+      "id": "bytes_1048576",
+      "group": "robustness",
+      "message": "feat: add search\n\n",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "shared": false,
+      "pad_to_bytes": 1048576
+    },
+    {
+      "id": "bytes_1048577",
+      "group": "robustness",
+      "message": "feat: add search\n\n",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.limit_exceeded"
+        ]
+      },
+      "shared": false,
+      "pad_to_bytes": 1048577
+    },
+    {
+      "id": "unclosed_scope_1000",
+      "group": "robustness",
+      "message": "feat(",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "shared": false,
+      "suffix_repeat": {
+        "text": "a",
+        "count": 1000
+      }
+    },
+    {
+      "id": "unclosed_scope_10000",
+      "group": "robustness",
+      "message": "feat(",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "shared": false,
+      "suffix_repeat": {
+        "text": "a",
+        "count": 10000
+      }
+    },
+    {
+      "id": "unclosed_scope",
+      "group": "robustness",
+      "message": "feat(",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "shared": false,
+      "suffix_repeat": {
+        "text": "a",
+        "count": 100000
+      }
+    },
+    {
+      "id": "invalid_utf8",
+      "group": "robustness",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "basis": "README.md#operational-guarantees-and-boundaries",
+      "rationale": "UTF-8 decoding failure is not an invalid conventional commit.",
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.encoding.invalid"
+        ]
+      },
+      "shared": false,
+      "hex": "666561743a20ff"
+    }
+  ]
+}

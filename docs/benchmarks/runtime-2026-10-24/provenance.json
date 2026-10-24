@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-24",
+  "base_revision": "54e0ab15d694c684d6bb8c02249d507db9c64a36",
+  "source_overrides": [
+    "scripts/benchmark_suite.py",
+    "tests/test_benchmark_suite.py"
+  ],
+  "virtualization": "OrbStack 2.2.5 (2020500), Linux ARM64 container; not Docker Desktop",
+  "image_id": "sha256:4bb8723a8b982a3be8ed5a201ae01be8db9feadf788dcdf729e91da5bcada7b5",
+  "macos_python": "3.14.3",
+  "macos_node": "v26.8.1",
+  "runtime_limits": {
+    "network": "none",
+    "cap_drop": "ALL",
+    "no_new_privileges": true,
+    "memory": "4g",
+    "pids_limit": 512
+  },
+  "package_installation": "isolated under ignored target/benchmark-runtime and container image; no project or global dependency installation",
+  "timing_scope": "7 samples, 1 independent CLI invocation per sample, 2 warmups; no cross-OS or native/VM equivalence claimed",
+  "github_actions_executed": false,
+  "pull_request_state_changed": false,
+  "files_sha256": {
+    "Dockerfile": "744bde66e8f74de992362031c1e1a3757bcd63dc36ae5a768e7057791a598273",
+    "commitizen-original-version-probe.json": "08748b59cdf3c37c9d17afaca0317f2d477384a8226ed6a90cbe9813193db505",
+    "linux-benchmark_tests.log": "09fbebcce6d7b76ce6844ded0e14b44317353b18480cca17f88efcda8cca03d2",
+    "linux-clippy.log": "bd8553dae50a0d5789787742d827f4d21327c24431cd46d85c638e4960ada577",
+    "linux-doctests.log": "90e694cee298e5c7059bd28f90d443104a2d10d6ce618cb70f148f6bccc67246",
+    "linux-first-attempt-rust.log": "b0a2794bad4bb2009b00b607651421d1570b5a687d7f24c334d412da9089168d",
+    "linux-first-attempt.json": "37baa8fcea1778e82c03a66a9de856dec4204a1405676559c8903ddd9dbca364",
+    "linux-format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "linux-image.json": "45b5395f8a201e770b7a249d90fada55be3196aba2bd9c6a76a14cca6cfd377d",
+    "linux-oracle.log": "f1cc87cf79ea699ddade24c1134bbb097db77fd44c1ecd918c0214b00ce83dea",
+    "linux-rust_tests.log.json": "9d0846005be5f2c74e92e553c1d769cc85af9680616f6f0b8402740def820cd2",
+    "linux-system-packages.txt": "66a8885a14880c39c30740d921eb7e1ac1be414f622226a61046a383786b1ace",
+    "linux-validation.json": "4e8a8471a0ddd963f4eadb397a848b48b071c2ea6a35f58b5080b31e3a2e0c20",
+    "linux.json": "175ce60320d554136975d23f4e427e873fc56219cad6680bd90be315f529f7ed",
+    "macos.json": "d0247e1dc66416997fd79cfacaeb6099a8aaaeb1235f215041ccb80a1ebb3edc",
+    "package-lock.json": "52d80997ac403e80c9ef67c997f0739181de9da7b7f9d06dd071a478a9731fa3",
+    "package.json": "7a876d64d68b2064e23abcca83ee2ad5928fcd97b37255bb875b800bdefb6381",
+    "requirements.txt": "41026b365a31cc4e1abb3556d1d478b99b34d4ad862a479a2449d505c56d83c4",
+    "run-linux.py": "040af1caa9681752505bea861838bbe29142581cfe5935c86ea57206019ff7d4",
+    "source-overrides.patch": "6cfc545f528e0a3c0eb30adc42ea8d002229b0ecc07a899e95fcb776721dfa89"
+  },
+  "artifact_representation": {
+    "linux-rust_tests.log.json": "JSON-encoded exact original log bytes; raw_sha256 verifies reconstruction",
+    "source-overrides.patch": "Zero-context unified diff; reconstructs the same two tested source files"
+  }
+}

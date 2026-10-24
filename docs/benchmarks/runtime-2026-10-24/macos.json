@@ -1,0 +1,3251 @@
+{
+  "complete": true,
+  "schema_version": 1,
+  "corpus_sha256": "7ec6023e0f75ddcbc5ef0c4a13634253f7774201f932486c52014b0d2987fe4c",
+  "harness_sha256": "ef8271caaaa3ad19ba2cf1a2b283105d2371a2f08664f6cc6dda37fbb314d4ad",
+  "support_sha256": "d8b57f22e50a508df9ff960b5a306f6b3254f6f1eb0f69004f61000749061a91",
+  "environment": {
+    "platform": "macOS-26.7.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "python": "3.14.3",
+    "python_path": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "git": "git version 2.53.0",
+    "git_path": "/opt/homebrew/bin/git"
+  },
+  "method": {
+    "samples": 7,
+    "iterations": 1,
+    "warmups": 2,
+    "order_seed": 20261023,
+    "unit": "ms per independent stdin CLI process; native output captured",
+    "cache": "uncontrolled OS caches; first observation is NOT cold startup",
+    "gate": "all shared oracle cases must pass before timing a tool",
+    "scope": "serial CLI latency, not hooks, agents or in-process engine",
+    "threshold": "descriptive median/MAD only; no significance or speed target"
+  },
+  "excluded": {},
+  "configs": {
+    "cog.toml": "",
+    ".convco": "{}\n",
+    ".cz.toml": "[tool.commitizen]\nname = \"cz_conventional_commits\"\n",
+    "commitlint.config.cjs": "module.exports = {\n  defaultIgnores: false,\n  parserPreset: {parserOpts: {\n    headerPattern: /^(\\w+)(?:\\(([^)]+)\\))?!?: (.+)$/,\n    headerCorrespondence: ['type', 'scope', 'subject'],\n    noteKeywords: ['BREAKING CHANGE', 'BREAKING-CHANGE']\n  }},\n  rules: {\n    'type-empty': [2, 'never'], 'subject-empty': [2, 'never'],\n    'type-enum': [2, 'always', ['feat','fix','docs','style','refactor','perf','test','build','ci','chore','revert']],\n    'body-leading-blank': [2, 'always']\n  }\n};\n"
+  },
+  "tools": {
+    "clint": {
+      "path": "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+      "sha256": "16d1cf3f7e0297316a742a563d0e7be323b96c189e80b41a335ce3d0c27b00ca",
+      "version": "fluidise-clint 0.1.0"
+    },
+    "cog": {
+      "path": "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+      "sha256": "406cb16a5f919b6114e0682d6de36b8b95204b811bab6cd50533d11ad59ec937",
+      "version": "cog 7.0.0"
+    },
+    "convco": {
+      "path": "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+      "sha256": "627f499a364caacb4dccd0b711c445197a22e0704d838fd1069c291836502653",
+      "version": "convco 0.7.2"
+    },
+    "commitlint": {
+      "path": "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+      "sha256": "00152fb7b44a91af1eeb074d5c364fa17642ff849300426e15f82550aa1d9329",
+      "version": "@commitlint/cli@21.2.4"
+    },
+    "commitizen": {
+      "path": "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+      "sha256": "f55339a99cf46ec16ad585ccfea5fd47986041edda022294f740395f2eb41721",
+      "version": "4.19.3"
+    }
+  },
+  "correctness": {
+    "feature": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Required type, colon-space and description (rules 1, 2, 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 16,
+      "sha256": "1663dfd8eeb6b98bf6fb58ea97822b1965a7d57b35444cfab56115fa7eca2560",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.510334
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "add search (not committed) - now\n\tAuthor: Benchmark\n\tType: feat\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.91925
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 11.132333
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 238.122917
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 245.378792
+      }
+    },
+    "fix_scope": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Optional scope and required description (rules 1, 4, 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 29,
+      "sha256": "4390420ed7d7f1be7452ebbbdb858baf51e18ec04412ff6983a253657fb1378f",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 5.205542
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "preserve accents (not committed) - now\n\tAuthor: Benchmark\n\tType: fix\n\tScope: parser\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.185
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 8.961333
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 227.129125
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 243.682375
+      }
+    },
+    "breaking_bang": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Breaking prefix permits omission of footer (rules 11, 13).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 32,
+      "sha256": "819d7c994db91ba363d910dcfe5dc061ed0a56ed03c50f504dc3119879437b4f",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.577458
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "BREAKING CHANGE - remove legacy option (not committed) - now\n\tAuthor: Benchmark\n\tType: feat\n\tScope: api\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.350791
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 9.110833
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 219.803458
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 263.126333
+      }
+    },
+    "breaking_footer": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Uppercase breaking footer with value (rules 8, 11, 12).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 61,
+      "sha256": "f43e0e30bdd35dba17ce1bfd17d42cd526a2af23fd7bc6118ea1eebb51975e59",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 7.997042
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "BREAKING CHANGE - change format (not committed) - now\n\tAuthor: Benchmark\n\tType: feat\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.242708
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 9.197333
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 236.724584
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 241.31175
+      }
+    },
+    "body": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Body separated by blank line; free paragraphs (rules 6, 7).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 63,
+      "sha256": "a8ee91c4ad1c7cc3b3fb711b95749798a5ebd8963db2feae29c5da58104ad2d8",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.66975
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "prevent duplicate (not committed) - now\n\tAuthor: Benchmark\n\tType: fix\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 11.687125
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 9.159167
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 220.774
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 254.900291
+      }
+    },
+    "footer": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Footer token, separator and value (rules 8, 9).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 53,
+      "sha256": "57210a24572f1204027fab6455aa48a61ab384f10ea91b62f5bc1ca6e37cf6c0",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.487542
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "prevent duplicate (not committed) - now\n\tAuthor: Benchmark\n\tType: fix\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.529875
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 8.708792
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 247.66025
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 235.495041
+      }
+    },
+    "unicode": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Specification does not require English descriptions (rule 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 27,
+      "sha256": "97a31d0bf2e8f38ec12d8666662f1c893f4fd2261ced00c58400e2b765ce2a03",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.807458
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "préserver les accents (not committed) - now\n\tAuthor: Benchmark\n\tType: fix\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.297708
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 8.568625
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 219.986875
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 254.190458
+      }
+    },
+    "capital_subject": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Specification does not require lowercase descriptions (rule 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 16,
+      "sha256": "6365852b49501920305a914cc8f662e3e3909462488bd3fc00e77c43df874663",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 5.416334
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "Add search (not committed) - now\n\tAuthor: Benchmark\n\tType: feat\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 14.288708
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 9.172
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 245.559458
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 237.959459
+      }
+    },
+    "no_type": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Missing type and colon-space (rule 1).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 10,
+      "sha256": "afb4bb22f4edb2b3a38b494e125ee8c2fa34d30c889e07bb06baf8f70c645850",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":10,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 6.1745
+      },
+      "cog": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "Error: Missing commit type separator `:`\n\nCaused by:\n     --> 1:4\n      |\n    1 | add search\n      |    ^---\n      |\n      = expected scope or type_separator\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.837583
+      },
+      "convco": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "FAIL  -  first line doesn't match `<type>[optional scope]: <description>`  add search\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 8.823792
+      },
+      "commitlint": {
+        "exit": 3,
+        "classification": "reject",
+        "stdout": "⧗   --- input ---\nadd search\n✖   type may not be empty [type-empty]\n✖   subject may not be empty [subject-empty]\n\n✖   found 2 problems, 0 warnings\nⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint\n\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 234.9725
+      },
+      "commitizen": {
+        "exit": 14,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "commit validation: failed!\nplease enter a commit message in the commitizen format.\ncommit \"\": \"add search\n\"pattern: (?s)(build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\(\\S+\\))?!?: ([^\\n\\r]+)((\\n\\n.*)|(\\s*))?$\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 257.5025
+      }
+    },
+    "no_space": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Required colon-space separator missing (rule 1).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 15,
+      "sha256": "40ec20a4cf87392851459624cea9ea8635d35a66b7e1c4807d879dbde817aa10",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":15,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.957584
+      },
+      "cog": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "Error: Missing whitespace terminal after commit type separator `:`\n\nCaused by:\n     --> 1:6\n      |\n    1 | feat:add search\n      |      ^---\n      |\n      = expected whitespace_terminal\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.383208
+      },
+      "convco": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "FAIL  -  first line doesn't match `<type>[optional scope]: <description>`  feat:add search\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 8.711083
+      },
+      "commitlint": {
+        "exit": 3,
+        "classification": "reject",
+        "stdout": "⧗   --- input ---\nfeat:add search\n✖   type may not be empty [type-empty]\n✖   subject may not be empty [subject-empty]\n\n✖   found 2 problems, 0 warnings\nⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint\n\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 330.631625
+      },
+      "commitizen": {
+        "exit": 14,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "commit validation: failed!\nplease enter a commit message in the commitizen format.\ncommit \"\": \"feat:add search\n\"pattern: (?s)(build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\(\\S+\\))?!?: ([^\\n\\r]+)((\\n\\n.*)|(\\s*))?$\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 231.033
+      }
+    },
+    "no_description": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Description required (rule 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 6,
+      "sha256": "e885121852d5b06c176e0e02a49653ee424d36b5c51a455fc83721657873553d",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":6,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.761208
+      },
+      "cog": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "Error: Missing whitespace terminal after commit type separator `:`\n\nCaused by:\n     --> 1:6\n      |\n    1 | feat:\n      |      ^---\n      |\n      = expected whitespace_terminal\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.344709
+      },
+      "convco": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "FAIL  -  first line doesn't match `<type>[optional scope]: <description>`  feat: \n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 8.93525
+      },
+      "commitlint": {
+        "exit": 3,
+        "classification": "reject",
+        "stdout": "⧗   --- input ---\nfeat: \n✖   type may not be empty [type-empty]\n✖   subject may not be empty [subject-empty]\n\n✖   found 2 problems, 0 warnings\nⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint\n\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 249.770291
+      },
+      "commitizen": {
+        "exit": 14,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "commit validation: failed!\nplease enter a commit message in the commitizen format.\ncommit \"\": \"feat:\n\"pattern: (?s)(build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\(\\S+\\))?!?: ([^\\n\\r]+)((\\n\\n.*)|(\\s*))?$\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 320.77825
+      }
+    },
+    "unseparated_body": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Body must begin after a blank line (rule 6).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.body.invalid"
+        ]
+      },
+      "bytes": 37,
+      "sha256": "cbf06fff48b73887404c1030a5a9244a2295723b005f88097865dfa385b7dc73",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.body.invalid\",\"message\":\"Body must be separated from the title by an empty line.\",\"source\":\"message\",\"span\":{\"end\":37,\"start\":23}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.817584
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "prevent duplicate (not committed) - now\n\tAuthor: Benchmark\n\tType: fix\n\tScope: none\n\n",
+        "passed": false,
+        "outcome": "false_accept",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 11.384708
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": false,
+        "outcome": "false_accept",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 10.180458
+      },
+      "commitlint": {
+        "exit": 3,
+        "classification": "reject",
+        "stdout": "⧗   --- input ---\nfix: prevent duplicate\n\nExplain cause.\n✖   body must have leading blank line [body-leading-blank]\n\n✖   found 1 problems, 0 warnings\nⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint\n\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 225.695375
+      },
+      "commitizen": {
+        "exit": 14,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "commit validation: failed!\nplease enter a commit message in the commitizen format.\ncommit \"\": \"fix: prevent duplicate\nExplain cause.\n\"pattern: (?s)(build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\(\\S+\\))?!?: ([^\\n\\r]+)((\\n\\n.*)|(\\s*))?$\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 225.7645
+      }
+    },
+    "custom_type_default": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Specification permits additional types; clint defaults restrict the type list.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.not_allowed"
+        ]
+      },
+      "bytes": 29,
+      "sha256": "7f3da7b666421f74dcc32b8f6cf1ba44f1f3a85ed42cf945aee44f28f4df665f",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.type.not_allowed\",\"message\":\"Commit type is not allowed.\",\"source\":\"message\",\"span\":{\"end\":11,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.1965
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "uppercase_type": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Clint policy requires lowercase ASCII types, not a universal specification verdict.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.case"
+        ]
+      },
+      "bytes": 16,
+      "sha256": "2e7e8a4ec9f58243119ec26f7ef41880ccbf05a5938c025b0ad2fafd4bf7a73d",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.type.case\",\"message\":\"Commit types must be lowercase ASCII.\",\"source\":\"message\",\"span\":{\"end\":4,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.389583
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "fixup": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Temporary commits are forbidden by clint policy.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.temporary.not_allowed"
+        ]
+      },
+      "bytes": 23,
+      "sha256": "b5eab28f71f22b6092c4c7a47c88791c71acb17df5c2a9d07d5505fd757221a8",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.temporary.not_allowed\",\"message\":\"Temporary commit messages are not allowed.\",\"source\":\"message\",\"span\":{\"end\":23,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.094708
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "merge": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Clint merge exemption; rejection elsewhere is a policy difference.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "ignored",
+        "diagnostic_codes": []
+      },
+      "bytes": 20,
+      "sha256": "710a3be614442c116904eb43068e64aa2ce34363c4e3a7bf9b0a9bdd8c9213d6",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"reason\":\"merge.git\",\"schema_version\":1,\"status\":\"ignored\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.783792
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "empty_footer": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Clint rejects blank footer values.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.footer.invalid"
+        ]
+      },
+      "bytes": 30,
+      "sha256": "d005867709386bd4847413d0bd034e1151aa0e4b9dd3f166fb6a9736ff42ca6e",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.footer.invalid\",\"message\":\"Footer value must not be blank.\",\"source\":\"message\",\"span\":{\"end\":30,\"start\":24}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.793291
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "nul_before_exemption": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Unsupported content is rejected before merge exemptions.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.content.unsupported"
+        ]
+      },
+      "bytes": 21,
+      "sha256": "c4941263d75e13adf662a080568ef301378bd4202f327086d526c4ad8a97897d",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"input.content.unsupported\",\"message\":\"NUL and bare CR are unsupported.\",\"source\":\"message\",\"span\":{\"end\":21,\"start\":20}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.212
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "bare_cr": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Bare CR is operationally unsupported.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.content.unsupported"
+        ]
+      },
+      "bytes": 16,
+      "sha256": "2fc7510440a25a5bb022184b0f584a5f5c15757b2014aaeba52a2e20d804d8cb",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"input.content.unsupported\",\"message\":\"NUL and bare CR are unsupported.\",\"source\":\"message\",\"span\":{\"end\":10,\"start\":9}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.00525
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "crlf": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "CRLF is accepted without modifying original byte offsets.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 30,
+      "sha256": "0cd90fffee758d362cbdb8f522a9850f5a649af6b3234eaa9aeeb80cfc51b030",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.269833
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "custom_type_config": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Explicit types replace defaults.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 29,
+      "sha256": "7f3da7b666421f74dcc32b8f6cf1ba44f1f3a85ed42cf945aee44f28f4df665f",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 3.485292
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "replacement_rejects_default": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Replacement list excludes feat.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.not_allowed"
+        ]
+      },
+      "bytes": 16,
+      "sha256": "1663dfd8eeb6b98bf6fb58ea97822b1965a7d57b35444cfab56115fa7eca2560",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.type.not_allowed\",\"message\":\"Commit type is not allowed.\",\"source\":\"message\",\"span\":{\"end\":4,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 3.657708
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "scope_case": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Scope matching is case-sensitive.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.scope.not_allowed"
+        ]
+      },
+      "bytes": 24,
+      "sha256": "ca4da71ffe2f000a1af238f96c4a7a736863e6458beea77ace9363e50bc038d4",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.scope.not_allowed\",\"message\":\"Commit scope is not allowed.\",\"source\":\"message\",\"span\":{\"end\":7,\"start\":4}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 3.899
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "length_unicode_at": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Title limit counts Unicode scalar values, not UTF-8 bytes.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 7,
+      "sha256": "7feca3ea4119c144a7d598d129f0dd24f8ce33704f3bde9f9471bb4e92e933e1",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 3.81725
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "length_unicode_over": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Seven scalar values exceed configured six.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.title.too_long"
+        ]
+      },
+      "bytes": 9,
+      "sha256": "b25fe2816d88d3d18d3dfedb3c3ee36a7938c563f9e39945c33d6958d5e4d9cf",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.title.too_long\",\"message\":\"Commit title exceeds the configured length.\",\"source\":\"message\",\"span\":{\"end\":9,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 3.64
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "merge_disabled": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Merge exemption can be disabled.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 20,
+      "sha256": "710a3be614442c116904eb43068e64aa2ce34363c4e3a7bf9b0a9bdd8c9213d6",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":20,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 3.963
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "bad_config": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Unsupported configuration version is an operational failure.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "config.version.unsupported"
+        ]
+      },
+      "bytes": 16,
+      "sha256": "1663dfd8eeb6b98bf6fb58ea97822b1965a7d57b35444cfab56115fa7eca2560",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"config.version.unsupported\",\"field\":[\"commit\",\"version\"],\"message\":\"commit.version must be the supported integer 1.\",\"source\":\"configuration\",\"span\":{\"end\":20,\"start\":17}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 3.814209
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "real_84f77dea": {
+      "group": "real",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public full message; conventional header and separated optional body. Not a random usage sample.",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/Fluidise/clint/commit/84f77dea947839da8ca70c0d47dda68bbfcb9c80",
+        "projection": "full message, no terminal newline",
+        "verified": "2026-10-23"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 76,
+      "sha256": "89ee743c0245c5548750a2ab895c8e1a114a71b48cd6a476c8262f8f066e4dfa",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 3.46525
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "update README benchmarks with latest engine and throughput gains (#18) (not committed) - now\n\tAuthor: Benchmark\n\tType: docs\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 13.626208
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 9.069708
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 216.32775
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 229.867792
+      }
+    },
+    "real_888b5a5b": {
+      "group": "real",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public full message; conventional header and separated optional body. Not a random usage sample.",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/Fluidise/clint/commit/888b5a5b98d938b7eb5ddab889359eee9aa2339c",
+        "projection": "full message, no terminal newline",
+        "verified": "2026-10-23"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 425,
+      "sha256": "3cd7513ef4250a52ea23e6ea5fb641b3ae87608a01516d827c26b1a8224f27b3",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.590666
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "optimize ReDoS scanning, JSON output streaming and input buffering (#17) (not committed) - now\n\tAuthor: Benchmark\n\tType: perf\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 12.162541
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 8.401167
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 207.717958
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 291.201042
+      }
+    },
+    "real_commitlint": {
+      "group": "real",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public subject only; bot trailer excluded explicitly. Not a full-message test.",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/conventional-changelog/commitlint/commit/5a9d6a43e813ea74cf62c04e188b9417909b0b9f",
+        "projection": "subject only",
+        "verified": "2026-10-23"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 42,
+      "sha256": "a783eca5aefa852e0f9fa4484d10017beaf651b54d08777526e4896207fe908f",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.070083
+      },
+      "cog": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "\n",
+        "stderr": "update dependency jsonc to v3 (#5020) (not committed) - now\n\tAuthor: Benchmark\n\tType: fix\n\tScope: none\n\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/cocogitto/7.0.0/bin/cog",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/cog.toml",
+          "verify",
+          "--file",
+          "-"
+        ],
+        "elapsed_ms": 11.491166
+      },
+      "convco": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/homebrew/Cellar/convco/0.7.2/bin/convco",
+          "check",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.convco",
+          "--from-stdin"
+        ],
+        "elapsed_ms": 8.829375
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/npm/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 232.04825
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+          "--config",
+          "/var/folders/ny/6qklddkx1472t96gxcqf6l7h0000gn/T/clint-suite-g6kq3jir/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 227.286958
+      }
+    },
+    "bytes_1048575": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 1048575,
+      "sha256": "9f5de4f4e9f5e879429b73ed6d0d28509301c2cf0728b047c4aa67e2df4c877a",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 12.017792
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "bytes_1048576": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 1048576,
+      "sha256": "e27efb842a44f543ba081abdc085c4eb59eb0ffc9486b7a7f71cc54ee72f2f6e",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 12.603917
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "bytes_1048577": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.limit_exceeded"
+        ]
+      },
+      "bytes": 1048577,
+      "sha256": "b136c2d544ebeba1ead030177a384424fdf699e2d22b7f17b4962bde02a1ba76",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"input.limit_exceeded\",\"message\":\"Input exceeds the byte limit.\",\"source\":\"message\"}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 12.474208
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "unclosed_scope_1000": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 1005,
+      "sha256": "163ee597442b7ff6ec2cb55975f6b8670dead8016a2ee58d47e4d72d9a8950da",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":1005,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.610458
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "unclosed_scope_10000": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 10005,
+      "sha256": "8f338a2259802b13c8735c69f83ec363efc6f2cbbd96576fdc33186e5057a682",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":10005,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 9.507041
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "unclosed_scope": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 100005,
+      "sha256": "ae909f5e64c26ff69233d9466b588ca4a010af33ea4e46a8456073de712866c5",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":100005,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 7.414625
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "invalid_utf8": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "README.md#operational-guarantees-and-boundaries",
+      "rationale": "UTF-8 decoding failure is not an invalid conventional commit.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.encoding.invalid"
+        ]
+      },
+      "bytes": 7,
+      "sha256": "285c04cca666e0d6ba5eb440fb4942e6f79ec46417331a960d37a08f801a05e3",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"input.encoding.invalid\",\"message\":\"Message must be UTF-8.\",\"source\":\"message\"}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/Users/acrazie/.codex/worktrees/1dad/lint/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.211334
+      },
+      "cog": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "convco": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    }
+  },
+  "timing": {
+    "eligible": [
+      "clint",
+      "commitlint",
+      "commitizen"
+    ],
+    "excluded": {
+      "cog": "failed shared oracle; inspect correctness rows",
+      "convco": "failed shared oracle; inspect correctness rows"
+    },
+    "cases": {
+      "feature": {
+        "clint": {
+          "samples_ms": [
+            4.928542,
+            4.646375,
+            4.337916,
+            6.024125,
+            3.851542,
+            4.561666,
+            4.014083
+          ],
+          "first_case_observation_ms": 4.510334,
+          "median": 4.561666,
+          "mad": 0.3668760000000004
+        },
+        "commitlint": {
+          "samples_ms": [
+            246.063791,
+            278.97725,
+            217.333042,
+            256.846792,
+            217.23925,
+            213.438125,
+            213.077458
+          ],
+          "first_case_observation_ms": 238.122917,
+          "median": 217.333042,
+          "mad": 4.255583999999999
+        },
+        "commitizen": {
+          "samples_ms": [
+            235.563542,
+            242.237375,
+            227.029875,
+            218.760292,
+            239.240917,
+            218.5615,
+            227.897958
+          ],
+          "first_case_observation_ms": 245.378792,
+          "median": 227.897958,
+          "mad": 9.137665999999996
+        }
+      },
+      "fix_scope": {
+        "clint": {
+          "samples_ms": [
+            3.373208,
+            3.876917,
+            3.967541,
+            4.052917,
+            4.353791,
+            5.253959,
+            3.949792
+          ],
+          "first_case_observation_ms": 5.205542,
+          "median": 3.967541,
+          "mad": 0.09062400000000004
+        },
+        "commitlint": {
+          "samples_ms": [
+            216.543625,
+            216.645291,
+            212.947875,
+            216.924167,
+            213.40675,
+            215.271542,
+            215.648833
+          ],
+          "first_case_observation_ms": 227.129125,
+          "median": 215.648833,
+          "mad": 0.9964579999999899
+        },
+        "commitizen": {
+          "samples_ms": [
+            228.377667,
+            230.141584,
+            225.162875,
+            229.14075,
+            226.477584,
+            221.569292,
+            230.957875
+          ],
+          "first_case_observation_ms": 243.682375,
+          "median": 228.377667,
+          "mad": 1.900082999999995
+        }
+      },
+      "breaking_bang": {
+        "clint": {
+          "samples_ms": [
+            4.361083,
+            4.833916,
+            3.841208,
+            4.385708,
+            3.914917,
+            4.318708,
+            4.092959
+          ],
+          "first_case_observation_ms": 4.577458,
+          "median": 4.318708,
+          "mad": 0.22574900000000042
+        },
+        "commitlint": {
+          "samples_ms": [
+            213.029458,
+            213.673917,
+            216.447292,
+            215.434417,
+            213.141292,
+            219.301791,
+            213.033042
+          ],
+          "first_case_observation_ms": 219.803458,
+          "median": 213.673917,
+          "mad": 0.6444589999999835
+        },
+        "commitizen": {
+          "samples_ms": [
+            230.944084,
+            221.420125,
+            220.439459,
+            223.267583,
+            224.771125,
+            224.324959,
+            240.122708
+          ],
+          "first_case_observation_ms": 263.126333,
+          "median": 224.324959,
+          "mad": 2.904833999999994
+        }
+      },
+      "breaking_footer": {
+        "clint": {
+          "samples_ms": [
+            4.746167,
+            4.142542,
+            4.4595,
+            3.950375,
+            3.844583,
+            4.141584,
+            4.823708
+          ],
+          "first_case_observation_ms": 7.997042,
+          "median": 4.142542,
+          "mad": 0.29795899999999964
+        },
+        "commitlint": {
+          "samples_ms": [
+            215.153208,
+            216.027458,
+            215.079459,
+            214.41,
+            211.601834,
+            215.574,
+            217.113875
+          ],
+          "first_case_observation_ms": 236.724584,
+          "median": 215.153208,
+          "mad": 0.7432080000000099
+        },
+        "commitizen": {
+          "samples_ms": [
+            223.815667,
+            220.119125,
+            228.623875,
+            223.760125,
+            225.674167,
+            222.3085,
+            228.777541
+          ],
+          "first_case_observation_ms": 241.31175,
+          "median": 223.815667,
+          "mad": 1.8585000000000207
+        }
+      },
+      "body": {
+        "clint": {
+          "samples_ms": [
+            3.251,
+            4.134416,
+            3.869083,
+            3.620333,
+            3.764916,
+            3.853708,
+            4.375041
+          ],
+          "first_case_observation_ms": 3.66975,
+          "median": 3.853708,
+          "mad": 0.2333750000000001
+        },
+        "commitlint": {
+          "samples_ms": [
+            216.235875,
+            214.660542,
+            215.817916,
+            215.457833,
+            214.325166,
+            217.1465,
+            216.173583
+          ],
+          "first_case_observation_ms": 220.774,
+          "median": 215.817916,
+          "mad": 0.4179589999999962
+        },
+        "commitizen": {
+          "samples_ms": [
+            226.393791,
+            227.713333,
+            228.114708,
+            227.477083,
+            222.683959,
+            229.967416,
+            227.883667
+          ],
+          "first_case_observation_ms": 254.900291,
+          "median": 227.713333,
+          "mad": 0.4013750000000016
+        }
+      },
+      "footer": {
+        "clint": {
+          "samples_ms": [
+            4.760291,
+            3.956833,
+            3.672709,
+            3.343375,
+            3.829541,
+            4.817,
+            4.2225
+          ],
+          "first_case_observation_ms": 4.487542,
+          "median": 3.956833,
+          "mad": 0.28412400000000027
+        },
+        "commitlint": {
+          "samples_ms": [
+            215.078958,
+            217.445166,
+            222.636333,
+            215.211958,
+            215.7045,
+            226.972542,
+            224.308083
+          ],
+          "first_case_observation_ms": 247.66025,
+          "median": 217.445166,
+          "mad": 2.3662080000000003
+        },
+        "commitizen": {
+          "samples_ms": [
+            227.534125,
+            223.934,
+            222.679,
+            226.099917,
+            223.988625,
+            283.394209,
+            228.775417
+          ],
+          "first_case_observation_ms": 235.495041,
+          "median": 226.099917,
+          "mad": 2.1659170000000074
+        }
+      },
+      "unicode": {
+        "clint": {
+          "samples_ms": [
+            4.233917,
+            6.301542,
+            4.339833,
+            4.161791,
+            3.991042,
+            4.075458,
+            3.928958
+          ],
+          "first_case_observation_ms": 3.807458,
+          "median": 4.161791,
+          "mad": 0.17074899999999982
+        },
+        "commitlint": {
+          "samples_ms": [
+            276.642,
+            263.752084,
+            215.616042,
+            288.92775,
+            210.23,
+            211.618792,
+            210.585209
+          ],
+          "first_case_observation_ms": 219.986875,
+          "median": 215.616042,
+          "mad": 5.386042000000003
+        },
+        "commitizen": {
+          "samples_ms": [
+            232.438792,
+            247.152292,
+            223.345583,
+            234.12725,
+            217.848416,
+            227.819334,
+            220.925542
+          ],
+          "first_case_observation_ms": 254.190458,
+          "median": 227.819334,
+          "mad": 6.307916000000006
+        }
+      },
+      "capital_subject": {
+        "clint": {
+          "samples_ms": [
+            4.245,
+            3.866083,
+            3.878541,
+            4.191,
+            4.02675,
+            4.350667,
+            3.707542
+          ],
+          "first_case_observation_ms": 5.416334,
+          "median": 4.02675,
+          "mad": 0.16425
+        },
+        "commitlint": {
+          "samples_ms": [
+            210.47225,
+            209.023041,
+            209.073583,
+            215.856208,
+            219.227167,
+            213.358208,
+            238.748875
+          ],
+          "first_case_observation_ms": 245.559458,
+          "median": 213.358208,
+          "mad": 4.284624999999977
+        },
+        "commitizen": {
+          "samples_ms": [
+            217.52425,
+            219.021958,
+            218.786167,
+            218.6605,
+            226.156208,
+            215.877541,
+            274.516833
+          ],
+          "first_case_observation_ms": 237.959459,
+          "median": 218.786167,
+          "mad": 1.261917000000011
+        }
+      },
+      "no_type": {
+        "clint": {
+          "samples_ms": [
+            3.845209,
+            3.924875,
+            5.176,
+            4.246584,
+            4.468334,
+            4.196209,
+            4.238541
+          ],
+          "first_case_observation_ms": 6.1745,
+          "median": 4.238541,
+          "mad": 0.22979299999999991
+        },
+        "commitlint": {
+          "samples_ms": [
+            212.865084,
+            213.058875,
+            219.876875,
+            225.517,
+            231.075334,
+            224.001875,
+            228.261958
+          ],
+          "first_case_observation_ms": 234.9725,
+          "median": 224.001875,
+          "mad": 4.26008299999998
+        },
+        "commitizen": {
+          "samples_ms": [
+            224.097916,
+            224.830666,
+            226.307667,
+            220.484375,
+            226.674833,
+            240.973916,
+            269.71225
+          ],
+          "first_case_observation_ms": 257.5025,
+          "median": 226.307667,
+          "mad": 2.2097510000000113
+        }
+      },
+      "no_space": {
+        "clint": {
+          "samples_ms": [
+            5.925208,
+            4.0205,
+            4.386792,
+            4.282625,
+            4.45475,
+            3.815334,
+            4.061
+          ],
+          "first_case_observation_ms": 3.957584,
+          "median": 4.282625,
+          "mad": 0.2216250000000004
+        },
+        "commitlint": {
+          "samples_ms": [
+            218.3165,
+            218.475208,
+            217.299542,
+            216.06225,
+            216.491375,
+            220.644292,
+            221.784459
+          ],
+          "first_case_observation_ms": 330.631625,
+          "median": 218.3165,
+          "mad": 1.8251249999999857
+        },
+        "commitizen": {
+          "samples_ms": [
+            228.649708,
+            223.955083,
+            226.354583,
+            225.484584,
+            226.016083,
+            228.909916,
+            221.567708
+          ],
+          "first_case_observation_ms": 231.033,
+          "median": 226.016083,
+          "mad": 2.061000000000007
+        }
+      },
+      "no_description": {
+        "clint": {
+          "samples_ms": [
+            3.650834,
+            4.505209,
+            4.844333,
+            4.031375,
+            3.000625,
+            3.98475,
+            3.307833
+          ],
+          "first_case_observation_ms": 3.761208,
+          "median": 3.98475,
+          "mad": 0.5204589999999998
+        },
+        "commitlint": {
+          "samples_ms": [
+            216.337625,
+            214.839042,
+            215.776917,
+            214.732375,
+            217.355709,
+            217.780875,
+            214.292042
+          ],
+          "first_case_observation_ms": 249.770291,
+          "median": 215.776917,
+          "mad": 1.044542000000007
+        },
+        "commitizen": {
+          "samples_ms": [
+            229.920792,
+            225.738583,
+            232.385291,
+            222.800041,
+            221.365792,
+            222.430541,
+            224.851291
+          ],
+          "first_case_observation_ms": 320.77825,
+          "median": 224.851291,
+          "mad": 2.420749999999998
+        }
+      },
+      "unseparated_body": {
+        "clint": {
+          "samples_ms": [
+            4.050416,
+            3.842792,
+            4.238959,
+            4.210208,
+            3.773875,
+            4.498291,
+            4.061417
+          ],
+          "first_case_observation_ms": 4.817584,
+          "median": 4.061417,
+          "mad": 0.17754200000000075
+        },
+        "commitlint": {
+          "samples_ms": [
+            222.586792,
+            216.846541,
+            219.080458,
+            218.050792,
+            215.204291,
+            212.058584,
+            214.364041
+          ],
+          "first_case_observation_ms": 225.695375,
+          "median": 216.846541,
+          "mad": 2.233916999999991
+        },
+        "commitizen": {
+          "samples_ms": [
+            222.3445,
+            221.126792,
+            227.742417,
+            220.612125,
+            228.907334,
+            224.138667,
+            224.474459
+          ],
+          "first_case_observation_ms": 225.7645,
+          "median": 224.138667,
+          "mad": 3.0118750000000034
+        }
+      },
+      "real_84f77dea": {
+        "clint": {
+          "samples_ms": [
+            4.052333,
+            3.910708,
+            3.783833,
+            4.402792,
+            4.551542,
+            3.739416,
+            4.412583
+          ],
+          "first_case_observation_ms": 3.46525,
+          "median": 4.052333,
+          "mad": 0.3129170000000001
+        },
+        "commitlint": {
+          "samples_ms": [
+            212.585791,
+            216.240084,
+            216.668125,
+            215.787917,
+            219.160084,
+            216.483875,
+            210.78725
+          ],
+          "first_case_observation_ms": 216.32775,
+          "median": 216.240084,
+          "mad": 0.45216700000000287
+        },
+        "commitizen": {
+          "samples_ms": [
+            222.033333,
+            225.621625,
+            223.835333,
+            226.091375,
+            224.273875,
+            226.477375,
+            224.002167
+          ],
+          "first_case_observation_ms": 229.867792,
+          "median": 224.273875,
+          "mad": 1.3477499999999907
+        }
+      },
+      "real_888b5a5b": {
+        "clint": {
+          "samples_ms": [
+            4.136541,
+            3.898917,
+            4.19625,
+            3.834667,
+            4.544833,
+            3.844792,
+            3.938875
+          ],
+          "first_case_observation_ms": 4.590666,
+          "median": 3.938875,
+          "mad": 0.10420799999999986
+        },
+        "commitlint": {
+          "samples_ms": [
+            220.949208,
+            217.143083,
+            218.330541,
+            215.432208,
+            216.708292,
+            213.238083,
+            215.482584
+          ],
+          "first_case_observation_ms": 207.717958,
+          "median": 216.708292,
+          "mad": 1.2760839999999973
+        },
+        "commitizen": {
+          "samples_ms": [
+            229.032125,
+            230.384958,
+            224.87125,
+            227.825833,
+            226.845917,
+            225.3535,
+            223.528042
+          ],
+          "first_case_observation_ms": 291.201042,
+          "median": 226.845917,
+          "mad": 1.9746669999999824
+        }
+      },
+      "real_commitlint": {
+        "clint": {
+          "samples_ms": [
+            3.76875,
+            3.137417,
+            3.764208,
+            4.280375,
+            3.741125,
+            4.250625,
+            4.161875
+          ],
+          "first_case_observation_ms": 4.070083,
+          "median": 3.76875,
+          "mad": 0.3931250000000004
+        },
+        "commitlint": {
+          "samples_ms": [
+            214.98975,
+            217.728875,
+            217.795875,
+            212.638375,
+            210.595667,
+            219.025916,
+            214.435666
+          ],
+          "first_case_observation_ms": 232.04825,
+          "median": 214.98975,
+          "mad": 2.7391250000000014
+        },
+        "commitizen": {
+          "samples_ms": [
+            222.9435,
+            221.8205,
+            226.526125,
+            228.1325,
+            231.112375,
+            224.510625,
+            227.538292
+          ],
+          "first_case_observation_ms": 227.286958,
+          "median": 226.526125,
+          "mad": 2.015500000000003
+        }
+      }
+    }
+  },
+  "summary_by_group": {
+    "spec": {
+      "clint": {
+        "pass": 12
+      },
+      "cog": {
+        "pass": 11,
+        "false_accept": 1
+      },
+      "convco": {
+        "pass": 11,
+        "false_accept": 1
+      },
+      "commitlint": {
+        "pass": 12
+      },
+      "commitizen": {
+        "pass": 12
+      }
+    },
+    "policy": {
+      "clint": {
+        "pass": 8
+      },
+      "cog": {
+        "excluded": 8
+      },
+      "convco": {
+        "excluded": 8
+      },
+      "commitlint": {
+        "excluded": 8
+      },
+      "commitizen": {
+        "excluded": 8
+      }
+    },
+    "configuration": {
+      "clint": {
+        "pass": 7
+      },
+      "cog": {
+        "excluded": 7
+      },
+      "convco": {
+        "excluded": 7
+      },
+      "commitlint": {
+        "excluded": 7
+      },
+      "commitizen": {
+        "excluded": 7
+      }
+    },
+    "real": {
+      "clint": {
+        "pass": 3
+      },
+      "cog": {
+        "pass": 3
+      },
+      "convco": {
+        "pass": 3
+      },
+      "commitlint": {
+        "pass": 3
+      },
+      "commitizen": {
+        "pass": 3
+      }
+    },
+    "robustness": {
+      "clint": {
+        "pass": 7
+      },
+      "cog": {
+        "excluded": 7
+      },
+      "convco": {
+        "excluded": 7
+      },
+      "commitlint": {
+        "excluded": 7
+      },
+      "commitizen": {
+        "excluded": 7
+      }
+    }
+  },
+  "clint_passed": true
+}

@@ -1,5 +1,15 @@
 # Débit de validation agentique CLI — 23 octobre 2026
 
+> **Rapport historique, pas classement courant.** L'[audit des benchmarks](benchmarks.md)
+> introduit un oracle indépendant et distingue conformité, politique et performance.
+> Les gains ci-dessous concernent uniquement les révisions et charges indiquées.
+> Les anciennes étapes de découverte Git ont été remplacées par la sélection
+> explicite de politique ; les mentions de toolchain/MSRV historiques ne décrivent
+> pas les exigences actuelles. Ni RSS observée ni timeout ne démontrent plafond
+> mémoire, ReDoS ou boucle infinie. La comparaison concurrentielle sur deux messages
+> ne prouve pas l'équivalence sur le nouveau corpus.
+
+
 **État actuel :** la révision approuvée impose `--config` ou `--defaults`,
 sans découverte Git. La [mesure avant/après](#révision-approuvée--politique-explicite-obligatoire)
 montre 64,7 à 66,3 % de réduction sur les anciens scénarios de découverte.

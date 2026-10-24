@@ -81,29 +81,20 @@ Output (`stdout`, exit code `1`):
 
 ## Benchmarks at a Glance
 
-Evaluated directly against the leading commit linters across Rust, Python, and Node.js:
+Correctness comes before speed. The [benchmark protocol and audit](docs/benchmarks.md)
+separate specification checks, project policy, operational limits and CLI latency.
+The versioned oracle includes public commit messages and targeted synthetic cases;
+its expected results are justified independently of the tools being measured.
 
-| Metric | `fluidise-clint` | `convco` (Rust) | `cocogitto` (Rust) | `commitizen` (Python) | `commitlint` (Node.js) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Startup & Lint Latency** | **~3.4 – 3.9 ms** | 8.9 ms | 12.0 ms | 228.4 ms *(60x slower)* | 224.6 ms *(59x slower)* |
-| **Memory Footprint (RSS)** | **1.59 – 2.77 MB** | 10.38 MB | 10.02 MB | 50.44 MB *(18x RAM)* | 97.12 MB *(35x RAM)* |
-| **Dense Stream (1M lines)** | **5.4 ms (2.77 MB)** | 95.5 ms (unbounded) | 44.9 ms (unbounded) | 240+ ms (unbounded) | **Timeout (> 5s)** |
-| **CPU Instructions (Standard)**| **18.5 M** | 36.8 M *(2.0x)* | 64.2 M *(3.5x)* | 1,582 M *(85x)* | 2,134 M *(115x)* |
-| **Agent Throughput (100 msgs)**| **238 – 301 /s** | 119.4 /s | 87.6 /s | 4.5 /s *(53x slower)* | 4.7 /s *(51x slower)* |
-| **ReDoS / 100k Chars Line** | **~3.8 ms** *(45.8 µs engine)* | 9.8 ms | 16.4 ms | 230.6 ms | **Timeout (> 5s)** |
-| **Strict Bounded Memory Cap**| **1 MiB Guaranteed** | Unbounded | Unbounded | Unbounded | Unbounded / Crash |
-| **Extreme 20 MB Payload** | **17.2 ms (7.1 MB)** | 332.9 ms (72.4 MB) | 208.8 ms (70.0 MB) | 365.1 ms (109.8 MB) | **Timeout (> 5s)** |
-| **Machine Output by Default** | **Strict JSON** | Plain text | Plain text / ANSI | Plain text | Plain text / ANSI |
-| **Binary / Footprint on Disk** | **0.5 MB (0 dep)** | 7.6 MB | 5.9 MB | 45.2 MB (+ Python) | 148.0 MB (+ Node.js) |
+Historical cross-tool rankings are withdrawn: their raw evidence was unavailable,
+and newer local measurements used different workloads and revisions. A 1 MiB input
+limit is not an RSS cap; a timeout does not establish ReDoS or an infinite loop.
+CLI throughput does not establish an improvement in agent task completion.
 
-> [!TIP]
-> **Performance Architecture & Zero-Allocation Invariants:**
-> - **Direct JSON Output Streaming**: Emits canonical structured JSON directly into a pre-allocated bounded buffer without intermediate DOM allocations (`serde_json::Value` / `BTreeMap`), saving 10 to 200 heap allocations per validation.
-> - **Vectorized SIMD Content Scanning**: Pre-filters input bytes for NUL and lone CR via `slice::contains` (using CPU SIMD extensions) and fast-fails header parsing when `: ` is missing, accelerating ReDoS resistance by **20%** and 1 MiB boundary processing by **36%**.
-> - **Explicit Policy Selection & Instant Startup**: Under [ADR 0002](docs/adr/0002-explicit-policy-selection.md), requiring `--defaults` or `--config` eliminated all Git discovery subprocesses, slashing cold startup latency from 13.2 ms to **~3.4 – 3.9 ms** and boosting agent throughput to **>238 commits/s**.
-> - **Zero-Allocation Lazy Stream Processing**: Newline-dense inputs and bodies up to 1,000,000 lines avoid allocating intermediate vectors, dropping RSS by **90.2%** (down to 2.77 MB) and increasing engine evaluation speed by **~90%**.
-
-See the comprehensive 6-workload suite in [docs/benchmarks.md](docs/benchmarks.md), the agent throughput benchmarks in [docs/agent-throughput.md](docs/agent-throughput.md), and the reproducible local optimization loop in [docs/benchmark-loop.md](docs/benchmark-loop.md).
+The [suite](scripts/benchmark_suite.py) checks correctness before optional timing.
+Only tools passing the full shared oracle may enter that comparison. Missing tools,
+policy differences and failed checks remain visible rather than becoming speed wins.
+Published results apply only to the recorded binaries, configurations and environment.
 
 ## Installation
 

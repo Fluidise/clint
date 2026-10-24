@@ -84,6 +84,17 @@ jobs:
       - name: Run doctests
         run: cargo test --locked --doc
 
+      - name: Test benchmark admission and oracle protocol
+        if: runner.os != 'Windows'
+        run: python3 -m unittest discover -s tests -p 'test_benchmark*.py' -v
+
+      - name: Check CLI benchmark oracle (no performance thresholds)
+        if: runner.os != 'Windows'
+        run: >-
+          python3 scripts/benchmark_suite.py
+          --clint target/debug/fluidise-clint
+          --output target/benchmark-conformance.json
+
   auto-merge:
     name: Auto-merge PR
     needs: [test]

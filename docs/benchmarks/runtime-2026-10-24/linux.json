@@ -1,0 +1,2538 @@
+{
+  "complete": true,
+  "schema_version": 1,
+  "corpus_sha256": "7ec6023e0f75ddcbc5ef0c4a13634253f7774201f932486c52014b0d2987fe4c",
+  "harness_sha256": "ef8271caaaa3ad19ba2cf1a2b283105d2371a2f08664f6cc6dda37fbb314d4ad",
+  "support_sha256": "d8b57f22e50a508df9ff960b5a306f6b3254f6f1eb0f69004f61000749061a91",
+  "environment": {
+    "platform": "Linux-7.2.12-orbstack-00394-gbecdd6130068-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "python": "3.11.2",
+    "python_path": "/opt/commitizen/bin/python3",
+    "git": "git version 2.39.5",
+    "git_path": "/usr/bin/git"
+  },
+  "method": {
+    "samples": 7,
+    "iterations": 1,
+    "warmups": 2,
+    "order_seed": 20261023,
+    "unit": "ms per independent stdin CLI process; native output captured",
+    "cache": "uncontrolled OS caches; first observation is NOT cold startup",
+    "gate": "all shared oracle cases must pass before timing a tool",
+    "scope": "serial CLI latency, not hooks, agents or in-process engine",
+    "threshold": "descriptive median/MAD only; no significance or speed target"
+  },
+  "excluded": {
+    "cog": "local executable not supplied; not installed or measured",
+    "convco": "local executable not supplied; not installed or measured"
+  },
+  "configs": {
+    "cog.toml": "",
+    ".convco": "{}\n",
+    ".cz.toml": "[tool.commitizen]\nname = \"cz_conventional_commits\"\n",
+    "commitlint.config.cjs": "module.exports = {\n  defaultIgnores: false,\n  parserPreset: {parserOpts: {\n    headerPattern: /^(\\w+)(?:\\(([^)]+)\\))?!?: (.+)$/,\n    headerCorrespondence: ['type', 'scope', 'subject'],\n    noteKeywords: ['BREAKING CHANGE', 'BREAKING-CHANGE']\n  }},\n  rules: {\n    'type-empty': [2, 'never'], 'subject-empty': [2, 'never'],\n    'type-enum': [2, 'always', ['feat','fix','docs','style','refactor','perf','test','build','ci','chore','revert']],\n    'body-leading-blank': [2, 'always']\n  }\n};\n"
+  },
+  "tools": {
+    "clint": {
+      "path": "/workspace/target/release/fluidise-clint",
+      "sha256": "69f9101e9b517b4ba93ec34e0386d6d1ea6245f54f4776825944bcb4ce2b2947",
+      "version": "fluidise-clint 0.1.0"
+    },
+    "commitlint": {
+      "path": "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+      "sha256": "00152fb7b44a91af1eeb074d5c364fa17642ff849300426e15f82550aa1d9329",
+      "version": "@commitlint/cli@21.2.4"
+    },
+    "commitizen": {
+      "path": "/opt/commitizen/bin/cz",
+      "sha256": "2f94f987af993abd50b123a75fcae63497685e26e115062a57f235f1cf4e81b5",
+      "version": "4.19.3"
+    }
+  },
+  "correctness": {
+    "feature": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Required type, colon-space and description (rules 1, 2, 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 16,
+      "sha256": "1663dfd8eeb6b98bf6fb58ea97822b1965a7d57b35444cfab56115fa7eca2560",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.712778
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 195.394921
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 154.567134
+      }
+    },
+    "fix_scope": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Optional scope and required description (rules 1, 4, 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 29,
+      "sha256": "4390420ed7d7f1be7452ebbbdb858baf51e18ec04412ff6983a253657fb1378f",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 1.784844
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 237.809758
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 147.631051
+      }
+    },
+    "breaking_bang": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Breaking prefix permits omission of footer (rules 11, 13).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 32,
+      "sha256": "819d7c994db91ba363d910dcfe5dc061ed0a56ed03c50f504dc3119879437b4f",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 0.689671
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 207.618369
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 153.642546
+      }
+    },
+    "breaking_footer": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Uppercase breaking footer with value (rules 8, 11, 12).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 61,
+      "sha256": "f43e0e30bdd35dba17ce1bfd17d42cd526a2af23fd7bc6118ea1eebb51975e59",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.606194
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 324.634486
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 191.317813
+      }
+    },
+    "body": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Body separated by blank line; free paragraphs (rules 6, 7).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 63,
+      "sha256": "a8ee91c4ad1c7cc3b3fb711b95749798a5ebd8963db2feae29c5da58104ad2d8",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 5.127656
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 196.587512
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 143.293651
+      }
+    },
+    "footer": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Footer token, separator and value (rules 8, 9).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 53,
+      "sha256": "57210a24572f1204027fab6455aa48a61ab384f10ea91b62f5bc1ca6e37cf6c0",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 1.738968
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 188.942715
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 138.574705
+      }
+    },
+    "unicode": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Specification does not require English descriptions (rule 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 27,
+      "sha256": "97a31d0bf2e8f38ec12d8666662f1c893f4fd2261ced00c58400e2b765ce2a03",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 1.612551
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 183.469266
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 141.972601
+      }
+    },
+    "capital_subject": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Specification does not require lowercase descriptions (rule 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 16,
+      "sha256": "6365852b49501920305a914cc8f662e3e3909462488bd3fc00e77c43df874663",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.275775
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 182.045549
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 135.847898
+      }
+    },
+    "no_type": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Missing type and colon-space (rule 1).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 10,
+      "sha256": "afb4bb22f4edb2b3a38b494e125ee8c2fa34d30c889e07bb06baf8f70c645850",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":10,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.311859
+      },
+      "commitlint": {
+        "exit": 3,
+        "classification": "reject",
+        "stdout": "⧗   --- input ---\nadd search\n✖   type may not be empty [type-empty]\n✖   subject may not be empty [subject-empty]\n\n✖   found 2 problems, 0 warnings\nⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint\n\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 188.707422
+      },
+      "commitizen": {
+        "exit": 14,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "commit validation: failed!\nplease enter a commit message in the commitizen format.\ncommit \"\": \"add search\n\"pattern: (?s)(build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\(\\S+\\))?!?: ([^\\n\\r]+)((\\n\\n.*)|(\\s*))?$\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 136.292817
+      }
+    },
+    "no_space": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Required colon-space separator missing (rule 1).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 15,
+      "sha256": "40ec20a4cf87392851459624cea9ea8635d35a66b7e1c4807d879dbde817aa10",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":15,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 1.72476
+      },
+      "commitlint": {
+        "exit": 3,
+        "classification": "reject",
+        "stdout": "⧗   --- input ---\nfeat:add search\n✖   type may not be empty [type-empty]\n✖   subject may not be empty [subject-empty]\n\n✖   found 2 problems, 0 warnings\nⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint\n\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 181.912798
+      },
+      "commitizen": {
+        "exit": 14,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "commit validation: failed!\nplease enter a commit message in the commitizen format.\ncommit \"\": \"feat:add search\n\"pattern: (?s)(build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\(\\S+\\))?!?: ([^\\n\\r]+)((\\n\\n.*)|(\\s*))?$\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 144.11803
+      }
+    },
+    "no_description": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Description required (rule 5).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 6,
+      "sha256": "e885121852d5b06c176e0e02a49653ee424d36b5c51a455fc83721657873553d",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":6,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.212067
+      },
+      "commitlint": {
+        "exit": 3,
+        "classification": "reject",
+        "stdout": "⧗   --- input ---\nfeat: \n✖   type may not be empty [type-empty]\n✖   subject may not be empty [subject-empty]\n\n✖   found 2 problems, 0 warnings\nⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint\n\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 187.145496
+      },
+      "commitizen": {
+        "exit": 14,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "commit validation: failed!\nplease enter a commit message in the commitizen format.\ncommit \"\": \"feat:\n\"pattern: (?s)(build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\(\\S+\\))?!?: ([^\\n\\r]+)((\\n\\n.*)|(\\s*))?$\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 135.402352
+      }
+    },
+    "unseparated_body": {
+      "group": "spec",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Body must begin after a blank line (rule 6).",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.body.invalid"
+        ]
+      },
+      "bytes": 37,
+      "sha256": "cbf06fff48b73887404c1030a5a9244a2295723b005f88097865dfa385b7dc73",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.body.invalid\",\"message\":\"Body must be separated from the title by an empty line.\",\"source\":\"message\",\"span\":{\"end\":37,\"start\":23}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.632861
+      },
+      "commitlint": {
+        "exit": 3,
+        "classification": "reject",
+        "stdout": "⧗   --- input ---\nfix: prevent duplicate\n\nExplain cause.\n✖   body must have leading blank line [body-leading-blank]\n\n✖   found 1 problems, 0 warnings\nⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint\n\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 188.63288
+      },
+      "commitizen": {
+        "exit": 14,
+        "classification": "reject",
+        "stdout": "",
+        "stderr": "commit validation: failed!\nplease enter a commit message in the commitizen format.\ncommit \"\": \"fix: prevent duplicate\nExplain cause.\n\"pattern: (?s)(build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\(\\S+\\))?!?: ([^\\n\\r]+)((\\n\\n.*)|(\\s*))?$\n",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 134.426638
+      }
+    },
+    "custom_type_default": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Specification permits additional types; clint defaults restrict the type list.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.not_allowed"
+        ]
+      },
+      "bytes": 29,
+      "sha256": "7f3da7b666421f74dcc32b8f6cf1ba44f1f3a85ed42cf945aee44f28f4df665f",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.type.not_allowed\",\"message\":\"Commit type is not allowed.\",\"source\":\"message\",\"span\":{\"end\":11,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 1.611884
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "uppercase_type": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Clint policy requires lowercase ASCII types, not a universal specification verdict.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.case"
+        ]
+      },
+      "bytes": 16,
+      "sha256": "2e7e8a4ec9f58243119ec26f7ef41880ccbf05a5938c025b0ad2fafd4bf7a73d",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.type.case\",\"message\":\"Commit types must be lowercase ASCII.\",\"source\":\"message\",\"span\":{\"end\":4,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 1.433383
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "fixup": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Temporary commits are forbidden by clint policy.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.temporary.not_allowed"
+        ]
+      },
+      "bytes": 23,
+      "sha256": "b5eab28f71f22b6092c4c7a47c88791c71acb17df5c2a9d07d5505fd757221a8",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.temporary.not_allowed\",\"message\":\"Temporary commit messages are not allowed.\",\"source\":\"message\",\"span\":{\"end\":23,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.860737
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "merge": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Clint merge exemption; rejection elsewhere is a policy difference.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "ignored",
+        "diagnostic_codes": []
+      },
+      "bytes": 20,
+      "sha256": "710a3be614442c116904eb43068e64aa2ce34363c4e3a7bf9b0a9bdd8c9213d6",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"reason\":\"merge.git\",\"schema_version\":1,\"status\":\"ignored\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.478401
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "empty_footer": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Clint rejects blank footer values.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.footer.invalid"
+        ]
+      },
+      "bytes": 30,
+      "sha256": "d005867709386bd4847413d0bd034e1151aa0e4b9dd3f166fb6a9736ff42ca6e",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.footer.invalid\",\"message\":\"Footer value must not be blank.\",\"source\":\"message\",\"span\":{\"end\":30,\"start\":24}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.961614
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "nul_before_exemption": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Unsupported content is rejected before merge exemptions.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.content.unsupported"
+        ]
+      },
+      "bytes": 21,
+      "sha256": "c4941263d75e13adf662a080568ef301378bd4202f327086d526c4ad8a97897d",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"input.content.unsupported\",\"message\":\"NUL and bare CR are unsupported.\",\"source\":\"message\",\"span\":{\"end\":21,\"start\":20}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 1.623926
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "bare_cr": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Bare CR is operationally unsupported.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.content.unsupported"
+        ]
+      },
+      "bytes": 16,
+      "sha256": "2fc7510440a25a5bb022184b0f584a5f5c15757b2014aaeba52a2e20d804d8cb",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"input.content.unsupported\",\"message\":\"NUL and bare CR are unsupported.\",\"source\":\"message\",\"span\":{\"end\":10,\"start\":9}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.83957
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "crlf": {
+      "group": "policy",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "CRLF is accepted without modifying original byte offsets.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 30,
+      "sha256": "0cd90fffee758d362cbdb8f522a9850f5a649af6b3234eaa9aeeb80cfc51b030",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.93478
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "custom_type_config": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Explicit types replace defaults.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 29,
+      "sha256": "7f3da7b666421f74dcc32b8f6cf1ba44f1f3a85ed42cf945aee44f28f4df665f",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 4.656902
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "replacement_rejects_default": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Replacement list excludes feat.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.type.not_allowed"
+        ]
+      },
+      "bytes": 16,
+      "sha256": "1663dfd8eeb6b98bf6fb58ea97822b1965a7d57b35444cfab56115fa7eca2560",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.type.not_allowed\",\"message\":\"Commit type is not allowed.\",\"source\":\"message\",\"span\":{\"end\":4,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 1.540759
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "scope_case": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Scope matching is case-sensitive.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.scope.not_allowed"
+        ]
+      },
+      "bytes": 24,
+      "sha256": "ca4da71ffe2f000a1af238f96c4a7a736863e6458beea77ace9363e50bc038d4",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.scope.not_allowed\",\"message\":\"Commit scope is not allowed.\",\"source\":\"message\",\"span\":{\"end\":7,\"start\":4}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 3.690022
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "length_unicode_at": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Title limit counts Unicode scalar values, not UTF-8 bytes.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 7,
+      "sha256": "7feca3ea4119c144a7d598d129f0dd24f8ce33704f3bde9f9471bb4e92e933e1",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 4.571944
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "length_unicode_over": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Seven scalar values exceed configured six.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.title.too_long"
+        ]
+      },
+      "bytes": 9,
+      "sha256": "b25fe2816d88d3d18d3dfedb3c3ee36a7938c563f9e39945c33d6958d5e4d9cf",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.title.too_long\",\"message\":\"Commit title exceeds the configured length.\",\"source\":\"message\",\"span\":{\"end\":9,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 0.344627
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "merge_disabled": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Merge exemption can be disabled.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 20,
+      "sha256": "710a3be614442c116904eb43068e64aa2ce34363c4e3a7bf9b0a9bdd8c9213d6",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":20,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 4.800945
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "bad_config": {
+      "group": "configuration",
+      "shared": false,
+      "basis": "README.md#configuration",
+      "rationale": "Unsupported configuration version is an operational failure.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "config.version.unsupported"
+        ]
+      },
+      "bytes": 16,
+      "sha256": "1663dfd8eeb6b98bf6fb58ea97822b1965a7d57b35444cfab56115fa7eca2560",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[{\"code\":\"config.version.unsupported\",\"field\":[\"commit\",\"version\"],\"message\":\"commit.version must be the supported integer 1.\",\"source\":\"configuration\",\"span\":{\"end\":20,\"start\":17}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/fluidise.toml"
+        ],
+        "elapsed_ms": 4.890738
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "real_84f77dea": {
+      "group": "real",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public full message; conventional header and separated optional body. Not a random usage sample.",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/Fluidise/clint/commit/84f77dea947839da8ca70c0d47dda68bbfcb9c80",
+        "projection": "full message, no terminal newline",
+        "verified": "2026-10-23"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 76,
+      "sha256": "89ee743c0245c5548750a2ab895c8e1a114a71b48cd6a476c8262f8f066e4dfa",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.629611
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 181.461088
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 139.131334
+      }
+    },
+    "real_888b5a5b": {
+      "group": "real",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public full message; conventional header and separated optional body. Not a random usage sample.",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/Fluidise/clint/commit/888b5a5b98d938b7eb5ddab889359eee9aa2339c",
+        "projection": "full message, no terminal newline",
+        "verified": "2026-10-23"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 425,
+      "sha256": "3cd7513ef4250a52ea23e6ea5fb641b3ae87608a01516d827c26b1a8224f27b3",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 5.086447
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 182.256259
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 134.798016
+      }
+    },
+    "real_commitlint": {
+      "group": "real",
+      "shared": true,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Public subject only; bot trailer excluded explicitly. Not a full-message test.",
+      "origin": {
+        "kind": "public",
+        "url": "https://github.com/conventional-changelog/commitlint/commit/5a9d6a43e813ea74cf62c04e188b9417909b0b9f",
+        "projection": "subject only",
+        "verified": "2026-10-23"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 42,
+      "sha256": "a783eca5aefa852e0f9fa4484d10017beaf651b54d08777526e4896207fe908f",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.446652
+      },
+      "commitlint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitlint/node_modules/@commitlint/cli/cli.js",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/commitlint.config.cjs",
+          "--strict"
+        ],
+        "elapsed_ms": 183.955144
+      },
+      "commitizen": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "Commit validation: successful!\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/opt/commitizen/bin/cz",
+          "--config",
+          "/tmp/clint-suite-gjekpx79/repository/.cz.toml",
+          "check"
+        ],
+        "elapsed_ms": 138.921749
+      }
+    },
+    "bytes_1048575": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 1048575,
+      "sha256": "9f5de4f4e9f5e879429b73ed6d0d28509301c2cf0728b047c4aa67e2df4c877a",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.418693
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "bytes_1048576": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "valid",
+        "diagnostic_codes": []
+      },
+      "bytes": 1048576,
+      "sha256": "e27efb842a44f543ba081abdc085c4eb59eb0ffc9486b7a7f71cc54ee72f2f6e",
+      "clint": {
+        "exit": 0,
+        "classification": "accept",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 7.47392
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "bytes_1048577": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "README.md#strict-resource-limits",
+      "rationale": "Input limit is bytes, not RSS; compare only clint contract.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.limit_exceeded"
+        ]
+      },
+      "bytes": 1048577,
+      "sha256": "b136c2d544ebeba1ead030177a384424fdf699e2d22b7f17b4962bde02a1ba76",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"input.limit_exceeded\",\"message\":\"Input exceeds the byte limit.\",\"source\":\"message\"}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 5.617117
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "unclosed_scope_1000": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 1005,
+      "sha256": "163ee597442b7ff6ec2cb55975f6b8670dead8016a2ee58d47e4d72d9a8950da",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":1005,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.548527
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "unclosed_scope_10000": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 10005,
+      "sha256": "8f338a2259802b13c8735c69f83ec363efc6f2cbbd96576fdc33186e5057a682",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":10005,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 1.41605
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "unclosed_scope": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "https://www.conventionalcommits.org/en/v1.0.0/#specification",
+      "rationale": "Unclosed scope at increasing length; does not diagnose a regex vulnerability.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "invalid",
+        "diagnostic_codes": [
+          "commit.header.invalid"
+        ]
+      },
+      "bytes": 100005,
+      "sha256": "ae909f5e64c26ff69233d9466b588ca4a010af33ea4e46a8456073de712866c5",
+      "clint": {
+        "exit": 1,
+        "classification": "reject",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"commit.header.invalid\",\"message\":\"Expected type, optional scope/!, colon, space and a nonblank description.\",\"source\":\"message\",\"span\":{\"end\":100005,\"start\":0}}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"invalid\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.469776
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    },
+    "invalid_utf8": {
+      "group": "robustness",
+      "shared": false,
+      "basis": "README.md#operational-guarantees-and-boundaries",
+      "rationale": "UTF-8 decoding failure is not an invalid conventional commit.",
+      "origin": {
+        "kind": "synthetic"
+      },
+      "expected": {
+        "status": "error",
+        "diagnostic_codes": [
+          "input.encoding.invalid"
+        ]
+      },
+      "bytes": 7,
+      "sha256": "285c04cca666e0d6ba5eb440fb4942e6f79ec46417331a960d37a08f801a05e3",
+      "clint": {
+        "exit": 2,
+        "classification": "operational",
+        "stdout": "{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[{\"code\":\"input.encoding.invalid\",\"message\":\"Message must be UTF-8.\",\"source\":\"message\"}],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"error\"}\n",
+        "stderr": "",
+        "passed": true,
+        "outcome": "pass",
+        "command": [
+          "/workspace/target/release/fluidise-clint",
+          "--stdin",
+          "--defaults"
+        ],
+        "elapsed_ms": 4.45086
+      },
+      "commitlint": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      },
+      "commitizen": {
+        "outcome": "excluded",
+        "reason": "clint-specific policy or operational contract"
+      }
+    }
+  },
+  "timing": {
+    "eligible": [
+      "clint",
+      "commitlint",
+      "commitizen"
+    ],
+    "excluded": {},
+    "cases": {
+      "feature": {
+        "clint": {
+          "samples_ms": [
+            2.056262,
+            1.658427,
+            4.826654,
+            2.758891,
+            2.463973,
+            2.042346,
+            4.487152
+          ],
+          "first_case_observation_ms": 4.712778,
+          "median": 2.463973,
+          "mad": 0.421627
+        },
+        "commitlint": {
+          "samples_ms": [
+            179.421908,
+            184.762107,
+            180.915876,
+            187.85025,
+            189.421677,
+            185.374986,
+            186.76691
+          ],
+          "first_case_observation_ms": 195.394921,
+          "median": 185.374986,
+          "mad": 2.4752639999999815
+        },
+        "commitizen": {
+          "samples_ms": [
+            130.038655,
+            134.389888,
+            134.490014,
+            138.020077,
+            139.785046,
+            133.465799,
+            136.174941
+          ],
+          "first_case_observation_ms": 154.567134,
+          "median": 134.490014,
+          "mad": 1.6849269999999876
+        }
+      },
+      "fix_scope": {
+        "clint": {
+          "samples_ms": [
+            1.464425,
+            4.67307,
+            1.958053,
+            4.84932,
+            3.071227,
+            4.14765,
+            4.932905
+          ],
+          "first_case_observation_ms": 1.784844,
+          "median": 4.14765,
+          "mad": 0.7852550000000003
+        },
+        "commitlint": {
+          "samples_ms": [
+            202.79509,
+            189.884387,
+            194.64125,
+            250.51571,
+            188.624339,
+            182.978179,
+            186.895537
+          ],
+          "first_case_observation_ms": 237.809758,
+          "median": 189.884387,
+          "mad": 4.75686300000001
+        },
+        "commitizen": {
+          "samples_ms": [
+            165.486741,
+            146.193418,
+            147.571176,
+            134.173095,
+            135.038642,
+            136.253733,
+            134.090429
+          ],
+          "first_case_observation_ms": 147.631051,
+          "median": 136.253733,
+          "mad": 2.1633040000000108
+        }
+      },
+      "breaking_bang": {
+        "clint": {
+          "samples_ms": [
+            4.244401,
+            4.57411,
+            4.915321,
+            3.076518,
+            2.065304,
+            1.889678,
+            5.039946
+          ],
+          "first_case_observation_ms": 0.689671,
+          "median": 4.244401,
+          "mad": 0.7955449999999997
+        },
+        "commitlint": {
+          "samples_ms": [
+            184.022728,
+            184.529272,
+            182.19755,
+            180.925917,
+            185.958239,
+            180.983126,
+            195.37892
+          ],
+          "first_case_observation_ms": 207.618369,
+          "median": 184.022728,
+          "mad": 1.935510999999991
+        },
+        "commitizen": {
+          "samples_ms": [
+            134.434806,
+            147.010339,
+            139.473211,
+            137.124072,
+            136.505901,
+            146.91063,
+            152.501163
+          ],
+          "first_case_observation_ms": 153.642546,
+          "median": 139.473211,
+          "mad": 5.038404999999983
+        }
+      },
+      "breaking_footer": {
+        "clint": {
+          "samples_ms": [
+            4.551194,
+            2.592016,
+            2.678558,
+            4.369985,
+            2.545932,
+            3.293978,
+            5.047697
+          ],
+          "first_case_observation_ms": 4.606194,
+          "median": 3.293978,
+          "mad": 0.748046
+        },
+        "commitlint": {
+          "samples_ms": [
+            184.45623,
+            183.960102,
+            186.923495,
+            183.695226,
+            181.06446,
+            182.478677,
+            188.983173
+          ],
+          "first_case_observation_ms": 324.634486,
+          "median": 183.960102,
+          "mad": 1.4814250000000015
+        },
+        "commitizen": {
+          "samples_ms": [
+            137.938452,
+            141.28968,
+            140.272132,
+            132.880004,
+            140.22109,
+            139.088042,
+            140.845302
+          ],
+          "first_case_observation_ms": 191.317813,
+          "median": 140.22109,
+          "mad": 1.0685900000000004
+        }
+      },
+      "body": {
+        "clint": {
+          "samples_ms": [
+            1.5033,
+            3.148144,
+            4.516069,
+            4.892821,
+            4.928446,
+            4.922363,
+            4.507611
+          ],
+          "first_case_observation_ms": 5.127656,
+          "median": 4.516069,
+          "mad": 0.40629399999999993
+        },
+        "commitlint": {
+          "samples_ms": [
+            182.362759,
+            181.52142,
+            184.420355,
+            184.685648,
+            182.455843,
+            182.441384,
+            184.753649
+          ],
+          "first_case_observation_ms": 196.587512,
+          "median": 182.455843,
+          "mad": 0.9344229999999811
+        },
+        "commitizen": {
+          "samples_ms": [
+            142.497146,
+            136.346859,
+            134.450514,
+            135.799188,
+            135.99244,
+            140.021131,
+            127.417847
+          ],
+          "first_case_observation_ms": 143.293651,
+          "median": 135.99244,
+          "mad": 1.5419259999999895
+        }
+      },
+      "footer": {
+        "clint": {
+          "samples_ms": [
+            4.927112,
+            4.475985,
+            4.182525,
+            1.677343,
+            4.96553,
+            4.348026,
+            1.543176
+          ],
+          "first_case_observation_ms": 1.738968,
+          "median": 4.348026,
+          "mad": 0.5790860000000002
+        },
+        "commitlint": {
+          "samples_ms": [
+            186.96312,
+            182.921346,
+            182.193217,
+            185.333111,
+            183.977893,
+            182.981263,
+            182.007049
+          ],
+          "first_case_observation_ms": 188.942715,
+          "median": 182.981263,
+          "mad": 0.9742140000000177
+        },
+        "commitizen": {
+          "samples_ms": [
+            137.999452,
+            138.436079,
+            132.335501,
+            138.094328,
+            137.905202,
+            138.527955,
+            138.913624
+          ],
+          "first_case_observation_ms": 138.574705,
+          "median": 138.094328,
+          "mad": 0.34175100000001635
+        }
+      },
+      "unicode": {
+        "clint": {
+          "samples_ms": [
+            4.926738,
+            1.70476,
+            4.910404,
+            3.161269,
+            4.514944,
+            4.974322,
+            5.059781
+          ],
+          "first_case_observation_ms": 1.612551,
+          "median": 4.910404,
+          "mad": 0.14937700000000032
+        },
+        "commitlint": {
+          "samples_ms": [
+            186.982829,
+            187.971793,
+            186.402992,
+            195.453087,
+            193.240283,
+            187.745209,
+            194.262081
+          ],
+          "first_case_observation_ms": 183.469266,
+          "median": 187.971793,
+          "mad": 1.5688009999999792
+        },
+        "commitizen": {
+          "samples_ms": [
+            137.724617,
+            135.506186,
+            138.006535,
+            163.519313,
+            143.383026,
+            165.948994,
+            150.119983
+          ],
+          "first_case_observation_ms": 141.972601,
+          "median": 143.383026,
+          "mad": 6.73695699999999
+        }
+      },
+      "capital_subject": {
+        "clint": {
+          "samples_ms": [
+            4.956113,
+            1.60026,
+            4.49111,
+            4.77332,
+            2.939059,
+            2.640475,
+            1.780635
+          ],
+          "first_case_observation_ms": 4.275775,
+          "median": 2.939059,
+          "mad": 1.3387989999999999
+        },
+        "commitlint": {
+          "samples_ms": [
+            189.37401,
+            193.632619,
+            182.971471,
+            193.641202,
+            181.697505,
+            183.97631,
+            190.453266
+          ],
+          "first_case_observation_ms": 182.045549,
+          "median": 189.37401,
+          "mad": 4.267191999999994
+        },
+        "commitizen": {
+          "samples_ms": [
+            172.53695,
+            138.010285,
+            140.098423,
+            135.512146,
+            127.717015,
+            142.484937,
+            136.444568
+          ],
+          "first_case_observation_ms": 135.847898,
+          "median": 138.010285,
+          "mad": 2.498139000000009
+        }
+      },
+      "no_type": {
+        "clint": {
+          "samples_ms": [
+            2.709933,
+            4.453402,
+            5.007196,
+            4.886696,
+            4.918655,
+            4.934321,
+            1.753719
+          ],
+          "first_case_observation_ms": 4.311859,
+          "median": 4.886696,
+          "mad": 0.12050000000000072
+        },
+        "commitlint": {
+          "samples_ms": [
+            192.385236,
+            186.280282,
+            188.384754,
+            185.935322,
+            178.961989,
+            191.000477,
+            178.752613
+          ],
+          "first_case_observation_ms": 188.707422,
+          "median": 186.280282,
+          "mad": 4.72019499999999
+        },
+        "commitizen": {
+          "samples_ms": [
+            128.520854,
+            137.47199,
+            140.455217,
+            138.024869,
+            135.966898,
+            135.948356,
+            134.917516
+          ],
+          "first_case_observation_ms": 136.292817,
+          "median": 135.966898,
+          "mad": 1.505092000000019
+        }
+      },
+      "no_space": {
+        "clint": {
+          "samples_ms": [
+            4.976155,
+            4.767945,
+            1.470134,
+            4.938613,
+            2.42839,
+            2.396931,
+            5.00428
+          ],
+          "first_case_observation_ms": 1.72476,
+          "median": 4.767945,
+          "mad": 0.23633499999999952
+        },
+        "commitlint": {
+          "samples_ms": [
+            186.974536,
+            181.83684,
+            179.4777,
+            184.986441,
+            197.138306,
+            196.207759,
+            202.530422
+          ],
+          "first_case_observation_ms": 181.912798,
+          "median": 186.974536,
+          "mad": 7.496836000000002
+        },
+        "commitizen": {
+          "samples_ms": [
+            134.430264,
+            130.268198,
+            130.973659,
+            140.973344,
+            154.308508,
+            133.304924,
+            143.340401
+          ],
+          "first_case_observation_ms": 144.11803,
+          "median": 134.430264,
+          "mad": 4.162065999999982
+        }
+      },
+      "no_description": {
+        "clint": {
+          "samples_ms": [
+            4.657736,
+            4.922405,
+            4.600736,
+            0.508628,
+            3.414478,
+            4.462402,
+            1.463925
+          ],
+          "first_case_observation_ms": 4.212067,
+          "median": 4.462402,
+          "mad": 0.4600030000000004
+        },
+        "commitlint": {
+          "samples_ms": [
+            188.562463,
+            185.951322,
+            181.293669,
+            182.325925,
+            178.068567,
+            173.427372,
+            186.251741
+          ],
+          "first_case_observation_ms": 187.145496,
+          "median": 182.325925,
+          "mad": 3.9258159999999975
+        },
+        "commitizen": {
+          "samples_ms": [
+            141.020095,
+            140.333758,
+            143.990529,
+            132.504419,
+            135.18206,
+            135.788355,
+            142.183893
+          ],
+          "first_case_observation_ms": 135.402352,
+          "median": 140.333758,
+          "mad": 3.6567710000000204
+        }
+      },
+      "unseparated_body": {
+        "clint": {
+          "samples_ms": [
+            1.577426,
+            4.928237,
+            4.18415,
+            4.856071,
+            4.96603,
+            4.952196,
+            4.991197
+          ],
+          "first_case_observation_ms": 4.632861,
+          "median": 4.928237,
+          "mad": 0.06295999999999946
+        },
+        "commitlint": {
+          "samples_ms": [
+            180.141954,
+            174.042334,
+            189.026508,
+            197.917561,
+            188.906923,
+            193.93837,
+            198.260271
+          ],
+          "first_case_observation_ms": 188.63288,
+          "median": 189.026508,
+          "mad": 8.884554000000009
+        },
+        "commitizen": {
+          "samples_ms": [
+            132.339417,
+            134.545765,
+            132.097374,
+            145.040869,
+            142.021143,
+            149.938232,
+            139.058209
+          ],
+          "first_case_observation_ms": 134.426638,
+          "median": 139.058209,
+          "mad": 5.982659999999981
+        }
+      },
+      "real_84f77dea": {
+        "clint": {
+          "samples_ms": [
+            1.821428,
+            4.922613,
+            4.969905,
+            1.477592,
+            4.895029,
+            4.955863,
+            4.580652
+          ],
+          "first_case_observation_ms": 4.629611,
+          "median": 4.895029,
+          "mad": 0.07487599999999972
+        },
+        "commitlint": {
+          "samples_ms": [
+            182.027132,
+            187.435664,
+            181.991382,
+            180.468623,
+            293.140964,
+            186.400909,
+            183.10668
+          ],
+          "first_case_observation_ms": 181.461088,
+          "median": 183.10668,
+          "mad": 2.6380570000000034
+        },
+        "commitizen": {
+          "samples_ms": [
+            132.448502,
+            137.97366,
+            139.437377,
+            136.019065,
+            135.95944,
+            152.324246,
+            138.246703
+          ],
+          "first_case_observation_ms": 139.131334,
+          "median": 137.97366,
+          "mad": 1.9545949999999834
+        }
+      },
+      "real_888b5a5b": {
+        "clint": {
+          "samples_ms": [
+            4.920279,
+            3.22702,
+            4.922363,
+            4.935821,
+            4.861195,
+            4.474235,
+            4.925696
+          ],
+          "first_case_observation_ms": 5.086447,
+          "median": 4.920279,
+          "mad": 0.015541999999999945
+        },
+        "commitlint": {
+          "samples_ms": [
+            180.762749,
+            178.774112,
+            180.618999,
+            180.828042,
+            195.496255,
+            180.943334,
+            176.96831
+          ],
+          "first_case_observation_ms": 182.256259,
+          "median": 180.762749,
+          "mad": 0.18058499999997935
+        },
+        "commitizen": {
+          "samples_ms": [
+            139.962547,
+            134.086595,
+            136.006773,
+            135.347353,
+            130.225071,
+            137.042488,
+            136.882487
+          ],
+          "first_case_observation_ms": 134.798016,
+          "median": 136.006773,
+          "mad": 1.035714999999982
+        }
+      },
+      "real_commitlint": {
+        "clint": {
+          "samples_ms": [
+            4.987071,
+            1.448883,
+            4.938238,
+            4.754946,
+            1.486592,
+            4.845446,
+            4.949613
+          ],
+          "first_case_observation_ms": 4.446652,
+          "median": 4.845446,
+          "mad": 0.10416700000000034
+        },
+        "commitlint": {
+          "samples_ms": [
+            181.677671,
+            197.486141,
+            187.046121,
+            174.142543,
+            182.558927,
+            180.622499,
+            175.862346
+          ],
+          "first_case_observation_ms": 183.955144,
+          "median": 181.677671,
+          "mad": 5.368449999999996
+        },
+        "commitizen": {
+          "samples_ms": [
+            138.459746,
+            132.944255,
+            133.005589,
+            142.912148,
+            130.777825,
+            134.178762,
+            134.397847
+          ],
+          "first_case_observation_ms": 138.921749,
+          "median": 134.178762,
+          "mad": 1.2345070000000078
+        }
+      }
+    }
+  },
+  "summary_by_group": {
+    "spec": {
+      "clint": {
+        "pass": 12
+      },
+      "commitlint": {
+        "pass": 12
+      },
+      "commitizen": {
+        "pass": 12
+      }
+    },
+    "policy": {
+      "clint": {
+        "pass": 8
+      },
+      "commitlint": {
+        "excluded": 8
+      },
+      "commitizen": {
+        "excluded": 8
+      }
+    },
+    "configuration": {
+      "clint": {
+        "pass": 7
+      },
+      "commitlint": {
+        "excluded": 7
+      },
+      "commitizen": {
+        "excluded": 7
+      }
+    },
+    "real": {
+      "clint": {
+        "pass": 3
+      },
+      "commitlint": {
+        "pass": 3
+      },
+      "commitizen": {
+        "pass": 3
+      }
+    },
+    "robustness": {
+      "clint": {
+        "pass": 7
+      },
+      "commitlint": {
+        "excluded": 7
+      },
+      "commitizen": {
+        "excluded": 7
+      }
+    }
+  },
+  "clint_passed": true
+}
