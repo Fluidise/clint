@@ -91,6 +91,11 @@ def environment(home):
     return env
 
 
+def version_command(tool, binary):
+    # Commitizen exposes a subcommand, not a top-level --version flag.
+    return [str(binary), 'version' if tool == 'commitizen' else '--version']
+
+
 def command(tool, binary, cwd, case):
     if tool == 'clint':
         selection = ['--config', str(cwd / 'fluidise.toml')] if 'config' in case else ['--defaults']
@@ -224,7 +229,7 @@ def main():
             (cwd / name).write_text(content)
         for tool, binary in binaries.items():
             report['tools'][tool] = {'path': str(binary), 'sha256': digest(binary),
-                                    'version': subprocess.check_output([str(binary), '--version'],
+                                    'version': subprocess.check_output(version_command(tool, binary),
                                     cwd=cwd, env=env, timeout=10, text=True).strip()}
         save()
         for case in cases:

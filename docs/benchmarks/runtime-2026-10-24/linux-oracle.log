@@ -1,0 +1,1 @@
+{"complete": true, "clint_passed": true, "cases": 37, "excluded": {"cog": "local executable not supplied; not installed or measured", "convco": "local executable not supplied; not installed or measured"}, "clint_failures": []}

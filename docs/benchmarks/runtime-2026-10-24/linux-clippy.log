@@ -1,0 +1,13 @@
+    Checking winnow v1.0.4
+    Checking zmij v1.0.23
+    Checking serde_core v1.0.229
+    Checking memchr v2.8.3
+    Checking itoa v1.0.18
+    Checking toml_datetime v1.1.2+spec-1.1.0
+    Checking serde_spanned v1.1.2
+    Checking lexopt v0.3.2
+    Checking toml_parser v1.1.5+spec-1.1.0
+    Checking toml v1.1.8+spec-1.1.0
+    Checking serde_json v1.0.154
+    Checking fluidise-clint v0.1.0 (/workspace)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.30s

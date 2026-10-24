@@ -1,0 +1,21 @@
+test_complete_protocol_and_outside_scope (test_benchmark_agent.ProtocolTests.test_complete_protocol_and_outside_scope) ... ok
+test_environment_removes_caller_routing_and_preserves_path (test_benchmark_agent.ProtocolTests.test_environment_removes_caller_routing_and_preserves_path) ... ok
+test_legacy_baseline_maps_to_explicit_candidate_policy (test_benchmark_agent.ProtocolTests.test_legacy_baseline_maps_to_explicit_candidate_policy) ... ok
+test_rejects_candidate_byte_difference (test_benchmark_agent.ProtocolTests.test_rejects_candidate_byte_difference) ... ok
+test_rejects_competitor_operational_failure (test_benchmark_agent.ProtocolTests.test_rejects_competitor_operational_failure) ... ok
+test_corpus_has_provenance_and_separates_contracts (test_benchmark_suite.OracleTests.test_corpus_has_provenance_and_separates_contracts) ... ok
+test_duplicate_oracle_ids_are_rejected (test_benchmark_suite.OracleTests.test_duplicate_oracle_ids_are_rejected) ... ok
+test_environment_does_not_inherit_runtime_or_config_injection (test_benchmark_suite.OracleTests.test_environment_does_not_inherit_runtime_or_config_injection) ... ok
+test_exit_codes_do_not_conflate_operational_failures (test_benchmark_suite.OracleTests.test_exit_codes_do_not_conflate_operational_failures) ... ok
+test_json_status_and_diagnostics_are_not_inferred_from_exit (test_benchmark_suite.OracleTests.test_json_status_and_diagnostics_are_not_inferred_from_exit) ... ok
+test_legacy_guards_survive_optimized_python (test_benchmark_suite.OracleTests.test_legacy_guards_survive_optimized_python) ... ok
+test_legacy_harness_has_no_optimizable_asserts (test_benchmark_suite.OracleTests.test_legacy_harness_has_no_optimizable_asserts) ... ok
+test_native_version_commands (test_benchmark_suite.OracleTests.test_native_version_commands) ... ok
+test_one_shared_disagreement_excludes_tool_from_all_timings (test_benchmark_suite.OracleTests.test_one_shared_disagreement_excludes_tool_from_all_timings) ... ok
+test_oracle_checks_survive_python_optimization (test_benchmark_suite.OracleTests.test_oracle_checks_survive_python_optimization) ... ok
+test_unstable_timing_aborts_instead_of_reporting_fast_failure (test_benchmark_suite.OracleTests.test_unstable_timing_aborts_instead_of_reporting_fast_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.584s
+
+OK

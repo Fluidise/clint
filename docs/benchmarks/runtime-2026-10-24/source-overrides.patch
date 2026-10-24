@@ -1,0 +1,25 @@
+diff --git a/scripts/benchmark_suite.py b/scripts/benchmark_suite.py
+index a006160..bc16aae 100644
+--- a/scripts/benchmark_suite.py
++++ b/scripts/benchmark_suite.py
+@@ -93,0 +94,5 @@ def environment(home):
++def version_command(tool, binary):
++    # Commitizen exposes a subcommand, not a top-level --version flag.
++    return [str(binary), 'version' if tool == 'commitizen' else '--version']
++
++
+@@ -227 +232 @@ def main():
+-                                    'version': subprocess.check_output([str(binary), '--version'],
++                                    'version': subprocess.check_output(version_command(tool, binary),
+diff --git a/tests/test_benchmark_suite.py b/tests/test_benchmark_suite.py
+index 55f96f8..637f05d 100644
+--- a/tests/test_benchmark_suite.py
++++ b/tests/test_benchmark_suite.py
+@@ -16,0 +17,7 @@ class OracleTests(unittest.TestCase):
++    def test_native_version_commands(self):
++        self.assertEqual(suite.version_command('commitizen', Path('/tools/cz')),
++                         ['/tools/cz', 'version'])
++        for tool in ('clint', 'cog', 'convco', 'commitlint'):
++            self.assertEqual(suite.version_command(tool, Path('/tools/bin')),
++                             ['/tools/bin', '--version'])
++

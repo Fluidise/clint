@@ -72,8 +72,8 @@ standard, Git et les exécutables locaux fournis explicitement. Il n'installe ri
 | clint | `--stdin --defaults`, ou configuration du cas ; JSON et codes 0/1/2 | Exécuté, 37/37 contrôles réussis |
 | cocogitto | `--config … verify --file -`, TOML vide | 7.0.0 exécuté ; divergence sur corps sans ligne vide |
 | convco | `check --config … --from-stdin`, `{}` | 0.7.2 exécuté ; même divergence |
-| commitlint | stdin, configuration CJS explicite, `--strict` ; 3 signifie rejet | Adaptateur documenté/testé avec sorties simulées, pas d'exécutable local fourni |
-| commitizen | stdin, `--config … check`, `cz_conventional_commits` ; 14/32 signifient rejet | Adaptateur documenté/testé avec sorties simulées, pas d'exécutable local fourni |
+| commitlint | stdin, configuration CJS explicite, `--strict` ; 3 signifie rejet | 21.2.4 exécuté sur macOS et Linux ARM64 : 15/15 cas partagés |
+| commitizen | stdin, `--config … check`, `cz_conventional_commits` ; 14/32 signifient rejet | 4.19.3 exécuté sur macOS et Linux ARM64 : 15/15 cas partagés |
 
 La politique commitlint du pilote est volontairement limitée : type/sujet requis,
 énumération des types et ligne vide avant le corps. Des options de parsing
@@ -85,11 +85,14 @@ opérationnels connus et timeouts sont séparés des rejets. Un code natif ambig
 d'un rejet syntaxique ; les sorties restent conservées pour examen. Les contrôles
 positifs réduisent ce risque sans constituer une preuve exhaustive.
 
-Les deux adaptateurs non exécutés restent **non validés en intégration** ; leurs
-versions et résultats ne sont pas inventés. Les cinq outils sont réévalués dans
-le périmètre, mais seulement trois disposent ici de preuves runtime.
+Les premières preuves du 23 octobre ne couvraient que trois outils. L'intégration
+réelle du 24 octobre couvre désormais les cinq sur macOS, et clint/commitlint/
+Commitizen sur Linux ARM64. Elle a révélé un défaut du harnais : Commitizen
+n'accepte pas `cz --version`, mais expose `cz version`. Le pilote utilise désormais
+cette commande native, avec un test de non-régression. Ce correctif et les nouvelles
+preuves ne sont pas couverts par la revue indépendante du snapshot précédent.
 
-Sources d'interface consultées via Context7 le 23 octobre 2026 :
+Sources d'interface consultées via Context7 les 23 et 24 octobre 2026 :
 [commitlint CLI](https://commitlint.js.org/reference/cli.html),
 [Commitizen check](https://commitizen-tools.github.io/commitizen/commands/check/),
 [Commitizen exit codes](https://commitizen-tools.github.io/commitizen/exit_codes/),
@@ -118,10 +121,78 @@ les mêmes obligations. Le résultat n'est donc pas « clint gagne en vitesse »
 mais « équivalence du contrat partagé non démontrée ». Le pilote conserve leurs
 sorties et le motif d'exclusion. Les cas propres à clint ne leur sont pas imputés.
 
-Les mesures restantes de clint sont descriptives : aucun objectif de gain, aucun
-seuil bloquant de performance et aucune extrapolation à un agent complet.
-L'environnement effectivement mesuré est macOS ARM64. Linux reste reproductible
-par le même pilote, mais n'a pas été exécuté ici. Windows est hors premier lot.
+Dans le rapport du 23 octobre, seules les mesures de clint sont donc conservées.
+Les nouvelles mesures du 24 octobre incluent aussi commitlint et Commitizen,
+qui passent les 15 cas partagés. Aucun objectif de gain, seuil bloquant de
+performance ni extrapolation à un agent complet. Windows reste hors premier lot.
+
+## Exécution réelle complémentaire — 24 octobre 2026
+
+Les preuves sont conservées dans [runtime-2026-10-24/](benchmarks/runtime-2026-10-24/) :
+
+- [macOS natif](benchmarks/runtime-2026-10-24/macos.json) : les cinq outils réellement
+  exécutés ; clint 37/37, commitlint 21.2.4 et Commitizen 4.19.3 chacun 15/15 cas
+  partagés. Les deux divergences cog/convco déjà décrites restent observées.
+- [Linux ARM64 sous OrbStack](benchmarks/runtime-2026-10-24/linux.json) : clint
+  37/37 ; commitlint et Commitizen chacun 15/15 cas partagés. Cog et convco ne
+  sont pas installés dans cette image ; leur absence est explicitement enregistrée.
+- [Validation Linux complète](benchmarks/runtime-2026-10-24/linux-validation.json) :
+  format et Clippy réussis, 35 tests Rust, 2 doctests et 16 tests Python réussis.
+  Les journaux correspondants sont conservés dans le même dossier.
+- Admission au chronométrage confirmée pour clint, commitlint et Commitizen ;
+  sept échantillons d'un processus par scénario, après deux préchauffages.
+  Ce protocole descriptif est plus court que celui du 23 octobre ; ne pas fusionner
+  les séries ni comparer directement une VM Linux à macOS natif.
+
+OrbStack 2.2.5 fournit le moteur Linux ; Docker Desktop n'a pas été démarré.
+La commande `docker --context orbstack` n'est ici que le client de son moteur
+compatible. Images de base officielles fixées par digest, Node 26.8.1, Rust 1.99.1,
+commitlint 21.2.4 et Commitizen 4.19.3. Python est 3.14.3 sur macOS et 3.11.2 dans
+Debian Bookworm. Le conteneur de validation n'a ni réseau ni montage de secrets,
+et se supprime à sa sortie. Seul le répertoire des résultats est monté en écriture.
+
+Deux incidents ont été conservés plutôt que masqués :
+
+1. Appel de version Commitizen incorrect, découvert avant toute mesure valide ;
+   correction de l'adaptateur et ajout du seizième test Python.
+2. Première validation Linux rouge : l'image minimale ne contenait pas l'exécutable
+   `kill`, invoqué par un test existant. Le paquet système `procps` a été ajouté à
+   l'image, sans modifier ni désactiver le test. Le [rapport initial](benchmarks/runtime-2026-10-24/linux-first-attempt.json)
+   et son [journal](benchmarks/runtime-2026-10-24/linux-first-attempt-rust.log) restent disponibles.
+
+Le produit testé est celui de `54e0ab15d694c684d6bb8c02249d507db9c64a36`, avec
+uniquement les deux adaptations source consignées dans
+[source-overrides.patch](benchmarks/runtime-2026-10-24/source-overrides.patch)
+(harnais et test Python). Aucun changement moteur, dépendance Cargo, workflow ou
+statut de PR n'a été nécessaire. La validation dans OrbStack n'est **pas** une
+exécution de GitHub Actions ; la PR reste Draft.
+
+### Rejouer la validation OrbStack
+
+Depuis ce dépôt, après avoir démarré OrbStack, préparer un contexte isolé depuis
+le commit et le patch enregistrés :
+
+```sh
+evidence="$PWD/docs/benchmarks/runtime-2026-10-24"
+context=$(mktemp -d)
+mkdir "$context/source" "$context/results"
+git archive 54e0ab15d694c684d6bb8c02249d507db9c64a36 | tar -xf - -C "$context/source"
+patch -d "$context/source" -p1 < "$evidence/source-overrides.patch"
+for file in Dockerfile run-linux.py package.json package-lock.json requirements.txt; do
+  cp "$evidence/$file" "$context/"
+done
+docker --context orbstack build -t clint-benchmark-replay "$context"
+docker --context orbstack run --rm --network none --cap-drop ALL \
+  --security-opt no-new-privileges --memory 4g --pids-limit 512 \
+  --mount "type=bind,src=$context/results,dst=/results" clint-benchmark-replay
+```
+
+Le [relevé de provenance et d’empreintes](benchmarks/runtime-2026-10-24/provenance.json),
+le [Dockerfile](benchmarks/runtime-2026-10-24/Dockerfile), les manifestes npm/Python,
+les versions système et l'identifiant de l'image exécutée accompagnent les résultats.
+Les paquets APT ne sont pas servis par un snapshot figé : un rebuild peut donc
+recevoir des révisions système différentes. Les empreintes enregistrées décrivent
+l'exécution réalisée, pas une promesse de reconstruction bit-à-bit.
 
 ## Reproduction
 

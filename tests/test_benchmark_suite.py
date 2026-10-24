@@ -14,6 +14,13 @@ import benchmark as legacy
 
 
 class OracleTests(unittest.TestCase):
+    def test_native_version_commands(self):
+        self.assertEqual(suite.version_command('commitizen', Path('/tools/cz')),
+                         ['/tools/cz', 'version'])
+        for tool in ('clint', 'cog', 'convco', 'commitlint'):
+            self.assertEqual(suite.version_command(tool, Path('/tools/bin')),
+                             ['/tools/bin', '--version'])
+
     def test_corpus_has_provenance_and_separates_contracts(self):
         cases = suite.load_cases()
         self.assertTrue(any(c['origin']['kind'] == 'public' for c in cases))

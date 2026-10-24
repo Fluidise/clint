@@ -1,0 +1,11 @@
+{
+  "purpose": "Reproduce the original invalid version invocation; not the corrected adapter",
+  "version": "4.19.3",
+  "command": [
+    "/Users/acrazie/.codex/worktrees/1dad/lint/target/benchmark-runtime/macos/commitizen/bin/cz",
+    "--version"
+  ],
+  "exit": 13,
+  "stdout": "",
+  "stderr": "usage: cz [-h] [--config CONFIG] [--debug] [-n NAME] [-nr NO_RAISE]\n          {init,commit,c,ls,example,info,schema,bump,changelog,ch,check,version} ...\ncz: error: the following arguments are required: {init,commit,c,ls,example,info,schema,bump,changelog,ch,check,version}\nCommand is required\n"
+}

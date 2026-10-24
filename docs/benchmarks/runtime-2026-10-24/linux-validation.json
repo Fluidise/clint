@@ -1,0 +1,122 @@
+{
+  "complete": true,
+  "source_revision": "54e0ab15d694c684d6bb8c02249d507db9c64a36",
+  "source_overrides": [
+    "scripts/benchmark_suite.py",
+    "tests/test_benchmark_suite.py"
+  ],
+  "platform": "Linux-7.2.12-orbstack-00394-gbecdd6130068-aarch64-with-glibc2.36",
+  "machine": "aarch64",
+  "network": "none during validation; dependencies fetched at image build time",
+  "checks": [
+    {
+      "name": "format",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.07219126600000436
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--offline",
+        "--locked",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "seconds": 1.3390145639999673
+    },
+    {
+      "name": "rust_tests",
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--all-targets"
+      ],
+      "exit": 0,
+      "seconds": 0.5335013630000276
+    },
+    {
+      "name": "doctests",
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--doc"
+      ],
+      "exit": 0,
+      "seconds": 0.4325626749999856
+    },
+    {
+      "name": "benchmark_tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_benchmark*.py",
+        "-v"
+      ],
+      "exit": 0,
+      "seconds": 0.7001803200000722
+    },
+    {
+      "name": "oracle",
+      "command": [
+        "python3",
+        "scripts/benchmark_suite.py",
+        "--clint",
+        "target/release/fluidise-clint",
+        "--commitlint",
+        "/opt/commitlint/node_modules/.bin/commitlint",
+        "--commitizen",
+        "/opt/commitizen/bin/cz",
+        "--timing",
+        "--samples",
+        "7",
+        "--iterations",
+        "1",
+        "--output",
+        "/results/correctness.json"
+      ],
+      "exit": 0,
+      "seconds": 50.39043924400005
+    }
+  ],
+  "versions": {
+    "rustc --version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo --version": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "node --version": "v26.8.1",
+    "npm --version": "11.19.0",
+    "python3 --version": "Python 3.11.2",
+    "git --version": "git version 2.39.5",
+    "cz version": "4.19.3"
+  },
+  "sha256": {
+    "scripts/benchmark_suite.py": "ef8271caaaa3ad19ba2cf1a2b283105d2371a2f08664f6cc6dda37fbb314d4ad",
+    "scripts/benchmark.py": "d8b57f22e50a508df9ff960b5a306f6b3254f6f1eb0f69004f61000749061a91",
+    "tests/benchmark-corpus.json": "7ec6023e0f75ddcbc5ef0c4a13634253f7774201f932486c52014b0d2987fe4c",
+    "tests/test_benchmark_suite.py": "c668d5579795831b4b4efe7f670d4eac952de7e7353355599c03ce8dd3f72ab7",
+    "Cargo.lock": "c96348fcb14e52ff5c6f6d9857d8d66d1edeea8aabe98a38ee615a775d5efcbc",
+    "target/release/fluidise-clint": "69f9101e9b517b4ba93ec34e0386d6d1ea6245f54f4776825944bcb4ce2b2947",
+    "/opt/commitlint/package-lock.json": "52d80997ac403e80c9ef67c997f0739181de9da7b7f9d06dd071a478a9731fa3",
+    "/opt/requirements.txt": "41026b365a31cc4e1abb3556d1d478b99b34d4ad862a479a2449d505c56d83c4"
+  },
+  "passed": true
+}
