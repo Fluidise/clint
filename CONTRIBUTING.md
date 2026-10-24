@@ -45,6 +45,10 @@ We follow Trunk-Based Development directly on GitHub.
    cargo clippy --all-targets -- -D warnings
    cargo test --all-targets
    ```
+   *Optional local code coverage*:
+   ```bash
+   ./scripts/coverage.sh
+   ```
 
 3. **Commit your changes**:
    Write commit messages following the Conventional Commits specification. The local hook will validate your message using `fluidise-clint`.
