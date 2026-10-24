@@ -111,6 +111,9 @@ def notices(metadata, sysroot):
         "Cargo license texts and the installed Rust toolchain copyright inventory "
         "are included as a conservative superset, not a claim of exact linkage. "
         "See PROVENANCE.json for package versions and the exact compiler.\n\n"
+        "Publisher signing policy for 0.1.0: no publisher signature or Apple "
+        "notarization. SHA-256 checksums establish integrity relative to a trusted "
+        "checksum, not publisher authenticity.\n\n"
         "PUBLIC DISTRIBUTION BLOCKED: platform runtime/SDK coverage has not been "
         "established. Review musl/compiler runtime terms on Linux, Apple SDK/runtime "
         "terms on macOS, and MSVC/UCRT redistribution on Windows. Resolve all "
@@ -233,8 +236,10 @@ def prepare(target, destination):
         "cargo_lock_sha256": digest(regular(ROOT / "Cargo.lock")),
         "rustc": output("rustc", "-vV"), "cargo": output("cargo", "--version"),
         "test_environment": platform.platform(), "packages": packages,
+        "publisher_signing_policy": "unsigned" if version == "0.1.0" else "undecided",
         "public_distribution_ready": False,
-        "publication_blockers": ["platform runtime/SDK license and redistribution review", "publisher signing policy"],
+        "publication_blockers": ["platform runtime/SDK license and redistribution review"]
+        + ([] if version == "0.1.0" else ["publisher signing policy"]),
     }
     files["PROVENANCE.json"] = (json.dumps(provenance, indent=2, sort_keys=True) + "\n").encode()
     files["FILES.sha256"] = "".join(f"{digest(data)}  {name}\n" for name, data in sorted(files.items())).encode()
@@ -245,6 +250,33 @@ def prepare(target, destination):
         _, installed = extract_verified(archive, Path(work) / "unpacked")
         smoke(installed, version)
     print(archive)
+
+
+def verify_release(directory, tag, source):
+    """Fail closed unless the complete matrix is eligible for this exact release."""
+    manifest = tomllib.loads((ROOT / "Cargo.toml").read_text())
+    version = manifest["package"]["version"]
+    if tag != f"v{version}" or not re.fullmatch(r"[0-9a-f]{40}", source):
+        raise ValueError("release tag/source identity mismatch")
+    targets = set()
+    archives = sorted([*directory.glob("*.tar.gz"), *directory.glob("*.zip")])
+    for archive in archives:
+        regular(archive)
+        _, provenance, _ = read_archive(archive)
+        target = provenance["target"]
+        if target in targets:
+            raise ValueError("duplicate release target")
+        targets.add(target)
+        if (provenance.get("version") != version or provenance.get("source_commit") != source
+                or provenance.get("working_tree_dirty") is not False):
+            raise ValueError("release archive source/version mismatch or dirty source")
+        if (provenance.get("public_distribution_ready") is not True
+                or provenance.get("publication_blockers") != []):
+            raise ValueError("public distribution blocked: unresolved publication requirements")
+        if version != "0.1.0" or provenance.get("publisher_signing_policy") != "unsigned":
+            raise ValueError("release signing policy has not been approved")
+    if targets != set(TARGETS):
+        raise ValueError("release requires exactly the five supported targets")
 
 
 def homebrew(distribution, reference, destination):
@@ -297,9 +329,15 @@ def main():
     brew.add_argument("--distribution", type=Path, required=True)
     brew.add_argument("--reference", type=Path, required=True)
     brew.add_argument("--output", type=Path, required=True)
+    release = commands.add_parser("verify-release")
+    release.add_argument("--distribution", type=Path, required=True)
+    release.add_argument("--tag", required=True)
+    release.add_argument("--source", required=True)
     args = parser.parse_args()
     if args.command == "prepare":
         prepare(args.target, args.output.resolve())
+    elif args.command == "verify-release":
+        verify_release(args.distribution.resolve(), args.tag, args.source)
     else:
         homebrew(args.distribution.resolve(), args.reference.resolve(), args.output.resolve())
 

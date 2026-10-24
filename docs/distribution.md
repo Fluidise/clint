@@ -144,6 +144,21 @@ public download URLs/checksums and verify public Homebrew installation separatel
 
 No public-release eligibility gate is bypassed by a successful test-artifact upload.
 
+### Release 0.1.0 preparation
+
+The approved publisher policy for version 0.1.0 is **unsigned**, with no publisher
+signature or Apple notarization. SHA-256 checksums are provided for integrity, not
+publisher authentication. No operating-system security bypass is supported. This
+decision does not approve the policy for later versions.
+
+The release workflow resolves an existing version-matched tag to a commit SHA and
+builds all five targets from that SHA. Before publication, `verify-release` checks
+archive inventories, source/version identity, a clean source tree, the complete
+target matrix, the approved signing policy and public-distribution eligibility.
+Existing releases are not overwritten. Current candidates remain ineligible until
+the runtime/SDK licensing review is completed; choosing unsigned binaries does not
+waive that review. Local packaging success is not proof of the remote matrix.
+
 ## Local preparation evidence (2026-10-20)
 
 The local rehearsal on macOS 26.7.1 ARM64 with Rust 1.99.1 produced a candidate

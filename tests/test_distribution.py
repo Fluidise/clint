@@ -212,6 +212,79 @@ class ArchiveTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing license text"):
             distribution.notices(metadata, self.base / "sysroot")
 
+    def release_archives(self, directory, change=None, omit=None):
+        directory.mkdir()
+        for target in distribution.TARGETS:
+            if target == omit:
+                continue
+            files, binary = self.candidate(windows="windows" in target)
+            provenance = json.loads(files["PROVENANCE.json"])
+            provenance.update(target=target, source_commit="a" * 40, working_tree_dirty=False,
+                              public_distribution_ready=True, publication_blockers=[],
+                              publisher_signing_policy="unsigned")
+            if change:
+                change(provenance)
+            files["PROVENANCE.json"] = json.dumps(provenance).encode()
+            del files["FILES.sha256"]
+            files["FILES.sha256"] = "".join(
+                f"{distribution.digest(data)}  {path}\n" for path, data in sorted(files.items())
+            ).encode()
+            suffix = ".zip" if "windows" in target else ".tar.gz"
+            distribution.write_archive(directory / (target + suffix), "candidate", files, binary)
+
+    def test_release_requires_complete_eligible_exact_source(self):
+        valid = self.base / "valid"
+        self.release_archives(valid)
+        distribution.verify_release(valid, "v0.1.0", "a" * 40)
+        cases = [
+            {"public_distribution_ready": False},
+            {"public_distribution_ready": "true"},
+            {"publication_blockers": ["runtime review"]},
+            {"working_tree_dirty": True},
+            {"source_commit": "b" * 40},
+            {"version": "0.2.0"},
+            {"publisher_signing_policy": "undecided"},
+        ]
+        for index, updates in enumerate(cases):
+            directory = self.base / str(index)
+            self.release_archives(directory, lambda provenance: provenance.update(updates))
+            with self.subTest(updates=updates), self.assertRaises(ValueError):
+                distribution.verify_release(directory, "v0.1.0", "a" * 40)
+        for field in ("public_distribution_ready", "publication_blockers", "working_tree_dirty",
+                      "publisher_signing_policy"):
+            directory = self.base / field
+            self.release_archives(directory, lambda provenance: provenance.pop(field))
+            with self.subTest(missing=field), self.assertRaises(ValueError):
+                distribution.verify_release(directory, "v0.1.0", "a" * 40)
+        for tag, source in (("v0.2.0", "a" * 40), ("v0.1.0", "main")):
+            with self.assertRaisesRegex(ValueError, "identity mismatch"):
+                distribution.verify_release(valid, tag, source)
+
+    def test_release_rejects_missing_duplicate_and_tampered_archives(self):
+        directory = self.base / "matrix"
+        self.release_archives(directory, omit="x86_64-pc-windows-msvc")
+        with self.assertRaisesRegex(ValueError, "five supported targets"):
+            distribution.verify_release(directory, "v0.1.0", "a" * 40)
+        archive = next(directory.glob("*.tar.gz"))
+        (directory / "duplicate.tar.gz").write_bytes(archive.read_bytes())
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            distribution.verify_release(directory, "v0.1.0", "a" * 40)
+        (directory / "duplicate.tar.gz").unlink()
+        files, provenance, binary = distribution.read_archive(archive)
+        files[binary] = b"tampered"
+        archive.unlink()
+        distribution.write_archive(archive, provenance["archive_root"], files, binary)
+        with self.assertRaisesRegex(ValueError, "checksum mismatch"):
+            distribution.verify_release(directory, "v0.1.0", "a" * 40)
+
+    def test_release_workflow_checks_eligibility_before_publication(self):
+        workflow = (distribution.ROOT / ".github/workflows/release.yml").read_text()
+        self.assertLess(workflow.index("distribution.py verify-release"), workflow.index("gh release create"))
+        self.assertEqual(workflow.count("ref: ${{ needs.source.outputs.sha }}"), 2)
+        self.assertNotIn("--clobber", workflow)
+        self.assertIn("--verify-tag", workflow)
+        self.assertNotIn("${{ github.event.inputs.tag }}", workflow)
+
     def test_workflow_stays_manual_read_only_and_has_exactly_five_targets(self):
         # Guard the agreed boundary, not a substitute for actionlint/schema checks.
         workflow = (distribution.ROOT / ".github/workflows/distribution.yml").read_text()
