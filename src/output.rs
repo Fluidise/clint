@@ -77,6 +77,27 @@ impl Write for Buffer {
         Ok(())
     }
 }
+const STATIC_VALID_DEFAULTS: &[u8] = b"{\"configuration\":{\"source\":\"defaults\",\"unrecognized_sections\":[],\"used_sections\":[]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n";
+const STATIC_VALID_FILE: &[u8] = b"{\"configuration\":{\"source\":\"file\",\"unrecognized_sections\":[],\"used_sections\":[\"commit\"]},\"diagnostics\":[],\"diagnostics_complete\":true,\"schema_version\":1,\"status\":\"valid\"}\n";
+
+fn static_fast_path(r: &CheckResult) -> Option<&'static [u8]> {
+    if r.status == Status::Valid
+        && r.diagnostics.is_empty()
+        && r.diagnostics_complete
+        && r.reason.is_none()
+        && let Some(c) = &r.configuration
+        && c.unrecognized_sections.is_empty()
+    {
+        if c.source == "defaults" && c.used_sections.is_empty() {
+            return Some(STATIC_VALID_DEFAULTS);
+        }
+        if c.source == "file" && c.used_sections.as_slice() == ["commit"] {
+            return Some(STATIC_VALID_FILE);
+        }
+    }
+    None
+}
+
 fn encode(r: &CheckResult) -> io::Result<Vec<u8>> {
     let mut buffer = Buffer {
         bytes: Vec::with_capacity(512),
@@ -86,6 +107,9 @@ fn encode(r: &CheckResult) -> io::Result<Vec<u8>> {
     Ok(buffer.bytes)
 }
 pub fn json_bytes(r: &CheckResult) -> (Vec<u8>, u8) {
+    if let Some(bytes) = static_fast_path(r) {
+        return (bytes.to_vec(), r.status.exit_code());
+    }
     if let Ok(bytes) = encode(r) {
         return (bytes, r.status.exit_code());
     }
@@ -125,6 +149,13 @@ pub fn emit(r: &CheckResult, human: bool) -> u8 {
     }
 }
 fn emit_json_to(r: &CheckResult, out: &mut impl Write) -> u8 {
+    if let Some(bytes) = static_fast_path(r) {
+        return if out.write_all(bytes).and_then(|_| out.flush()).is_err() {
+            2
+        } else {
+            0
+        };
+    }
     let (bytes, code) = json_bytes(r);
     if out.write_all(&bytes).and_then(|_| out.flush()).is_err() {
         2

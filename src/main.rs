@@ -25,7 +25,9 @@ fn run(
     Ok(check_message(&text, &policy))
 }
 fn main() -> ExitCode {
-    let code = match cli::parse(std::env::args_os().skip(1).collect()) {
+    let mut args = Vec::with_capacity(4);
+    args.extend(std::env::args_os().skip(1));
+    let code = match cli::parse(args) {
         Err(r) => output::emit(&r, false),
         Ok(cli::Action::Help) => output::text(HELP),
         Ok(cli::Action::Version) => {

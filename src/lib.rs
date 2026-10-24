@@ -83,11 +83,16 @@ pub struct Diagnostic {
 }
 impl Diagnostic {
     pub fn new(code: &'static str, message: &str, source: Source) -> Self {
-        let mut text: String = message.chars().take(DIAGNOSTIC_TEXT_LIMIT).collect();
-        if message.chars().nth(DIAGNOSTIC_TEXT_LIMIT).is_some() {
-            text = message.chars().take(DIAGNOSTIC_TEXT_LIMIT - 3).collect();
-            text.push_str("...");
-        }
+        let text = if message.len() <= DIAGNOSTIC_TEXT_LIMIT {
+            message.to_string()
+        } else {
+            let mut s: String = message.chars().take(DIAGNOSTIC_TEXT_LIMIT).collect();
+            if message.chars().nth(DIAGNOSTIC_TEXT_LIMIT).is_some() {
+                s = message.chars().take(DIAGNOSTIC_TEXT_LIMIT - 3).collect();
+                s.push_str("...");
+            }
+            s
+        };
         Self {
             code,
             message: text,
@@ -137,10 +142,20 @@ impl CheckResult {
         }
     }
 }
+pub(crate) const DEFAULT_TYPES: &[&str] = &[
+    "feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore", "revert",
+];
+
+#[derive(Clone, Debug)]
+pub(crate) enum AllowedTypes {
+    Default,
+    Custom(Vec<String>),
+}
+
 /// Immutable validated rules. Only `prepare_policy` can construct this type.
 #[derive(Clone, Debug)]
 pub struct Policy {
-    allowed_types: Vec<String>,
+    pub(crate) allowed_types: AllowedTypes,
     allowed_scopes: Option<Vec<String>>,
     max_title_length: Option<u64>,
     ignore_merges: bool,
@@ -150,6 +165,13 @@ pub struct Policy {
 impl Policy {
     pub fn configuration(&self) -> &ConfigurationSummary {
         &self.summary
+    }
+
+    pub(crate) fn is_allowed_type(&self, kind: &str) -> bool {
+        match &self.allowed_types {
+            AllowedTypes::Default => DEFAULT_TYPES.contains(&kind),
+            AllowedTypes::Custom(types) => types.iter().any(|t| t == kind),
+        }
     }
 }
 

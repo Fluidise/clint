@@ -7,7 +7,7 @@ fn error(code: &'static str, source: Source, message: &str) -> CheckResult {
     CheckResult::error(Diagnostic::new(code, message, source))
 }
 pub fn bounded(reader: impl Read, config: bool) -> Result<Vec<u8>, CheckResult> {
-    bounded_with_capacity(reader, config, 0)
+    bounded_with_capacity(reader, config, 512)
 }
 fn bounded_with_capacity(
     mut reader: impl Read,

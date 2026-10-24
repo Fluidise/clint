@@ -5,12 +5,7 @@ use toml::de::{DeTable, DeValue};
 /// Prepare rules from TOML in memory, or defaults. Never reads files.
 pub fn prepare_policy(input: Option<&str>) -> Result<Policy, CheckResult> {
     let mut p = Policy {
-        allowed_types: [
-            "feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore",
-            "revert",
-        ]
-        .map(String::from)
-        .to_vec(),
+        allowed_types: AllowedTypes::Default,
         allowed_scopes: None,
         max_title_length: None,
         ignore_merges: true,
@@ -164,7 +159,7 @@ pub fn prepare_policy(input: Option<&str>) -> Result<Policy, CheckResult> {
                     }
                 }
                 if name == "allowed-types" {
-                    p.allowed_types = values;
+                    p.allowed_types = AllowedTypes::Custom(values);
                 } else {
                     p.allowed_scopes = Some(values);
                 }
