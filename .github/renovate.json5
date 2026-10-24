@@ -1,0 +1,41 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    "helpers:pinGitHubActionDigests"
+  ],
+  // Maintient un tableau de bord récapitulatif dans les Issues GitHub
+  "dependencyDashboard": true,
+  // Limite la concurrence pour éviter de saturer la CI
+  "prConcurrentLimit": 3,
+  // Ouvre les PRs en mode brouillon pour revue manuelle avant auto-merge
+  "draftPR": true,
+  // Protège le MSRV fixé (1.99.1) en ignorant rust-toolchain.toml
+  "ignorePaths": [
+    "**/rust-toolchain.toml"
+  ],
+  "packageRules": [
+    // 1. Actions GitHub : type ci(actions), épinglage par SHA et regroupement
+    {
+      "matchManagers": ["github-actions"],
+      "semanticCommitType": "ci",
+      "semanticCommitScope": "actions",
+      "groupName": "GitHub Actions",
+      "pinDigests": true
+    },
+    // 2. Dépendances Cargo : type chore(deps) et maintien de l'épinglage exact
+    {
+      "matchManagers": ["cargo"],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deps",
+      "rangeStrategy": "pin"
+    },
+    // 3. Regroupement des mises à jour mineures et patchs de crates Rust
+    {
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Rust dependencies (non-major)"
+    }
+  ]
+}
