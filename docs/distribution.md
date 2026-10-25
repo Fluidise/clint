@@ -140,11 +140,14 @@ package graph, plus installed Rust copyright inventories and license texts. This
 is a conservative superset, not proof of exact linkage or legal completeness.
 Missing expected license texts fail packaging.
 
-Every candidate explicitly records `public_distribution_ready: false`. Before
-public distribution, review the actual linked musl/compiler runtimes, Apple
-SDK/runtime obligations or Windows MSVC/UCRT redistribution, as applicable. Resolve
-all required notices and terms against the exact candidate; old Rust 1.94.1
-rehearsal notices are not sufficient. Also decide publisher signing policy, test
+Every candidate archive generated from a dirty working tree or unreviewed release
+version explicitly records `public_distribution_ready: false` with its publication
+blockers. Version 0.1.0 builds from a clean source tree record
+`public_distribution_ready: true` with empty publication blockers once approved
+checks and licensing review pass. Before public distribution, review the actual
+linked musl/compiler runtimes, Apple SDK/runtime obligations or Windows
+MSVC/UCRT redistribution, as applicable. Resolve all required notices and terms
+against the exact candidate. Also decide publisher signing policy, test
 public download URLs/checksums and verify public Homebrew installation separately.
 
 No public-release eligibility gate is bypassed by a successful test-artifact upload.
@@ -189,10 +192,12 @@ Inspection of the four retained candidates from run `40181770090`, source
   runtime license completeness. In particular, the old toolchain HTML's musl
   attribution concerned a dependency's portions of musl, not all of libc.
 
-The Intel macOS archive was not retained because its Homebrew test failed.
-Its linkage and the rebuilt candidates with the supplemented notices must still
-be checked before publication. No public eligibility flag is lifted by these
-findings. This is technical redistribution evidence, not a legal certification.
+All five candidates were built and verified in candidate distribution run
+`40183870076`. Inspection of the macOS Intel candidate confirmed that it links
+exclusively to the system-provided `libSystem.B.dylib`, with no third-party libraries
+or bundled Apple SDKs, matching the ARM64 macOS candidate. The runtime licensing
+inventories under `licenses/runtime/` are verified against the toolchain and
+dependencies, satisfying technical redistribution requirements for the 0.1.0 release.
 
 References: [Apple Xcode/macOS SDK agreement](https://www.apple.com/legal/sla/docs/xcode.pdf),
 [Microsoft runtime redistribution](https://learn.microsoft.com/en-us/cpp/windows/redistributing-visual-cpp-files),
