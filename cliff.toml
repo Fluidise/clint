@@ -44,12 +44,6 @@ body = """
   {%- endif %}
 {% endfor %}
 {% endif -%}
-### 👥 Contributors
-{% for contributor in github.contributors -%}
-  {%- if not contributor.username is ending_with("[bot]") %}
-* @{{ contributor.username }}
-  {%- endif %}
-{% endfor %}
 {%- endif %}
 \n"""
 # A Tera template to be rendered as the changelog's footer.

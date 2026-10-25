@@ -41,20 +41,20 @@ L'inspection de la configuration de référence sous `/Users/acrazie/.gemini/ant
 3. **Génération du fichier de référence `CHANGELOG.md`** :
    - Régénération complète du fichier [`CHANGELOG.md`](file:///Users/acrazie/.gemini/antigravity/worktrees/lint/prepare_official_release/CHANGELOG.md) à la racine du dépôt.
 
-4. **Activation de la section Contributeurs et déclenchement des avatars GitHub Releases** :
+4. **Gestion des contributeurs et déclenchement des avatars GitHub Releases** :
    - **Mécanisme GitHub identifié** : L'affichage natif du pied de page `Contributors` avec les avatars ronds des profils sur les GitHub Releases n'est pas un composant markdown généré par l'outil, mais un composant d'interface natif de GitHub (conteneur HTML `Box-footer`). GitHub n'injecte ce composant que lorsque la note de release contient au moins une mention explicite `@username` (`mentions_count > 0` dans l'API Releases).
    - **Configuration `cliff.toml`** :
      - Déclaration explicite du remote GitHub (`[remote.github]` avec `owner = "Fluidise"` et `repo = "clint"`).
-     - Ajout de la section `### ❤️ New Contributors` pour les primo-contributeurs (`is_first_time: true`).
-     - Ajout systématique de la section `### 👥 Contributors` énumérant tous les contributeurs de la version.
+     - Conservation de la section `### ❤️ New Contributors` pour les primo-contributeurs (`is_first_time: true`).
+     - Suppression de la liste textuelle redondante `### 👥 Contributors` : la mention `@username` dans `New Contributors` (ou dans les messages de commit) suffit à déclencher l'affichage direct du composant natif d'avatars GitHub, évitant ainsi une double liste textuelle superflue.
      - Filtrage systématique des comptes d'automatisation (`[bot]`, ex. `renovate[bot]`).
-   - **Effet** : Les mentions `@username` permettent à GitHub d'afficher nativement le carrousel d'avatars sous la release, tout en garantissant un historique clair des contributions dans `CHANGELOG.md`.
+   - **Effet** : Les mentions `@username` activent nativement le carrousel d'avatars sous la release GitHub sans alourdir le texte du changelog avec une liste textuelle doublon.
 
 ---
 
 ## Validation et Résultats
 
-- `git-cliff --output CHANGELOG.md` exécuté avec succès (avec sections `❤️ New Contributors` et `👥 Contributors`).
+- `git-cliff --output CHANGELOG.md` exécuté avec succès (avec section `❤️ New Contributors`, sans liste textuelle doublon).
 - `gh release edit v0.1.0` appliqué et vérifié : `mentions_count: 1`, section HTML `Box-footer` contenant les avatars de contributeurs active.
 - `cargo fmt --all -- --check` : conforme.
 - `cargo clippy --all-targets -- -D warnings` : aucun avertissement.
