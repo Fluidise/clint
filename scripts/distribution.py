@@ -69,6 +69,26 @@ def smoke(binary, version):
                 raise ValueError("unexpected JSON status")
 
 
+def runtime_notices(target, compiler):
+    """Ship the reviewed runtime texts only with their exact Rust source revision."""
+    files = {}
+    groups = ["common"] + (["musl-1.2.5"] if target.endswith("-musl") else [])
+    for group in groups:
+        directory = ROOT / "licenses/runtime" / group
+        source = regular(directory / "SOURCES.json")
+        inventory = json.loads(source)
+        if f"commit-hash: {inventory['rust_commit']}" not in compiler.splitlines():
+            raise ValueError("runtime notices require review for this Rust compiler")
+        prefix = f"THIRD-PARTY/runtime/{group}"
+        files[f"{prefix}/SOURCES.json"] = source
+        for name, checksum in inventory["files"].items():
+            data = regular(directory / name)
+            if digest(data) != checksum:
+                raise ValueError("runtime notice checksum mismatch")
+            files[f"{prefix}/{name}"] = data
+    return files
+
+
 def notices(metadata, sysroot):
     files = {}
     packages = []
@@ -225,6 +245,8 @@ def prepare(target, destination):
     binary = Path(metadata["target_directory"]) / target / "release" / binary_name
     smoke(binary, version)
     files, packages = notices(metadata, Path(output("rustc", "--print", "sysroot")))
+    compiler = output("rustc", "-vV")
+    files.update(runtime_notices(target, compiler))
     files[binary_name] = regular(binary)
     for name in ("LICENSE", "USAGE.md"):
         files[name] = regular(ROOT / name)
@@ -234,7 +256,7 @@ def prepare(target, destination):
         "working_tree_dirty": dirty, "archive_root": root_name,
         "binary_sha256": digest(files[binary_name]),
         "cargo_lock_sha256": digest(regular(ROOT / "Cargo.lock")),
-        "rustc": output("rustc", "-vV"), "cargo": output("cargo", "--version"),
+        "rustc": compiler, "cargo": output("cargo", "--version"),
         "test_environment": platform.platform(), "packages": packages,
         "publisher_signing_policy": "unsigned" if version == "0.1.0" else "undecided",
         "public_distribution_ready": False,
@@ -312,6 +334,8 @@ def homebrew(distribution, reference, destination):
         "HOMEBREW_NO_INSTALL_FROM_API": "1", "HOMEBREW_CACHE": str(destination / "cache"),
         "HOMEBREW_LOGS": str(destination / "logs"),
     })
+    # Use the supported CLI, not Ruby internals that differ between runner images.
+    run("brew", "install-bundler-gems", "--add-groups=formula_test", env=environment)
     run("brew", "ruby", str(ROOT / "scripts/test-homebrew.rb"), str(fixture),
         str(binary.parent), str(destination / "prefix"), provenance["version"], env=environment)
     smoke(destination / "prefix/bin/fluidise-clint", provenance["version"])

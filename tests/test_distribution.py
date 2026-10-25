@@ -5,6 +5,7 @@ import io
 import json
 from pathlib import Path
 import re
+import shutil
 import stat
 import tarfile
 import tempfile
@@ -198,6 +199,9 @@ class ArchiveTests(unittest.TestCase):
         self.assertIn('  version "0.1.0"', fixture)
         self.assertTrue(fixture.endswith("# install method remains unchanged\n"))
         self.assertEqual(fixture.count("--stdin --defaults"), 2)
+        self.assertEqual(run.call_args_list[0].args,
+                         ("brew", "install-bundler-gems", "--add-groups=formula_test"))
+        self.assertEqual(len(run.call_args_list), 2)
         self.assertEqual(run.call_args.args[:2], ("brew", "ruby"))
         # A changed reference recipe must fail before any test output is written.
         reference.write_text(recipe.replace('  version "old"', '  version :unknown'), newline="\n")
@@ -218,6 +222,29 @@ class ArchiveTests(unittest.TestCase):
                                   "manifest_path": str(package / "Cargo.toml")}]}
         with self.assertRaisesRegex(ValueError, "missing license text"):
             distribution.notices(metadata, self.base / "sysroot")
+
+    def test_runtime_notice_inventory_and_compiler_identity(self):
+        source = json.loads((distribution.ROOT / "licenses/runtime/common/SOURCES.json").read_text())
+        compiler = f"rustc {source['rust_release']}\ncommit-hash: {source['rust_commit']}\n"
+        for target in distribution.TARGETS:
+            with self.subTest(target=target):
+                files = distribution.runtime_notices(target, compiler)
+                self.assertIn("THIRD-PARTY/runtime/common/compiler-builtins-LICENSE.txt", files)
+                self.assertIn("THIRD-PARTY/runtime/common/libunwind-LICENSE.txt", files)
+                self.assertEqual("THIRD-PARTY/runtime/musl-1.2.5/COPYRIGHT" in files,
+                                 target.endswith("-musl"))
+                self.assertTrue(all(files.values()))
+        with self.assertRaisesRegex(ValueError, "require review"):
+            distribution.runtime_notices("aarch64-apple-darwin", "commit-hash: unreviewed\n")
+        shutil.copytree(distribution.ROOT / "licenses/runtime", self.base / "licenses/runtime")
+        material = self.base / "licenses/runtime/common/libunwind-LICENSE.txt"
+        material.write_bytes(b"tampered")
+        with patch.object(distribution, "ROOT", self.base):
+            with self.assertRaisesRegex(ValueError, "notice checksum mismatch"):
+                distribution.runtime_notices("aarch64-apple-darwin", compiler)
+            material.unlink()
+            with self.assertRaisesRegex(ValueError, "not an ordinary file"):
+                distribution.runtime_notices("aarch64-apple-darwin", compiler)
 
     def release_archives(self, directory, change=None, omit=None):
         directory.mkdir()
