@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import shutil
 import stat
+import subprocess
 import tarfile
 import tempfile
 import unittest
@@ -245,6 +246,23 @@ class ArchiveTests(unittest.TestCase):
             material.unlink()
             with self.assertRaisesRegex(ValueError, "not an ordinary file"):
                 distribution.runtime_notices("aarch64-apple-darwin", compiler)
+
+    def test_runtime_notices_survive_git_autocrlf_checkout(self):
+        repository = self.base / "repository"
+        repository.mkdir()
+        shutil.copyfile(distribution.ROOT / ".gitattributes", repository / ".gitattributes")
+        shutil.copytree(distribution.ROOT / "licenses/runtime", repository / "licenses/runtime")
+        subprocess.run(["git", "init", "--quiet", str(repository)], check=True)
+        git = ["git", "-C", str(repository), "-c", "core.autocrlf=true"]
+        subprocess.run([*git, "add", ".gitattributes", "licenses/runtime"], check=True)
+        checkout = self.base / "checkout"
+        subprocess.run([*git, "checkout-index", "--all", f"--prefix={checkout.as_posix()}/"], check=True)
+        source = json.loads((checkout / "licenses/runtime/common/SOURCES.json").read_text())
+        compiler = f"commit-hash: {source['rust_commit']}\n"
+        with patch.object(distribution, "ROOT", checkout):
+            for target in distribution.TARGETS:
+                with self.subTest(target=target):
+                    self.assertTrue(distribution.runtime_notices(target, compiler))
 
     def release_archives(self, directory, change=None, omit=None):
         directory.mkdir()
