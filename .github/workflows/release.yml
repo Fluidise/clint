@@ -147,6 +147,7 @@ jobs:
           args: --current --strip header
         env:
           OUTPUT: RELEASE_NOTES.md
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Disclose the approved unsigned release policy
         run: |
