@@ -1,6 +1,8 @@
 # Exercise the existing recipe using the real Homebrew DSL, but only a temporary
 # prefix. This is not `brew install`, tap registration, linking, or a full brew audit.
 require "formulary"
+# Match `brew test`: assertions depend on Homebrew's optional, locked gem group.
+Utils::GemSetup.install_bundler_gems!(groups: ["formula_test"], setup_path: false)
 require "formula_assertions"
 require "uri"
 

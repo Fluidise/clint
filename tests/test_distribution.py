@@ -62,6 +62,13 @@ class ArchiveTests(unittest.TestCase):
                 if not windows:
                     with tarfile.open(archive) as stream:
                         self.assertTrue(all(i.mtime == 0 and i.uid == 0 and i.gid == 0 for i in stream))
+                        self.assertEqual(stream.getmember(f"candidate/{binary}").mode, 0o755)
+                else:
+                    with zipfile.ZipFile(archive) as stream:
+                        self.assertEqual(stream.getinfo(f"candidate/{binary}").external_attr >> 16
+                                         & 0o777, 0o755)
+                # Windows chmod only controls the read-only flag, not POSIX execute bits.
+                if distribution.platform.system() != "Windows":
                     self.assertEqual(installed.stat().st_mode & 0o777, 0o755)
 
     def test_same_input_produces_identical_archive(self):
