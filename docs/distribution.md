@@ -97,6 +97,11 @@ closed if the maintained recipe shape changes. It is **not** a complete
 download behavior, supported Homebrew versions and consumer installation remain
 separate publication gates. The output directory contains only local test state;
 deleting that explicitly chosen directory later removes the rehearsal installation.
+Before loading the test DSL, preparation uses the supported
+`brew install-bundler-gems --add-groups=formula_test` command. This may download
+Homebrew's locked test gems and update its gem cache; it does not install the Clint
+formula or register a tap. Gem setup is not performed through version-dependent
+Homebrew Ruby helper names.
 
 ## Archive contract
 
@@ -143,6 +148,55 @@ rehearsal notices are not sufficient. Also decide publisher signing policy, test
 public download URLs/checksums and verify public Homebrew installation separately.
 
 No public-release eligibility gate is bypassed by a successful test-artifact upload.
+
+### Release 0.1.0 preparation
+
+The approved publisher policy for version 0.1.0 is **unsigned**, with no publisher
+signature or Apple notarization. SHA-256 checksums are provided for integrity, not
+publisher authentication. No operating-system security bypass is supported. This
+decision does not approve the policy for later versions.
+
+The release workflow resolves an existing version-matched tag to a commit SHA and
+builds all five targets from that SHA. Before publication, `verify-release` checks
+archive inventories, source/version identity, a clean source tree, the complete
+target matrix, the approved signing policy and public-distribution eligibility.
+Existing releases are not overwritten. Current candidates remain ineligible until
+the runtime/SDK licensing review is completed; choosing unsigned binaries does not
+waive that review. Local packaging success is not proof of the remote matrix.
+
+Runtime notice materials are maintained under `licenses/runtime/`. Their
+`SOURCES.json` inventories record upstream URLs, exact source revisions, and
+SHA-256 hashes. Packaging rejects a Rust compiler with a different source commit
+or missing/modified notice materials. LLVM compiler-rt/libunwind and Rust
+compiler-builtins notices supplement the toolchain inventory; Linux candidates
+also include musl 1.2.5's full COPYRIGHT and license-bearing source comments.
+These are conservative source inventories, not a claim that every listed file
+is linked. They do not remove the exact-candidate public-distribution gate.
+
+Inspection of the four retained candidates from run `40181770090`, source
+`6e3e4ec265bad9f1195b7ad3a18612e7ca940bd3`, verified archive hashes and found:
+
+- Both Linux musl executables are statically linked.
+- macOS ARM64 links only to the system-provided `libSystem.B.dylib`; the archive
+  contains no Apple SDK or system library. The Xcode/macOS SDK agreement's section
+  2.4 permits macOS distribution outside the App Store subject to its terms; this
+  is not a transfer of SDK redistribution rights.
+- Windows imports `VCRUNTIME140.dll` and Universal CRT APIs, but bundles no
+  Microsoft runtime DLL or installer. The user must obtain prerequisites from
+  Microsoft; runner execution is not a clean-Windows installation test.
+- Cargo-resolved packages declare MIT, Apache-2.0, dual MIT/Apache-2.0, or
+  Unlicense/MIT choices. Texts are included; this metadata alone does not establish
+  runtime license completeness. In particular, the old toolchain HTML's musl
+  attribution concerned a dependency's portions of musl, not all of libc.
+
+The Intel macOS archive was not retained because its Homebrew test failed.
+Its linkage and the rebuilt candidates with the supplemented notices must still
+be checked before publication. No public eligibility flag is lifted by these
+findings. This is technical redistribution evidence, not a legal certification.
+
+References: [Apple Xcode/macOS SDK agreement](https://www.apple.com/legal/sla/docs/xcode.pdf),
+[Microsoft runtime redistribution](https://learn.microsoft.com/en-us/cpp/windows/redistributing-visual-cpp-files),
+and the pinned upstream sources in each runtime notice inventory.
 
 ## Local preparation evidence (2026-10-20)
 

@@ -69,6 +69,26 @@ def smoke(binary, version):
                 raise ValueError("unexpected JSON status")
 
 
+def runtime_notices(target, compiler):
+    """Ship the reviewed runtime texts only with their exact Rust source revision."""
+    files = {}
+    groups = ["common"] + (["musl-1.2.5"] if target.endswith("-musl") else [])
+    for group in groups:
+        directory = ROOT / "licenses/runtime" / group
+        source = regular(directory / "SOURCES.json")
+        inventory = json.loads(source)
+        if f"commit-hash: {inventory['rust_commit']}" not in compiler.splitlines():
+            raise ValueError("runtime notices require review for this Rust compiler")
+        prefix = f"THIRD-PARTY/runtime/{group}"
+        files[f"{prefix}/SOURCES.json"] = source
+        for name, checksum in inventory["files"].items():
+            data = regular(directory / name)
+            if digest(data) != checksum:
+                raise ValueError("runtime notice checksum mismatch")
+            files[f"{prefix}/{name}"] = data
+    return files
+
+
 def notices(metadata, sysroot):
     files = {}
     packages = []
@@ -111,6 +131,9 @@ def notices(metadata, sysroot):
         "Cargo license texts and the installed Rust toolchain copyright inventory "
         "are included as a conservative superset, not a claim of exact linkage. "
         "See PROVENANCE.json for package versions and the exact compiler.\n\n"
+        "Publisher signing policy for 0.1.0: no publisher signature or Apple "
+        "notarization. SHA-256 checksums establish integrity relative to a trusted "
+        "checksum, not publisher authenticity.\n\n"
         "PUBLIC DISTRIBUTION BLOCKED: platform runtime/SDK coverage has not been "
         "established. Review musl/compiler runtime terms on Linux, Apple SDK/runtime "
         "terms on macOS, and MSVC/UCRT redistribution on Windows. Resolve all "
@@ -222,6 +245,8 @@ def prepare(target, destination):
     binary = Path(metadata["target_directory"]) / target / "release" / binary_name
     smoke(binary, version)
     files, packages = notices(metadata, Path(output("rustc", "--print", "sysroot")))
+    compiler = output("rustc", "-vV")
+    files.update(runtime_notices(target, compiler))
     files[binary_name] = regular(binary)
     for name in ("LICENSE", "USAGE.md"):
         files[name] = regular(ROOT / name)
@@ -231,10 +256,12 @@ def prepare(target, destination):
         "working_tree_dirty": dirty, "archive_root": root_name,
         "binary_sha256": digest(files[binary_name]),
         "cargo_lock_sha256": digest(regular(ROOT / "Cargo.lock")),
-        "rustc": output("rustc", "-vV"), "cargo": output("cargo", "--version"),
+        "rustc": compiler, "cargo": output("cargo", "--version"),
         "test_environment": platform.platform(), "packages": packages,
+        "publisher_signing_policy": "unsigned" if version == "0.1.0" else "undecided",
         "public_distribution_ready": False,
-        "publication_blockers": ["platform runtime/SDK license and redistribution review", "publisher signing policy"],
+        "publication_blockers": ["platform runtime/SDK license and redistribution review"]
+        + ([] if version == "0.1.0" else ["publisher signing policy"]),
     }
     files["PROVENANCE.json"] = (json.dumps(provenance, indent=2, sort_keys=True) + "\n").encode()
     files["FILES.sha256"] = "".join(f"{digest(data)}  {name}\n" for name, data in sorted(files.items())).encode()
@@ -245,6 +272,33 @@ def prepare(target, destination):
         _, installed = extract_verified(archive, Path(work) / "unpacked")
         smoke(installed, version)
     print(archive)
+
+
+def verify_release(directory, tag, source):
+    """Fail closed unless the complete matrix is eligible for this exact release."""
+    manifest = tomllib.loads((ROOT / "Cargo.toml").read_text())
+    version = manifest["package"]["version"]
+    if tag != f"v{version}" or not re.fullmatch(r"[0-9a-f]{40}", source):
+        raise ValueError("release tag/source identity mismatch")
+    targets = set()
+    archives = sorted([*directory.glob("*.tar.gz"), *directory.glob("*.zip")])
+    for archive in archives:
+        regular(archive)
+        _, provenance, _ = read_archive(archive)
+        target = provenance["target"]
+        if target in targets:
+            raise ValueError("duplicate release target")
+        targets.add(target)
+        if (provenance.get("version") != version or provenance.get("source_commit") != source
+                or provenance.get("working_tree_dirty") is not False):
+            raise ValueError("release archive source/version mismatch or dirty source")
+        if (provenance.get("public_distribution_ready") is not True
+                or provenance.get("publication_blockers") != []):
+            raise ValueError("public distribution blocked: unresolved publication requirements")
+        if version != "0.1.0" or provenance.get("publisher_signing_policy") != "unsigned":
+            raise ValueError("release signing policy has not been approved")
+    if targets != set(TARGETS):
+        raise ValueError("release requires exactly the five supported targets")
 
 
 def homebrew(distribution, reference, destination):
@@ -280,6 +334,8 @@ def homebrew(distribution, reference, destination):
         "HOMEBREW_NO_INSTALL_FROM_API": "1", "HOMEBREW_CACHE": str(destination / "cache"),
         "HOMEBREW_LOGS": str(destination / "logs"),
     })
+    # Use the supported CLI, not Ruby internals that differ between runner images.
+    run("brew", "install-bundler-gems", "--add-groups=formula_test", env=environment)
     run("brew", "ruby", str(ROOT / "scripts/test-homebrew.rb"), str(fixture),
         str(binary.parent), str(destination / "prefix"), provenance["version"], env=environment)
     smoke(destination / "prefix/bin/fluidise-clint", provenance["version"])
@@ -297,9 +353,15 @@ def main():
     brew.add_argument("--distribution", type=Path, required=True)
     brew.add_argument("--reference", type=Path, required=True)
     brew.add_argument("--output", type=Path, required=True)
+    release = commands.add_parser("verify-release")
+    release.add_argument("--distribution", type=Path, required=True)
+    release.add_argument("--tag", required=True)
+    release.add_argument("--source", required=True)
     args = parser.parse_args()
     if args.command == "prepare":
         prepare(args.target, args.output.resolve())
+    elif args.command == "verify-release":
+        verify_release(args.distribution.resolve(), args.tag, args.source)
     else:
         homebrew(args.distribution.resolve(), args.reference.resolve(), args.output.resolve())
 

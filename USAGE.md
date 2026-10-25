@@ -4,6 +4,24 @@ Standalone commit-message validation, designed for AI agents. JSON schema 1 is t
 
 ## Local development
 
+### Precompiled 0.1.0 candidate runtime requirements
+
+No Rust, Node.js or Python installation is needed to run a precompiled candidate.
+Linux musl candidates are statically linked. The inspected macOS ARM64 candidate
+links to the system-provided `/usr/lib/libSystem.B.dylib`; no Apple SDK or system
+library is bundled. Native macOS Intel consumer validation remains pending.
+
+The Windows x86-64 candidate imports `VCRUNTIME140.dll` and Universal CRT APIs.
+It therefore requires the supported Microsoft Visual C++ x64 Redistributable and
+the corresponding Windows system runtime. No Microsoft redistributable DLL or
+installer is included. Obtain prerequisites directly from
+[Microsoft](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
+Passing on a development runner does not prove availability on a clean Windows
+installation. These findings concern the 0.1.0 candidates built with Rust 1.99.1,
+not arbitrary future builds or older operating systems.
+
+### Source builds
+
 Rust 1.99.1 or newer is required to build from source, not to run the future precompiled binary. Development and CI use Rust 1.99.1, pinned in `rust-toolchain.toml`. Dependencies are locked in `Cargo.lock`. Historical verification before this toolchain update covered macOS 26.6.2 ARM64 natively and x86_64 under Rosetta, plus Linux ARM64 and x86_64 (the latter under Docker emulation) with glibc and musl. Rust 1.85.0 was tested on Linux ARM64 glibc; Rust 1.94.1 was used for the six release artifacts. Those historical results do not establish Rust 1.99.1 compatibility on those platforms, nor guarantee older OS versions or native Intel execution.
 
 ```sh

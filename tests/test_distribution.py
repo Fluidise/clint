@@ -5,7 +5,9 @@ import io
 import json
 from pathlib import Path
 import re
+import shutil
 import stat
+import subprocess
 import tarfile
 import tempfile
 import unittest
@@ -62,6 +64,13 @@ class ArchiveTests(unittest.TestCase):
                 if not windows:
                     with tarfile.open(archive) as stream:
                         self.assertTrue(all(i.mtime == 0 and i.uid == 0 and i.gid == 0 for i in stream))
+                        self.assertEqual(stream.getmember(f"candidate/{binary}").mode, 0o755)
+                else:
+                    with zipfile.ZipFile(archive) as stream:
+                        self.assertEqual(stream.getinfo(f"candidate/{binary}").external_attr >> 16
+                                         & 0o777, 0o755)
+                # Windows chmod only controls the read-only flag, not POSIX execute bits.
+                if distribution.platform.system() != "Windows":
                     self.assertEqual(installed.stat().st_mode & 0o777, 0o755)
 
     def test_same_input_produces_identical_archive(self):
@@ -191,6 +200,9 @@ class ArchiveTests(unittest.TestCase):
         self.assertIn('  version "0.1.0"', fixture)
         self.assertTrue(fixture.endswith("# install method remains unchanged\n"))
         self.assertEqual(fixture.count("--stdin --defaults"), 2)
+        self.assertEqual(run.call_args_list[0].args,
+                         ("brew", "install-bundler-gems", "--add-groups=formula_test"))
+        self.assertEqual(len(run.call_args_list), 2)
         self.assertEqual(run.call_args.args[:2], ("brew", "ruby"))
         # A changed reference recipe must fail before any test output is written.
         reference.write_text(recipe.replace('  version "old"', '  version :unknown'), newline="\n")
@@ -211,6 +223,119 @@ class ArchiveTests(unittest.TestCase):
                                   "manifest_path": str(package / "Cargo.toml")}]}
         with self.assertRaisesRegex(ValueError, "missing license text"):
             distribution.notices(metadata, self.base / "sysroot")
+
+    def test_runtime_notice_inventory_and_compiler_identity(self):
+        source = json.loads((distribution.ROOT / "licenses/runtime/common/SOURCES.json").read_text())
+        compiler = f"rustc {source['rust_release']}\ncommit-hash: {source['rust_commit']}\n"
+        for target in distribution.TARGETS:
+            with self.subTest(target=target):
+                files = distribution.runtime_notices(target, compiler)
+                self.assertIn("THIRD-PARTY/runtime/common/compiler-builtins-LICENSE.txt", files)
+                self.assertIn("THIRD-PARTY/runtime/common/libunwind-LICENSE.txt", files)
+                self.assertEqual("THIRD-PARTY/runtime/musl-1.2.5/COPYRIGHT" in files,
+                                 target.endswith("-musl"))
+                self.assertTrue(all(files.values()))
+        with self.assertRaisesRegex(ValueError, "require review"):
+            distribution.runtime_notices("aarch64-apple-darwin", "commit-hash: unreviewed\n")
+        shutil.copytree(distribution.ROOT / "licenses/runtime", self.base / "licenses/runtime")
+        material = self.base / "licenses/runtime/common/libunwind-LICENSE.txt"
+        material.write_bytes(b"tampered")
+        with patch.object(distribution, "ROOT", self.base):
+            with self.assertRaisesRegex(ValueError, "notice checksum mismatch"):
+                distribution.runtime_notices("aarch64-apple-darwin", compiler)
+            material.unlink()
+            with self.assertRaisesRegex(ValueError, "not an ordinary file"):
+                distribution.runtime_notices("aarch64-apple-darwin", compiler)
+
+    def test_runtime_notices_survive_git_autocrlf_checkout(self):
+        repository = self.base / "repository"
+        repository.mkdir()
+        shutil.copyfile(distribution.ROOT / ".gitattributes", repository / ".gitattributes")
+        shutil.copytree(distribution.ROOT / "licenses/runtime", repository / "licenses/runtime")
+        subprocess.run(["git", "init", "--quiet", str(repository)], check=True)
+        git = ["git", "-C", str(repository), "-c", "core.autocrlf=true"]
+        subprocess.run([*git, "add", ".gitattributes", "licenses/runtime"], check=True)
+        checkout = self.base / "checkout"
+        subprocess.run([*git, "checkout-index", "--all", f"--prefix={checkout.as_posix()}/"], check=True)
+        source = json.loads((checkout / "licenses/runtime/common/SOURCES.json").read_text())
+        compiler = f"commit-hash: {source['rust_commit']}\n"
+        with patch.object(distribution, "ROOT", checkout):
+            for target in distribution.TARGETS:
+                with self.subTest(target=target):
+                    self.assertTrue(distribution.runtime_notices(target, compiler))
+
+    def release_archives(self, directory, change=None, omit=None):
+        directory.mkdir()
+        for target in distribution.TARGETS:
+            if target == omit:
+                continue
+            files, binary = self.candidate(windows="windows" in target)
+            provenance = json.loads(files["PROVENANCE.json"])
+            provenance.update(target=target, source_commit="a" * 40, working_tree_dirty=False,
+                              public_distribution_ready=True, publication_blockers=[],
+                              publisher_signing_policy="unsigned")
+            if change:
+                change(provenance)
+            files["PROVENANCE.json"] = json.dumps(provenance).encode()
+            del files["FILES.sha256"]
+            files["FILES.sha256"] = "".join(
+                f"{distribution.digest(data)}  {path}\n" for path, data in sorted(files.items())
+            ).encode()
+            suffix = ".zip" if "windows" in target else ".tar.gz"
+            distribution.write_archive(directory / (target + suffix), "candidate", files, binary)
+
+    def test_release_requires_complete_eligible_exact_source(self):
+        valid = self.base / "valid"
+        self.release_archives(valid)
+        distribution.verify_release(valid, "v0.1.0", "a" * 40)
+        cases = [
+            {"public_distribution_ready": False},
+            {"public_distribution_ready": "true"},
+            {"publication_blockers": ["runtime review"]},
+            {"working_tree_dirty": True},
+            {"source_commit": "b" * 40},
+            {"version": "0.2.0"},
+            {"publisher_signing_policy": "undecided"},
+        ]
+        for index, updates in enumerate(cases):
+            directory = self.base / str(index)
+            self.release_archives(directory, lambda provenance: provenance.update(updates))
+            with self.subTest(updates=updates), self.assertRaises(ValueError):
+                distribution.verify_release(directory, "v0.1.0", "a" * 40)
+        for field in ("public_distribution_ready", "publication_blockers", "working_tree_dirty",
+                      "publisher_signing_policy"):
+            directory = self.base / field
+            self.release_archives(directory, lambda provenance: provenance.pop(field))
+            with self.subTest(missing=field), self.assertRaises(ValueError):
+                distribution.verify_release(directory, "v0.1.0", "a" * 40)
+        for tag, source in (("v0.2.0", "a" * 40), ("v0.1.0", "main")):
+            with self.assertRaisesRegex(ValueError, "identity mismatch"):
+                distribution.verify_release(valid, tag, source)
+
+    def test_release_rejects_missing_duplicate_and_tampered_archives(self):
+        directory = self.base / "matrix"
+        self.release_archives(directory, omit="x86_64-pc-windows-msvc")
+        with self.assertRaisesRegex(ValueError, "five supported targets"):
+            distribution.verify_release(directory, "v0.1.0", "a" * 40)
+        archive = next(directory.glob("*.tar.gz"))
+        (directory / "duplicate.tar.gz").write_bytes(archive.read_bytes())
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            distribution.verify_release(directory, "v0.1.0", "a" * 40)
+        (directory / "duplicate.tar.gz").unlink()
+        files, provenance, binary = distribution.read_archive(archive)
+        files[binary] = b"tampered"
+        archive.unlink()
+        distribution.write_archive(archive, provenance["archive_root"], files, binary)
+        with self.assertRaisesRegex(ValueError, "checksum mismatch"):
+            distribution.verify_release(directory, "v0.1.0", "a" * 40)
+
+    def test_release_workflow_checks_eligibility_before_publication(self):
+        workflow = (distribution.ROOT / ".github/workflows/release.yml").read_text()
+        self.assertLess(workflow.index("distribution.py verify-release"), workflow.index("gh release create"))
+        self.assertEqual(workflow.count("ref: ${{ needs.source.outputs.sha }}"), 2)
+        self.assertNotIn("--clobber", workflow)
+        self.assertIn("--verify-tag", workflow)
+        self.assertNotIn("${{ github.event.inputs.tag }}", workflow)
 
     def test_workflow_stays_manual_read_only_and_has_exactly_five_targets(self):
         # Guard the agreed boundary, not a substitute for actionlint/schema checks.
