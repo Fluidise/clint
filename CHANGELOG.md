@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 📚 Documentation
 
 - **changelog:** adopt official git-cliff format and add CHANGELOG.md ([#38](https://github.com/Fluidise/clint/pull/38)) ([f1f07b3](https://github.com/Fluidise/clint/commit/f1f07b383a239ce18d26928fd21c56f8210c4b07))
+- **changelog:** align git-cliff formatting and emojis with relay ([#39](https://github.com/Fluidise/clint/pull/39)) ([030114e](https://github.com/Fluidise/clint/commit/030114eca16b663bbd97d68574215ab9687b31d9))
+
+### 👥 Contributors
+
+* @Acrazie
 
 ## [0.1.0] - 2026-10-25
 
@@ -76,6 +81,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add auto-merge job for validated pull requests ([#11](https://github.com/Fluidise/clint/pull/11)) ([4f60848](https://github.com/Fluidise/clint/commit/4f60848674b49a4c8e6bda943eeb02dfd3a6e979))
 - skip CI checks on draft pull requests ([#13](https://github.com/Fluidise/clint/pull/13)) ([c742e55](https://github.com/Fluidise/clint/commit/c742e55f7b2d935fd31ff0fb5efd4166d0f1a178))
 - configure renovate bot for dependency and action updates ([#26](https://github.com/Fluidise/clint/pull/26)) ([25e2bfc](https://github.com/Fluidise/clint/commit/25e2bfc1bdfcd55ff0c3281d3667817d653e17e6))
+
+
+### ❤️ New Contributors
+
+* @Acrazie made their first contribution in [#37](https://github.com/Fluidise/clint/pull/37)
+
+
+### 👥 Contributors
+
+* @Acrazie
+
 
 [unreleased]: https://github.com/Fluidise/clint/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/Fluidise/clint/tree/v0.1.0

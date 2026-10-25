@@ -1,6 +1,10 @@
 # git-cliff ~ configuration file
 # https://git-cliff.org/docs/configuration
 
+[remote.github]
+owner = "Fluidise"
+repo = "clint"
+
 [changelog]
 # A Tera template to be rendered as the changelog's header.
 header = """
@@ -28,8 +32,26 @@ body = """
             {{ commit.message | split(pat="\n") | first | trim }}\
             {% if commit.id %} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/Fluidise/clint/commit/{{ commit.id }})){% endif %}\
     {% endfor %}
-{% endfor %}\n
-"""
+{% endfor %}
+{% if github and github.contributors | length != 0 -%}
+{% set new_contributors = github.contributors | filter(attribute="is_first_time", value=true) -%}
+{% if new_contributors | length != 0 %}
+### ❤️ New Contributors
+{% for contributor in new_contributors -%}
+  {%- if not contributor.username is ending_with("[bot]") %}
+* @{{ contributor.username }} made their first contribution\
+  {%- if contributor.pr_number %} in [#{{ contributor.pr_number }}](https://github.com/Fluidise/clint/pull/{{ contributor.pr_number }}){% endif %}
+  {%- endif %}
+{% endfor %}
+{% endif -%}
+### 👥 Contributors
+{% for contributor in github.contributors -%}
+  {%- if not contributor.username is ending_with("[bot]") %}
+* @{{ contributor.username }}
+  {%- endif %}
+{% endfor %}
+{%- endif %}
+\n"""
 # A Tera template to be rendered as the changelog's footer.
 footer = """
 {% for release in releases -%}
