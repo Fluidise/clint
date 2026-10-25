@@ -11,10 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **changelog:** adopt official git-cliff format and add CHANGELOG.md ([#38](https://github.com/Fluidise/clint/pull/38)) ([f1f07b3](https://github.com/Fluidise/clint/commit/f1f07b383a239ce18d26928fd21c56f8210c4b07))
 - **changelog:** align git-cliff formatting and emojis with relay ([#39](https://github.com/Fluidise/clint/pull/39)) ([030114e](https://github.com/Fluidise/clint/commit/030114eca16b663bbd97d68574215ab9687b31d9))
+- **changelog:** include contributors section in cliff template to trigger release avatars ([#40](https://github.com/Fluidise/clint/pull/40)) ([f419cd0](https://github.com/Fluidise/clint/commit/f419cd055450173c52b3735f879d242001d38d07))
 
-### 👥 Contributors
-
-* @Acrazie
 
 ## [0.1.0] - 2026-10-25
 
@@ -87,10 +85,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * @Acrazie made their first contribution in [#37](https://github.com/Fluidise/clint/pull/37)
 
-
-### 👥 Contributors
-
-* @Acrazie
 
 
 [unreleased]: https://github.com/Fluidise/clint/compare/v0.1.0...HEAD
