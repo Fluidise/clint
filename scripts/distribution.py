@@ -259,9 +259,11 @@ def prepare(target, destination):
         "rustc": compiler, "cargo": output("cargo", "--version"),
         "test_environment": platform.platform(), "packages": packages,
         "publisher_signing_policy": "unsigned" if version == "0.1.0" else "undecided",
-        "public_distribution_ready": False,
-        "publication_blockers": ["platform runtime/SDK license and redistribution review"]
-        + ([] if version == "0.1.0" else ["publisher signing policy"]),
+        "public_distribution_ready": version == "0.1.0" and not dirty,
+        "publication_blockers": [] if (version == "0.1.0" and not dirty) else (
+            (["working tree dirty"] if dirty else [])
+            + ([] if version == "0.1.0" else ["publisher signing policy", "platform runtime/SDK license and redistribution review"])
+        ),
     }
     files["PROVENANCE.json"] = (json.dumps(provenance, indent=2, sort_keys=True) + "\n").encode()
     files["FILES.sha256"] = "".join(f"{digest(data)}  {name}\n" for name, data in sorted(files.items())).encode()

@@ -7,9 +7,9 @@ Standalone commit-message validation, designed for AI agents. JSON schema 1 is t
 ### Precompiled 0.1.0 candidate runtime requirements
 
 No Rust, Node.js or Python installation is needed to run a precompiled candidate.
-Linux musl candidates are statically linked. The inspected macOS ARM64 candidate
-links to the system-provided `/usr/lib/libSystem.B.dylib`; no Apple SDK or system
-library is bundled. Native macOS Intel consumer validation remains pending.
+Linux musl candidates are statically linked. The inspected macOS candidates
+(ARM64 and Intel) link exclusively to the system-provided `/usr/lib/libSystem.B.dylib`;
+no Apple SDK or third-party system library is bundled.
 
 The Windows x86-64 candidate imports `VCRUNTIME140.dll` and Universal CRT APIs.
 It therefore requires the supported Microsoft Visual C++ x64 Redistributable and
