@@ -13,4 +13,4 @@ questionary==2.1.1
 termcolor==3.3.0
 tomlkit==0.15.2
 wcwidth==0.9.4
-wrapt==2.5.1
+wrapt==2.5.2
