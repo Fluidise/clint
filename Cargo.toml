@@ -12,7 +12,7 @@ include = ["/src/", "/tests/*.rs", "/tests/catalogue.json", "/scripts/install-ho
 
 [dependencies]
 lexopt = "=0.3.2"
-toml = { version = "=1.1.8", default-features = false, features = ["std", "parse"] }
+toml = { version = "=1.2.0", default-features = false, features = ["std", "parse"] }
 serde_json = { version = "=1.0.154", default-features = false, features = ["std"] }
 
 [lints.rust]
