@@ -1,0 +1,98 @@
+{
+  "status": "Approved artwork integrated into the README banner.",
+  "created_on": "2026-11-05",
+  "purpose": "Fluidise-Clint README banner",
+  "dimensions": {
+    "width": 2048,
+    "height": 768,
+    "aspect_ratio": "8:3"
+  },
+  "direction": "Simplified painterly plum/lavender woodland passage with restrained peach/cream light.",
+  "generation": {
+    "tool": "Built-in image_gen tool",
+    "mode": "style-transfer of existing Clint banner with approved rendering references",
+    "generated_file": "exec-a772d917-c7cf-41b3-9a53-71bd575b00bd.png",
+    "background": "banner-v2-background.png",
+    "background_sha256": "833dc0e65776ab12a6df6548276f5c0e9f261d29312eecc50717e6b8205d446f",
+    "prompt": "Use case: style-transfer.\nAsset type: new production background artwork for the Fluidise-Clint GitHub README banner, exact panoramic 8:3 composition, target 2048 × 768 pixels, opaque.\nInput images, in order:\n1. Edit target and project identity reference: the existing Clint README banner. Recreate its woodland / opening concept in the new simplified painted treatment. Completely REMOVE the existing wordmark and white bracket-face logo from the artwork; both will be typeset/composited separately afterward. Do not preserve its dense detail or tightly packed roots.\n2. Rendering reference: the approved Suspended Archipelago painting. Match its soft drawn forms, broad coherent paint masses, subtle directional digital brushwork, airy depth, restful grandeur and restrained atmospheric light. Do NOT copy its island, geology or composition.\n3. Supporting rendering reference: La grande traversée. Match the softly layered atmosphere and quiet simplified paint handling, not the desert, sky palette or planet.\n\nPrimary request: reimagine the Clint banner as a tranquil plum-and-lavender woodland passage opening toward a luminous, spacious clearing. It should feel like another place in the same contemplative, lightly science-fictional painterly world as images 2 and 3, while remaining unmistakably Clint's woodland identity.\nScene and composition: a few large elegant tree silhouettes and broad rounded canopy masses frame a gentle passage from the lower foreground toward a clearing in the middle-right distance. Use a simple strong composition, breathable areas, generous atmospheric negative space, and just three or four legible depth planes. Subdued dark-plum foreground at left, lavender middle-distance tree shapes and softly receding pale trees beyond. A restrained warm peach/cream glow opens through the clearing; no blown-out sun disk. Foreground, middle and horizon must remain distinct. Compose natively for a shallow wide 8:3 banner, not a tall landscape that will lose its subject when cropped. Reserve a naturally dark, visually quiet lower-left region about x=60..820, y=540..710 in a 2048x768 frame for the existing white logo and FLUIDISE-CLINT label to be added later; no painted box, artificial panel or letters there.\nStyle and material: plainly an illustration, broad simplified hand-painted color shapes, soft restrained paint texture, matte surfaces, intentional silhouettes. Much less intricate than image 1. Put the visual interest in scale, spacing, atmosphere and composition, NOT leaf count, bark detail or microscopic texture. Preserve believable depth without becoming uniformly hazy. Calm, open, graceful, spacious, not ominous.\nPalette: dominant muted plum, dusky mauve and lavender with restrained warm peach/cream light. Keep the woodland identity; do not recolor everything in Archipelago blue. Restrained saturation.\nConstraints: no text, lettering, symbols, logo, watermark, border, frame, UI or comparison panels. No planet, floating islands, waterfall, technological objects, neon, characters, animals or buildings. No photorealism, hyperreal bark or foliage, CGI gloss, thick impasto, excessive sharpness, tangled root detail, dark heavy vignette or decorative overgrowth. One edge-to-edge painted landscape, no empty margins.",
+    "references": [
+      {
+        "role": "Project identity and woodland passage, not detail density",
+        "source": "Fluidise/clint:docs/assets/banner.png",
+        "sha256": "4bf506a8d6f97cf8832b0d7db3363f54fab42a82d34f96ab5c8283edd5cc6234"
+      },
+      {
+        "role": "Soft painted rendering, not island composition",
+        "source": "Fluidise/site:assets/plates/suspended-archipelago.png",
+        "sha256": "4317705a599f0c5662bce6b76f950053991347dc83188ef054f2150f905f6f1e"
+      },
+      {
+        "role": "Supporting soft rendering and atmosphere, not planet or desert",
+        "source": "La grande traversée / exec-b8e0cb89-6ceb-43db-87a0-7231a72c2106.png",
+        "sha256": "c4c4c88faf203ea2747a12aa3d95970017b2d41616e6c2e9572df4ba1e4f5a23"
+      }
+    ]
+  },
+  "branding": {
+    "method": "Separate deterministic overlays using existing local Sharp 0.35.5; no AI-generated logo or text.",
+    "logo": {
+      "source": "Fluidise/core:assets/brand/logo-white.svg",
+      "sha256": "408cf002c6d8cb7c726fb6d4e92429d3394b750fdd69a807fa5296195bc870aa",
+      "left": 64,
+      "top": 576,
+      "width": 128,
+      "height": 128,
+      "geometry": "Official unchanged W1/B, full square viewBox and original transparent margins retained"
+    },
+    "text": {
+      "content": "FLUIDISE-CLINT",
+      "font": "Arial 64",
+      "fontfile_name": "Arial.ttf",
+      "fontfile_sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+      "color": "#ffffff",
+      "letter_spacing_pango_units": 4096,
+      "dpi": 72,
+      "left": 224,
+      "top": 616,
+      "width": 541,
+      "height": 48
+    }
+  },
+  "output": {
+    "file": "banner-v2.png",
+    "sha256": "f4f4d8b2c6d31a1982e83929c401923b3f5420168b52577f9d9d30ad5ac79258"
+  },
+  "verification": {
+    "dimensions": "2048x768 PNG; opaque",
+    "source_copy": "Background copied byte-for-byte from built-in generation",
+    "background_pixels_changed_outside_branding_rectangles": 0,
+    "minimum_white_branding_contrast_on_background": 11.81,
+    "contrast_scope": "Background samples beneath overlay pixels with alpha >= 250/255; not a full accessibility conformance audit",
+    "checked_branding_pixels": 9768,
+    "historical_preview_preserved_files": [
+      {
+        "name": "README.md",
+        "sha256": "5002d690e8cc0870ee524fc50050bde7d518d936bfecfaf1b9adebbd7ccce880"
+      },
+      {
+        "name": "docs/assets/banner.png",
+        "sha256": "4bf506a8d6f97cf8832b0d7db3363f54fab42a82d34f96ab5c8283edd5cc6234"
+      }
+    ],
+    "integrated_banner_matches_approved_candidate": true,
+    "current_readme_sha256": "5002d690e8cc0870ee524fc50050bde7d518d936bfecfaf1b9adebbd7ccce880"
+  },
+  "approval": {
+    "state": "approved",
+    "recorded_on": "2026-11-06",
+    "evidence": "User request: Alors on a generer de nouvelle banniere / image Celle du repo relay a été update, mais par contre celle du repo CLINT n'a pas été update. Et... j'aimerais que tu le fasses.",
+    "scope": "Fluidise-Clint README banner; local replacement."
+  },
+  "integration": {
+    "destination": "docs/assets/banner.png",
+    "sha256": "f4f4d8b2c6d31a1982e83929c401923b3f5420168b52577f9d9d30ad5ac79258",
+    "method": "Byte-for-byte copy of the approved branded candidate into the existing README image path.",
+    "previous_banner_sha256": "4bf506a8d6f97cf8832b0d7db3363f54fab42a82d34f96ab5c8283edd5cc6234",
+    "readme_unchanged": true
+  }
+}
