@@ -16,6 +16,8 @@
     <br>
     <a href="https://github.com/Fluidise/clint/actions/workflows/ci.yml">
         <img src="https://img.shields.io/github/actions/workflow/status/Fluidise/clint/ci.yml?branch=main&style=flat&labelColor=24141E&color=603840&logo=GitHub%20Actions&logoColor=white"></a>
+    <a href="https://codecov.io/gh/Fluidise/clint">
+        <img src="https://img.shields.io/codecov/c/github/Fluidise/clint?style=flat&labelColor=24141E&color=603840&logo=Codecov&logoColor=white"></a>
     <a href="LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-informational?style=flat&labelColor=24141E&color=603840"></a>
     <br>
