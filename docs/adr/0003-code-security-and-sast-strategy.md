@@ -66,11 +66,10 @@ Pour préserver les ressources des runners GitHub et garantir l'Invariant 1 (PRs
 - Les PRs touchant uniquement la documentation (`docs/**`, `*.md`), les scripts utilitaires isolés ou les assets ne déclenchent pas CodeQL.
 - Un job sentinelle (*status reporter*) léger est prévu si les règles de dépôt exigent formellement le statut de CodeQL sur toutes les PRs.
 
-### Décision 4 : Environnement d'exécution déterministe (Toolchain 1.99.1 et Cache)
-Pour éviter tout échec de traçage de compilation lié à l'édition Rust 2024 :
-- Le workflow `codeql.yml` provisionne explicitement la toolchain officielle via `dtolnay/rust-toolchain@d124f86f28ff42855784ff3319f48ac182c248f8` (Rust 1.99.1).
-- La mise en cache des dépendances Cargo est assurée par `Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0`.
-- Une étape de compilation explicite `cargo check --locked --all-targets` garantit que l'extracteur CodeQL intercepte l'ensemble des cibles (binaire et tests).
+### Décision 4 : Mode d'extraction CodeQL (`build-mode: none`)
+Le moteur CodeQL pour Rust ne supporte pas le traçage de compilation manuel (`build-mode: manual`), mais utilise une analyse directe du code source (`build-mode: none`) :
+- Le workflow configure explicitement `build-mode: none` dans l'étape `github/codeql-action/init`.
+- Aucune étape de compilation Cargo manuelle n'est requise dans le job CodeQL, ce qui allège et accélère encore davantage l'exécution par rapport aux langages compilés traditionnels (C/C++, Java).
 
 ### Décision 5 : Gestion de la concurrence sur la branche `main`
 La directive `cancel-in-progress` est restreinte aux branches de PR :
@@ -133,24 +132,15 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install Rust 1.99.1 toolchain
-        uses: dtolnay/rust-toolchain@d124f86f28ff42855784ff3319f48ac182c248f8 # 1.99.1
-
-      - name: Cache Cargo dependencies
-        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
-
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@b56ba49b26e50535fa1e7f7db0f4f7b4bf65d80d # v3
+        uses: github/codeql-action/init@9418214df1f2c4b8128c770156c409013b07d6b9 # v3.39.3
         with:
           languages: 'rust'
           queries: security-extended
-          build-mode: manual
-
-      - name: Build codebase for CodeQL tracing
-        run: cargo check --locked --all-targets
+          build-mode: none
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@b56ba49b26e50535fa1e7f7db0f4f7b4bf65d80d # v3
+        uses: github/codeql-action/analyze@9418214df1f2c4b8128c770156c409013b07d6b9 # v3.39.3
         with:
           category: "/language:rust"
 ```
@@ -175,7 +165,7 @@ jobs:
 
 <!-- EGM_REVIEW_METADATA_START -->
 * **Domaine de hachage du contenu :** Substantive Body (Sections 1 à 6).
-* **Digest de la révision analysée :** `sha256:d7b3d63ba12549838a8df56e6aa65b150824608614f1d75e40682ddee7dbe5d3`
+* **Digest de la révision analysée :** `sha256:02de0d4302374b9af17d5216c4e9c7bc19974f592c5005be4fd89f091315e1f1`
 * **Couverture de revue effectuée :**
   - `egm-design-critic` (Architecural Fit, Threat Model, Invariants, PR Auto-Merge interaction) : **CONFORME APRÈS RÉSOLUTION**
   - `egm-implementation-readiness` (Rollout Sequencing, Branch Protection Deadlocks, Toolchain & Caching, Rollback) : **CONFORME APRÈS RÉSOLUTION**
