@@ -28,7 +28,7 @@ needless_borrow = "warn"
 needless_continue = "warn"
 
 [dev-dependencies]
-proptest = { version = "1.6", default-features = false, features = ["std"] }
+proptest = { version = "=1.12.0", default-features = false, features = ["std"] }
 
 [profile.release]
 opt-level = 3
