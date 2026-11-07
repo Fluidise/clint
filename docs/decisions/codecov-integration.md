@@ -178,14 +178,14 @@ Extrait de spécification du job CI à insérer dans `.github/workflows/ci.yml` 
           tool: cargo-llvm-cov
 
       - name: Generate LCOV coverage report
-        run: cargo llvm-cov --locked --all-targets --lcov --output-path target/llvm-cov/lcov.info
+        run: cargo llvm-cov --locked --all-targets --lcov --output-path target/lcov.info
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
         with:
           use_oidc: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: target/llvm-cov/lcov.info
+          files: target/lcov.info
           flags: unittests
           name: fluidise-clint
           fail_ci_if_error: false
@@ -241,7 +241,7 @@ Insertion du badge Codecov dans le bloc centré `<p align="center">` de [`README
 
 ## État de la Revue (Review State)
 
-- **Digest du corps substantiel** : `2d19c6ca59b9d074760974ff75c5e6810bf4e3ee5b8e5c8ffe8d32c4e8565ade`
+- **Digest du corps substantiel** : `77ab2151963d4d9c4373167f7eea5232eb1ef9f7a879c1c202bb4bbb9eb5e2f4`
 - **Portée couverte** : Intégration Codecov complète (CI, configuration, outillage local, ordonnancement auto-merge, sécurité supply chain, charte graphique).
 - **Reviewers mobilisés** : `egm-design-critic` (revue d'architecture, adéquation des contrats et préparation à l'implémentation).
 - **Résolution des constats de revue** :
